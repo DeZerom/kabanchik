@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
+    alias(libs.plugins.kotlinx.serialization)
 }
 
 kotlin {
@@ -31,6 +32,8 @@ kotlin {
     sourceSets {
         androidMain.dependencies {
             implementation(libs.androidx.activity.compose)
+
+            implementation(libs.decompose)
         }
         commonMain.dependencies {
             implementation(libs.runtime)
@@ -39,6 +42,12 @@ kotlin {
             implementation(libs.ui)
             implementation(libs.components.resources)
             implementation(libs.ui.tooling.preview)
+
+            implementation(libs.decompose)
+            implementation(libs.decompose.extensionsCompose)
+            implementation(libs.essenty)
+
+            implementation(libs.kotlinx.serializationJson)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

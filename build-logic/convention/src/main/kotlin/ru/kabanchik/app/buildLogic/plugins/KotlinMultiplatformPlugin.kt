@@ -9,7 +9,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import ru.kabanchik.app.buildLogic.tools.libs
 
 class KotlinMultiplatformPlugin: Plugin<Project> {
-    override fun apply(target: Project):Unit = with(target){
+    override fun apply(target: Project): Unit = with(target) {
         with(pluginManager){
             apply(libs.findPlugin("kotlinMultiplatform").get().get().pluginId)
             apply(libs.findPlugin("androidLibrary").get().get().pluginId)

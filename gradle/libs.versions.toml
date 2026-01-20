@@ -57,3 +57,5 @@ kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref =
 androidMultiplatformLibrary = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 build-kmp = { id = "ru.kabanchik.app.buildLogic.kmp" }
+build-decompose = { id = "ru.kabanchik.app.buildLogic.decomposePlugin" }
+build-compose = { id = "ru.kabanchik.app.buildLogic.composePlugin" }

@@ -14,7 +14,15 @@ gradlePlugin {
     plugins {
         register("kmp") {
             id = "ru.kabanchik.app.buildLogic.kmp"
-            implementationClass = "KotlinMultiplatformPlugin"
+            implementationClass = "ru.kabanchik.app.buildLogic.plugins.KotlinMultiplatformPlugin"
+        }
+        register("decomposePlugin") {
+            id = "ru.kabanchik.app.buildLogic.decomposePlugin"
+            implementationClass = "ru.kabanchik.app.buildLogic.plugins.DecomposePlugin"
+        }
+        register("composePlugin") {
+            id = "ru.kabanchik.app.buildLogic.composePlugin"
+            implementationClass = "ru.kabanchik.app.buildLogic.plugins.ComposePlugin"
         }
     }
 }

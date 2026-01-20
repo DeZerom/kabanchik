@@ -1,5 +1,17 @@
 package ru.kabanchik.client
 
+import androidx.compose.runtime.remember
 import androidx.compose.ui.window.ComposeUIViewController
+import com.arkivanov.decompose.DefaultComponentContext
+import com.arkivanov.essenty.lifecycle.ApplicationLifecycle
+import ru.kabanchik.client.component.RootComponent
 
-fun MainViewController() = ComposeUIViewController { App() }
+fun MainViewController() = ComposeUIViewController {
+    val rootComponent = remember {
+        RootComponent.create(
+            componentContext = DefaultComponentContext(ApplicationLifecycle())
+        )
+    }
+
+    App(rootComponent)
+}

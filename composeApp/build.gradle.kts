@@ -1,5 +1,7 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.konan.target.Family
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -11,6 +13,18 @@ plugins {
 }
 
 kotlin {
+    targets
+        .filterIsInstance<KotlinNativeTarget>()
+        .filter { it.konanTarget.family == Family.IOS }
+        .forEach {
+            it.binaries.framework {
+                baseName = "shared"
+
+                export(libs.decompose)
+                export(libs.essenty)
+            }
+        }
+
     androidTarget {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_21)
@@ -28,7 +42,7 @@ kotlin {
     }
     
     jvm()
-    
+
     sourceSets {
         androidMain.dependencies {
             implementation(libs.androidx.activity.compose)
@@ -36,6 +50,8 @@ kotlin {
             implementation(libs.decompose)
         }
         commonMain.dependencies {
+            implementation(projects.features.client.chatDetails)
+
             implementation(libs.runtime)
             implementation(libs.foundation)
             implementation(libs.material3)

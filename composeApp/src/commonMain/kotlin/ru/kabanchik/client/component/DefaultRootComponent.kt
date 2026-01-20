@@ -6,6 +6,7 @@ import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.value.Value
 import kotlinx.serialization.Serializable
+import ru.kabanchik.client.chatDetails.api.ChatDetailsComponent
 
 class DefaultRootComponent(
     componentContext: ComponentContext
@@ -21,7 +22,9 @@ class DefaultRootComponent(
     private fun createChild(config: Config, context: ComponentContext): RootComponent.Child {
         return when (config) {
             Config.Chat -> {
-                RootComponent.Child.Chat
+                RootComponent.Child.Chat(
+                    component = ChatDetailsComponent.create(context)
+                )
             }
         }
     }

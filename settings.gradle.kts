@@ -1,4 +1,3 @@
-
 rootProject.name = "kabanchik"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
@@ -15,6 +14,8 @@ pluginManagement {
         mavenCentral()
         gradlePluginPortal()
     }
+
+    includeBuild("build-logic")
 }
 
 dependencyResolutionManagement {

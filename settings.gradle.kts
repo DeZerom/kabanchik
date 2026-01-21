@@ -38,4 +38,6 @@ plugins {
 
 include(":composeApp")
 
+include(":common:ui-kit")
+
 include(":features:client:chat-details")

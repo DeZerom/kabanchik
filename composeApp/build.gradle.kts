@@ -50,6 +50,8 @@ kotlin {
             implementation(libs.decompose)
         }
         commonMain.dependencies {
+            implementation(projects.common.uiKit)
+
             implementation(projects.features.client.chatDetails)
 
             implementation(libs.runtime)

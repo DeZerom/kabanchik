@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.build.kmp)
     alias(libs.plugins.build.compose)
-    alias(libs.plugins.build.decompose)
 }
 
 kotlin {
@@ -10,19 +9,17 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "ChatDetails"
+            baseName = "UiKit"
             isStatic = true
         }
     }
 
     sourceSets {
-        commonMain.dependencies {
-            implementation(projects.common.uiKit)
-        }
+
     }
 }
 
 android {
-    namespace = "ru.kabanchik.client.chatDetails"
+    namespace = "ru.kabanchik.common.uiKit"
 }
 

@@ -10,7 +10,7 @@ import ru.kabanchik.common.uiKit.theme.KabanchikTheme
 import ru.kabanchik.common.uiKit.theme.regularText
 
 @Composable
-fun MessageInput(
+fun CommonTextInput(
     value: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -26,8 +26,8 @@ fun MessageInput(
             }
         },
         colors = OutlinedTextFieldDefaults.colors(
-            focusedTextColor = KabanchikTheme.colors.MainText,
-            unfocusedTextColor = KabanchikTheme.colors.MainText
+            focusedTextColor = KabanchikTheme.colors.mainText,
+            unfocusedTextColor = KabanchikTheme.colors.mainText
         ),
         modifier = modifier
     )
@@ -35,8 +35,8 @@ fun MessageInput(
 
 @Composable
 @Preview
-private fun MessageInputEmptyPreview() {
-    MessageInput(
+private fun CommonTextInputEmptyPreview() {
+    CommonTextInput(
         value = "",
         label = "Подсказка",
         onValueChange = {}

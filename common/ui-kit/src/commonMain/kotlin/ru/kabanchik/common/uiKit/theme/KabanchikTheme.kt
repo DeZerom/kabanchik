@@ -8,11 +8,12 @@ import androidx.compose.runtime.Composable
 fun KabanchikTheme(content: @Composable () -> Unit) {
     MaterialTheme(
         colorScheme = darkColorScheme(
-            background = KabanchikColors.Background,
-            primary = KabanchikColors.Accent,
-            onPrimary = KabanchikColors.Interactive
+            background = KabanchikColors.background,
+            primary = KabanchikColors.accent,
+            onPrimary = KabanchikColors.interactive
         ),
         typography = KabanchikTypography.typography,
+        shapes = KabanchikShape.shape,
         content = content
     )
 }
@@ -20,4 +21,5 @@ fun KabanchikTheme(content: @Composable () -> Unit) {
 object KabanchikTheme {
     val colors @Composable get() = KabanchikColors
     val typography = KabanchikTypography
+    val shapes = KabanchikShape
 }

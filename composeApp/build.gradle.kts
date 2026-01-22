@@ -51,6 +51,7 @@ kotlin {
         }
         commonMain.dependencies {
             implementation(projects.common.uiKit)
+            implementation(projects.common.network)
 
             implementation(projects.features.client.chatDetails)
 
@@ -66,6 +67,8 @@ kotlin {
             implementation(libs.essenty)
 
             implementation(libs.kotlinx.serializationJson)
+
+            implementation(libs.koin.core)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

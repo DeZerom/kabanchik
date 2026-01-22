@@ -24,5 +24,9 @@ gradlePlugin {
             id = "ru.kabanchik.app.buildLogic.composePlugin"
             implementationClass = "ru.kabanchik.app.buildLogic.plugins.ComposePlugin"
         }
+        register("koinPlugin") {
+            id = "ru.kabanchik.app.buildLogic.koinPlugin"
+            implementationClass = "ru.kabanchik.app.buildLogic.plugins.KoinPlugin"
+        }
     }
 }

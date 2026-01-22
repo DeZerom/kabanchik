@@ -18,8 +18,9 @@ material3 = "1.9.0"
 decompose = "3.4.0"
 essenty = "2.5.0"
 serialization = "1.9.0"
-ktor="3.4.0"
-logback="1.5.6"
+ktor = "3.4.0"
+logback = "1.5.25"
+koin = "4.1.1"
 
 [libraries]
 components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "composeMultiplatform" }
@@ -55,6 +56,8 @@ ktor-serialization-json = { module = "io.ktor:ktor-serialization-kotlinx-json", 
 ktor-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
 ktor-websocket = { module = "io.ktor:ktor-client-websockets", version.ref = "ktor" }
 logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -68,3 +71,4 @@ kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", vers
 build-kmp = { id = "ru.kabanchik.app.buildLogic.kmp" }
 build-decompose = { id = "ru.kabanchik.app.buildLogic.decomposePlugin" }
 build-compose = { id = "ru.kabanchik.app.buildLogic.composePlugin" }
+build-koin = { id = "ru.kabanchik.app.buildLogic.koinPlugin" }

@@ -39,5 +39,6 @@ plugins {
 include(":composeApp")
 
 include(":common:ui-kit")
+include(":common:network")
 
 include(":features:client:chat-details")

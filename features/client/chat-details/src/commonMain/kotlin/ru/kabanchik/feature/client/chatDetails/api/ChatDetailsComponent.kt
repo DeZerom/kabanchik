@@ -1,8 +1,8 @@
-package ru.kabanchik.client.chatDetails.api
+package ru.kabanchik.feature.client.chatDetails.api
 
 import com.arkivanov.decompose.ComponentContext
 import kotlinx.coroutines.flow.StateFlow
-import ru.kabanchik.client.chatDetails.internal.DefaultChatDetailsComponent
+import ru.kabanchik.feature.client.chatDetails.internal.DefaultChatDetailsComponent
 
 interface ChatDetailsComponent {
     val state: StateFlow<ChatDetailsContract.State>

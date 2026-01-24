@@ -1,10 +1,10 @@
-package ru.kabanchik.client.chatDetails.internal
+package ru.kabanchik.feature.client.chatDetails.internal
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.essenty.instancekeeper.retainedInstance
 import kotlinx.coroutines.flow.StateFlow
-import ru.kabanchik.client.chatDetails.api.ChatDetailsComponent
-import ru.kabanchik.client.chatDetails.api.ChatDetailsContract
+import ru.kabanchik.feature.client.chatDetails.api.ChatDetailsComponent
+import ru.kabanchik.feature.client.chatDetails.api.ChatDetailsContract
 
 internal class DefaultChatDetailsComponent(
     componentContext: ComponentContext

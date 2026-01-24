@@ -6,7 +6,7 @@ import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.value.Value
 import kotlinx.serialization.Serializable
-import ru.kabanchik.client.chatDetails.api.ChatDetailsComponent
+import ru.kabanchik.feature.client.chatDetails.api.ChatDetailsComponent
 
 class DefaultRootComponent(
     componentContext: ComponentContext

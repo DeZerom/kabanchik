@@ -1,4 +1,4 @@
-package ru.kabanchik.client.chatDetails.internal
+package ru.kabanchik.feature.client.chatDetails.internal
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

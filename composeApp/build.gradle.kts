@@ -39,6 +39,7 @@ kotlin {
             implementation(projects.common.uiKit)
             implementation(projects.common.network)
 
+            implementation(projects.data.client.chatDetails)
             implementation(projects.features.client.chatDetails)
 
             implementation(libs.runtime)

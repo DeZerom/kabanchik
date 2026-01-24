@@ -1,4 +1,4 @@
-package ru.kabanchik.client.chatDetails.internal
+package ru.kabanchik.feature.client.chatDetails.internal
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.dp
 import kabanchik.features.client.chat_details.generated.resources.Res
 import kabanchik.features.client.chat_details.generated.resources.chat_details_hint
 import org.jetbrains.compose.resources.stringResource
-import ru.kabanchik.client.chatDetails.api.ChatDetailsContract
 import ru.kabanchik.common.uiKit.CircleButton
 import ru.kabanchik.common.uiKit.CommonButton
 import ru.kabanchik.common.uiKit.CommonScreenLoader
@@ -29,6 +28,7 @@ import ru.kabanchik.common.uiKit.KabanchikIcons
 import ru.kabanchik.common.uiKit.VSpacer
 import ru.kabanchik.common.uiKit.theme.KabanchikTheme
 import ru.kabanchik.common.uiKit.theme.cardDefault
+import ru.kabanchik.feature.client.chatDetails.api.ChatDetailsContract
 
 @Composable
 internal fun ChatDetailsContent(

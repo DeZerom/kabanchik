@@ -10,7 +10,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "ChatDetails"
+            baseName = "FeatureChatDetails"
             isStatic = true
         }
     }
@@ -26,6 +26,6 @@ kotlin {
 }
 
 android {
-    namespace = "ru.kabanchik.client.chatDetails"
+    namespace = "ru.kabanchik.client.feature.chatDetails"
 }
 

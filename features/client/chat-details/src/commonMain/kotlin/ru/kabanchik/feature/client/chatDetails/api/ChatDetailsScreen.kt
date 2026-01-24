@@ -1,9 +1,9 @@
-package ru.kabanchik.client.chatDetails.api
+package ru.kabanchik.feature.client.chatDetails.api
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import ru.kabanchik.client.chatDetails.internal.ChatDetailsContent
+import ru.kabanchik.feature.client.chatDetails.internal.ChatDetailsContent
 
 @Composable
 fun ChatDetailsScreen(

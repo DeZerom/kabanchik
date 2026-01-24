@@ -3,7 +3,7 @@ package ru.kabanchik.client.component
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
-import ru.kabanchik.client.chatDetails.api.ChatDetailsComponent
+import ru.kabanchik.feature.client.chatDetails.api.ChatDetailsComponent
 
 interface RootComponent {
     val stack: Value<ChildStack<*, Child>>

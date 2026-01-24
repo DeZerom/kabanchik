@@ -42,4 +42,7 @@ include(":common:ui-kit")
 include(":common:network")
 include(":common:store")
 
+include(":data:client:chat-details")
+include(":domain:client:chat-details:logic")
+include(":domain:client:chat-details:model")
 include(":features:client:chat-details")

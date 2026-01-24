@@ -18,6 +18,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.common.uiKit)
+            implementation(projects.common.store)
 
             implementation(libs.components.resources)
         }

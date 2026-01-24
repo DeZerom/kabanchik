@@ -1,8 +1,28 @@
 package ru.kabanchik.client.chatDetails.internal
 
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.essenty.instancekeeper.retainedInstance
+import kotlinx.coroutines.flow.StateFlow
 import ru.kabanchik.client.chatDetails.api.ChatDetailsComponent
+import ru.kabanchik.client.chatDetails.api.ChatDetailsContract
 
 internal class DefaultChatDetailsComponent(
     componentContext: ComponentContext
-) : ChatDetailsComponent, ComponentContext by componentContext
+) : ChatDetailsComponent, ComponentContext by componentContext {
+    private val store = retainedInstance {
+        ChatDetailsStore()
+    }
+    override val state: StateFlow<ChatDetailsContract.State> = store.state
+
+    override fun loginSelected(login: String) {
+        store.handleEvent(ChatDetailsContract.Event.UserSelected(login))
+    }
+
+    override fun messageTextChanged(newText: String) {
+        store.handleEvent(ChatDetailsContract.Event.MessageTextChanged(newText))
+    }
+
+    override fun messageSent() {
+        store.handleEvent(ChatDetailsContract.Event.MessageSent)
+    }
+}

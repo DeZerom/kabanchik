@@ -40,5 +40,6 @@ include(":composeApp")
 
 include(":common:ui-kit")
 include(":common:network")
+include(":common:store")
 
 include(":features:client:chat-details")

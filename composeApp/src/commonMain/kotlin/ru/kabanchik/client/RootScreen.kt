@@ -18,7 +18,7 @@ fun RootScreen(component: RootComponent) {
         modifier = Modifier.fillMaxSize()
     ) {
         when (val child = it.instance) {
-            is RootComponent.Child.Chat -> ChatDetailsScreen()
+            is RootComponent.Child.Chat -> ChatDetailsScreen(component = child.component)
         }
     }
 }

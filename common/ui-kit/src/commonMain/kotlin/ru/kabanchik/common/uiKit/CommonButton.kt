@@ -1,0 +1,38 @@
+package ru.kabanchik.common.uiKit
+
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import ru.kabanchik.common.uiKit.theme.KabanchikTheme
+import ru.kabanchik.common.uiKit.theme.cardDefault
+import ru.kabanchik.common.uiKit.theme.regularText
+
+@Composable
+fun CommonButton(
+    onClick: () -> Unit,
+    text: String,
+    modifier: Modifier = Modifier,
+    backgroundColor: Color = ButtonDefaults.buttonColors().containerColor,
+    textColor: Color = ButtonDefaults.buttonColors().contentColor
+) {
+    Button(
+        onClick = onClick,
+        shape = KabanchikTheme.shapes.cardDefault,
+        content = {
+            Text(
+                text = text,
+                style = KabanchikTheme.typography.regularText,
+                color = textColor
+            )
+        },
+        colors = ButtonDefaults.buttonColors(
+            containerColor = backgroundColor
+        ),
+        modifier = modifier.heightIn(min = 56.dp)
+    )
+}

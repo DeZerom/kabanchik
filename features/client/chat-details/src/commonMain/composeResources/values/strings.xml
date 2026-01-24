@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="chat_details_you">Вы</string>
+    <string name="chat_details_operator">Оператор</string>
+    <string name="chat_details_date_time">%1$s в %2$s</string>
+    <string name="chat_details_hint">Подсказка</string>
+</resources>

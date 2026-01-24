@@ -15,7 +15,9 @@ kotlin {
     }
 
     sourceSets {
-
+        commonMain.dependencies {
+            implementation(libs.components.resources)
+        }
     }
 }
 

@@ -1,6 +1,6 @@
 plugins {
     alias(libs.plugins.build.kmp)
-    alias(libs.plugins.build.koin)
+    alias(libs.plugins.kotlinx.serialization)
 }
 
 kotlin {
@@ -9,19 +9,19 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "DomainLogicChatDetails"
+            baseName = "DataChatDetailsModel"
             isStatic = true
         }
     }
 
     sourceSets {
         commonMain.dependencies {
-            api(projects.domain.client.chatDetails.model)
+            implementation(libs.kotlinx.serializationJson)
         }
     }
 }
 
 android {
-    namespace = "ru.kabanchik.client.domain.logic.chatDetails"
+    namespace = "ru.kabanchik.client.data.chatDetails.model"
 }
 

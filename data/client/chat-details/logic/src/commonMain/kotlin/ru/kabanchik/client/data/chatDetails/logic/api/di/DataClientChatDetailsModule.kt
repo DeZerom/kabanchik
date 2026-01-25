@@ -1,9 +1,9 @@
-package ru.kabanchik.client.data.chatDetails.api.di
+package ru.kabanchik.client.data.chatDetails.logic.api.di
 
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
-import ru.kabanchik.client.data.chatDetails.internal.DefaultChatDetailsRepository
+import ru.kabanchik.client.data.chatDetails.logic.internal.DefaultChatDetailsRepository
 import ru.kabanchik.client.domain.logic.chatDetails.api.ChatDetailsRepository
 
 object DataClientChatDetailsModule {

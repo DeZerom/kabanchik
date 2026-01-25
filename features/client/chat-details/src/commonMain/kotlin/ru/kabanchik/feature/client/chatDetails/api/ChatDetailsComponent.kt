@@ -12,8 +12,11 @@ interface ChatDetailsComponent {
     fun messageSent()
 
     companion object {
-        fun create(componentContext: ComponentContext): ChatDetailsComponent {
-            return DefaultChatDetailsComponent(componentContext)
+        fun create(
+            componentContext: ComponentContext,
+            dependencies: ChatDetailsDependencies
+        ): ChatDetailsComponent {
+            return DefaultChatDetailsComponent(componentContext, dependencies)
         }
     }
 }

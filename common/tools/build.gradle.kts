@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.build.kmp)
-    alias(libs.plugins.build.koin)
 }
 
 kotlin {
@@ -9,19 +8,19 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "DomainLogicChatDetails"
+            baseName = "CommonTools"
             isStatic = true
         }
     }
 
     sourceSets {
         commonMain.dependencies {
-            api(projects.domain.client.chatDetails.model)
+            implementation(libs.kotlinx.datetime)
         }
     }
 }
 
 android {
-    namespace = "ru.kabanchik.client.domain.logic.chatDetails"
+    namespace = "ru.kabanchik.common.tools"
 }
 

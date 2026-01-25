@@ -5,12 +5,16 @@ import com.arkivanov.essenty.instancekeeper.retainedInstance
 import kotlinx.coroutines.flow.StateFlow
 import ru.kabanchik.feature.client.chatDetails.api.ChatDetailsComponent
 import ru.kabanchik.feature.client.chatDetails.api.ChatDetailsContract
+import ru.kabanchik.feature.client.chatDetails.api.ChatDetailsDependencies
 
 internal class DefaultChatDetailsComponent(
-    componentContext: ComponentContext
+    componentContext: ComponentContext,
+    dependencies: ChatDetailsDependencies
 ) : ChatDetailsComponent, ComponentContext by componentContext {
     private val store = retainedInstance {
-        ChatDetailsStore()
+        ChatDetailsStore(
+            chatDetailsInteractor = dependencies.chatDetailsInteractor
+        )
     }
     override val state: StateFlow<ChatDetailsContract.State> = store.state
 

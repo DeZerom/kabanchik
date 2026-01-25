@@ -6,11 +6,14 @@ import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.value.Value
 import kotlinx.serialization.Serializable
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 import ru.kabanchik.feature.client.chatDetails.api.ChatDetailsComponent
+import ru.kabanchik.feature.client.chatDetails.api.ChatDetailsDependencies
 
 class DefaultRootComponent(
     componentContext: ComponentContext
-) : RootComponent, ComponentContext by componentContext {
+) : RootComponent, ComponentContext by componentContext, KoinComponent {
     private val stackNavigation = StackNavigation<Config>()
     override val stack: Value<ChildStack<*, RootComponent.Child>> = childStack(
         source = stackNavigation,
@@ -23,7 +26,12 @@ class DefaultRootComponent(
         return when (config) {
             Config.Chat -> {
                 RootComponent.Child.Chat(
-                    component = ChatDetailsComponent.create(context)
+                    component = ChatDetailsComponent.create(
+                        componentContext = context,
+                        dependencies = ChatDetailsDependencies.Factory(
+                            chatDetailsInteractor = get()
+                        )
+                    )
                 )
             }
         }

@@ -15,7 +15,8 @@ abstract class BaseCoroutineStore<Event, State, SideEffect>(): InstanceKeeper.In
     private val _state = MutableStateFlow(initState())
     val state = _state.asStateFlow()
 
-    val currentState: State = state.value
+    val currentState: State
+        get() = state.value
 
     private val _sideEffect = Channel<SideEffect>(Channel.BUFFERED)
     val sideEffect = _sideEffect.receiveAsFlow()

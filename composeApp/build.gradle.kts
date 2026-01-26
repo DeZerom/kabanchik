@@ -108,5 +108,13 @@ compose.desktop {
             packageName = "ru.kabanchik.client"
             packageVersion = "1.0.0"
         }
+
+        buildTypes {
+            release {
+                proguard {
+                    isEnabled.set(false)
+                }
+            }
+        }
     }
 }

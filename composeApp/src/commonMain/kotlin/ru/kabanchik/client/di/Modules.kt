@@ -5,6 +5,8 @@ import ru.kabanchik.client.data.chatDetails.logic.api.di.DataClientChatDetailsMo
 import ru.kabanchik.client.domain.logic.chatDetails.api.di.DomainClientChatDetails
 import ru.kabanchik.common.network.api.di.CommonNetworkModule
 
+expect val platformModules: List<Module>
+
 val commonModules = listOf(
     CommonNetworkModule.module
 )
@@ -17,4 +19,4 @@ val domainModules = listOf(
     DomainClientChatDetails.module
 )
 
-fun appModules(): List<Module> = commonModules + domainModules + dataModules
+fun appModules(): List<Module> = platformModules + commonModules + domainModules + dataModules

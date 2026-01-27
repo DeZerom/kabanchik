@@ -40,6 +40,12 @@ kotlin {
             implementation(projects.common.network)
             implementation(projects.common.dataStore)
 
+            implementation(projects.data.client.auth.logic)
+            implementation(projects.domain.client.auth.logic)
+
+            implementation(projects.data.client.token.logic)
+            implementation(projects.domain.client.token.logic)
+
             implementation(projects.data.client.chatDetails.logic)
             implementation(projects.domain.client.chatDetails.logic)
             implementation(projects.features.client.chatDetails)

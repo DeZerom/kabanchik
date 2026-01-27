@@ -29,6 +29,7 @@ kotlin {
             implementation(libs.krossbow.serialization.json)
 
             implementation(projects.data.client.chatDetails.logic)
+            implementation(projects.data.client.auth.logic)
         }
         jvmMain.dependencies {
             implementation(libs.logback)

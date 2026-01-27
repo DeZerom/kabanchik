@@ -6,7 +6,7 @@ import org.koin.dsl.module
 import ru.kabanchik.client.domain.logic.chatDetails.api.ChatDetailsInteractor
 import ru.kabanchik.client.domain.logic.chatDetails.internal.DefaultChatDetailsInteractor
 
-object DomainClientChatDetails {
+object DomainClientChatDetailsModule {
     val module = module {
         factoryOf(::DefaultChatDetailsInteractor) bind ChatDetailsInteractor::class
     }

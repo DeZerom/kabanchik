@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.build.kmp)
     alias(libs.plugins.build.koin)
-    alias(libs.plugins.kotlinx.serialization)
 }
 
 kotlin {
@@ -10,22 +9,19 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "DataClientAuthLogic"
+            baseName = "DomainClientTokenLogic"
             isStatic = true
         }
     }
 
     sourceSets {
         commonMain.dependencies {
-            api(projects.data.client.auth.model)
-            implementation(projects.domain.client.auth.logic)
-
-            implementation(libs.kotlinx.serializationJson)
+            api(projects.domain.client.token.model)
         }
     }
 }
 
 android {
-    namespace = "ru.kabanchik.client.data.auth.logic"
+    namespace = "ru.kabanchik.client.domain.token.logic"
 }
 

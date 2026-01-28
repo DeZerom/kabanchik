@@ -1,5 +1,6 @@
 package ru.kabanchik.client.feature.auth.internal.register
 
+import kotlinx.coroutines.launch
 import ru.kabanchik.client.domain.auth.logic.api.AuthInteractor
 import ru.kabanchik.client.feature.auth.api.register.RegisterContract.Event
 import ru.kabanchik.client.feature.auth.api.register.RegisterContract.SideEffect
@@ -22,6 +23,18 @@ internal class RegisterStore(
     }
 
     private fun createAccount() {
-
+        coroutineScope.launch {
+            reduceState { copy(isLoading = true) }
+            val error = authInteractor.register(
+                login = currentState.login,
+                password = currentState.password
+            )
+            if (error != null) {
+                pushSideEffect(SideEffect.Error(error))
+                reduceState { copy(isLoading = false) }
+            } else {
+                reduceState { initState() }
+            }
+        }
     }
 }

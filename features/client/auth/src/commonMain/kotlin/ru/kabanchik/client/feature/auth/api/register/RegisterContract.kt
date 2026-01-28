@@ -13,5 +13,7 @@ class RegisterContract {
         object CreateAccountClicked : Event
     }
 
-    sealed interface SideEffect
+    sealed interface SideEffect {
+        class Error(val text: String) : SideEffect
+    }
 }

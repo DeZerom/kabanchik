@@ -20,6 +20,7 @@ class DecomposePlugin : Plugin<Project> {
                             implementation(libs.findLibrary("decompose").get())
                             implementation(libs.findLibrary("decompose-extensionsCompose").get())
                             implementation(libs.findLibrary("essenty").get())
+                            implementation(libs.findLibrary("essenty-coroutines").get())
                             implementation(libs.findLibrary("kotlinx-serializationJson").get())
                         }
                     }

@@ -32,8 +32,8 @@ kotlin {
     sourceSets {
         androidMain.dependencies {
             implementation(libs.androidx.activity.compose)
-
             implementation(libs.decompose)
+            implementation(libs.koin.android)
         }
         commonMain.dependencies {
             implementation(projects.common.uiKit)

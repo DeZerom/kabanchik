@@ -10,10 +10,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -24,6 +28,7 @@ import kabanchik.features.client.auth.generated.resources.auth_reg_has_acc
 import kabanchik.features.client.auth.generated.resources.auth_reg_login
 import kabanchik.features.client.auth.generated.resources.auth_reg_password
 import kabanchik.features.client.auth.generated.resources.auth_reg_registration
+import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.compose.resources.stringResource
 import ru.kabanchik.client.feature.auth.api.register.RegisterComponent
 import ru.kabanchik.client.feature.auth.api.register.RegisterContract
@@ -32,20 +37,34 @@ import ru.kabanchik.common.uiKit.VSpacer
 import ru.kabanchik.common.uiKit.theme.KabanchikTheme
 import ru.kabanchik.common.uiKit.theme.bigTitle
 import ru.kabanchik.common.uiKit.widgets.CommonButton
+import ru.kabanchik.common.uiKit.widgets.CommonScreenLoader
 import ru.kabanchik.common.uiKit.widgets.CommonTextInput
 
 @Composable
 internal fun RegisterScreen(component: RegisterComponent) {
     val state by component.state.collectAsState()
+    val snackBarHostState = remember { SnackbarHostState() }
 
-    Scaffold {
-        Content(
-            state = state,
-            onLoginChange = component::onLoginChanged,
-            onPasswordChange = component::onPasswordChanged,
-            onCreateAccount = component::onCreateAccountClicked,
-            onHaveAccount = component::onHaveAccountClicked
-        )
+    LaunchedEffect(Unit) {
+        component.messagesFlow.collectLatest {
+            snackBarHostState.showSnackbar(message = it)
+        }
+    }
+
+    Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackBarHostState) }
+    ) {
+        if (state.isLoading) {
+            CommonScreenLoader()
+        } else {
+            Content(
+                state = state,
+                onLoginChange = component::onLoginChanged,
+                onPasswordChange = component::onPasswordChanged,
+                onCreateAccount = component::onCreateAccountClicked,
+                onHaveAccount = component::onHaveAccountClicked
+            )
+        }
     }
 }
 

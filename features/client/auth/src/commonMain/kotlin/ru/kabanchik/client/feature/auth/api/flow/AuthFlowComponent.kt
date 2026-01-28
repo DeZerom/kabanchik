@@ -16,9 +16,13 @@ interface AuthFlowComponent {
     }
 
     companion object {
-        fun create(componentContext: ComponentContext): AuthFlowComponent {
+        fun create(
+            componentContext: ComponentContext,
+            dependencies: AuthFlowDependencies
+        ): AuthFlowComponent {
             return DefaultFlowComponent(
-                componentContext = componentContext
+                componentContext = componentContext,
+                dependencies = dependencies
             )
         }
     }

@@ -1,4 +1,4 @@
-package ru.kabanchik.common.uiKit
+package ru.kabanchik.common.uiKit.widgets
 
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.material3.Button

@@ -9,6 +9,7 @@ import kotlinx.serialization.Serializable
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import ru.kabanchik.client.feature.auth.api.flow.AuthFlowComponent
+import ru.kabanchik.client.feature.auth.api.flow.AuthFlowDependencies
 import ru.kabanchik.feature.client.chatDetails.api.ChatDetailsComponent
 import ru.kabanchik.feature.client.chatDetails.api.ChatDetailsDependencies
 
@@ -28,7 +29,10 @@ class DefaultRootComponent(
             Config.Auth -> {
                 RootComponent.Child.Auth(
                     component = AuthFlowComponent.create(
-                        componentContext = context
+                        componentContext = context,
+                        dependencies = AuthFlowDependencies.Factory(
+                            authInteractor = get()
+                        )
                     )
                 )
             }

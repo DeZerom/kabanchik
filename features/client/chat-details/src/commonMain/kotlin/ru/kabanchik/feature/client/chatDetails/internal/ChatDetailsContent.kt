@@ -19,15 +19,15 @@ import androidx.compose.ui.unit.dp
 import kabanchik.features.client.chat_details.generated.resources.Res
 import kabanchik.features.client.chat_details.generated.resources.chat_details_hint
 import org.jetbrains.compose.resources.stringResource
-import ru.kabanchik.common.uiKit.CircleButton
-import ru.kabanchik.common.uiKit.CommonButton
-import ru.kabanchik.common.uiKit.CommonScreenLoader
-import ru.kabanchik.common.uiKit.CommonTextInput
 import ru.kabanchik.common.uiKit.HSpacer
 import ru.kabanchik.common.uiKit.KabanchikIcons
 import ru.kabanchik.common.uiKit.VSpacer
 import ru.kabanchik.common.uiKit.theme.KabanchikTheme
 import ru.kabanchik.common.uiKit.theme.cardDefault
+import ru.kabanchik.common.uiKit.widgets.CommonButton
+import ru.kabanchik.common.uiKit.widgets.CommonCircleButton
+import ru.kabanchik.common.uiKit.widgets.CommonScreenLoader
+import ru.kabanchik.common.uiKit.widgets.CommonTextInput
 import ru.kabanchik.feature.client.chatDetails.api.ChatDetailsContract
 
 @Composable
@@ -126,7 +126,7 @@ private fun Chat(
                         modifier = Modifier.weight(1f)
                     )
                     HSpacer(12.dp)
-                    CircleButton(
+                    CommonCircleButton(
                         onClick = onMessageSent,
                         color = KabanchikTheme.colors.accent,
                         painter = KabanchikIcons.Send24,

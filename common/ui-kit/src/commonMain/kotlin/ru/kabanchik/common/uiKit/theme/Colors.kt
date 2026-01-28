@@ -9,4 +9,6 @@ object KabanchikColors {
     val interactive = Color(0xffffffff)
     val mainText = Color(0xffffffff)
     val secondaryText = Color(0xffb4b4b4)
+
+    val mainTextInverted = Color(0xFF000000)
 }

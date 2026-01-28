@@ -42,6 +42,7 @@ kotlin {
 
             implementation(projects.data.client.auth.logic)
             implementation(projects.domain.client.auth.logic)
+            implementation(projects.features.client.auth)
 
             implementation(projects.data.client.token.logic)
             implementation(projects.domain.client.token.logic)

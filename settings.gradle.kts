@@ -48,6 +48,7 @@ include(":data:client:auth:logic")
 include(":data:client:auth:model")
 include(":domain:client:auth:logic")
 include(":domain:client:auth:model")
+include(":features:client:auth")
 
 include(":data:client:token:logic")
 include(":domain:client:token:logic")

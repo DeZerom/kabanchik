@@ -8,6 +8,7 @@ import com.arkivanov.decompose.value.Value
 import kotlinx.serialization.Serializable
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
+import ru.kabanchik.client.feature.auth.api.flow.AuthFlowComponent
 import ru.kabanchik.feature.client.chatDetails.api.ChatDetailsComponent
 import ru.kabanchik.feature.client.chatDetails.api.ChatDetailsDependencies
 
@@ -18,12 +19,19 @@ class DefaultRootComponent(
     override val stack: Value<ChildStack<*, RootComponent.Child>> = childStack(
         source = stackNavigation,
         serializer = Config.serializer(),
-        initialStack = { listOf(Config.Chat) },
+        initialStack = { listOf(Config.Auth) },
         childFactory = ::createChild,
     )
 
     private fun createChild(config: Config, context: ComponentContext): RootComponent.Child {
         return when (config) {
+            Config.Auth -> {
+                RootComponent.Child.Auth(
+                    component = AuthFlowComponent.create(
+                        componentContext = context
+                    )
+                )
+            }
             Config.Chat -> {
                 RootComponent.Child.Chat(
                     component = ChatDetailsComponent.create(
@@ -39,6 +47,8 @@ class DefaultRootComponent(
 
     @Serializable
     private sealed class Config {
+        @Serializable
+        data object Auth : Config()
         @Serializable
         data object Chat : Config()
     }

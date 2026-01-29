@@ -1,6 +1,7 @@
 package ru.kabanchik.client.component
 
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.childContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
@@ -10,6 +11,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import ru.kabanchik.client.feature.auth.api.flow.AuthFlowComponent
 import ru.kabanchik.client.feature.auth.api.flow.AuthFlowDependencies
+import ru.kabanchik.common.snackBar.api.SnackBarComponent
 import ru.kabanchik.feature.client.chatDetails.api.ChatDetailsComponent
 import ru.kabanchik.feature.client.chatDetails.api.ChatDetailsDependencies
 
@@ -24,6 +26,10 @@ class DefaultRootComponent(
         childFactory = ::createChild,
     )
 
+    override val snackBarComponent: SnackBarComponent = SnackBarComponent.create(
+        componentContext = childContext("root_snack_bar_component")
+    )
+
     private fun createChild(config: Config, context: ComponentContext): RootComponent.Child {
         return when (config) {
             Config.Auth -> {
@@ -32,7 +38,8 @@ class DefaultRootComponent(
                         componentContext = context,
                         dependencies = AuthFlowDependencies.Factory(
                             authInteractor = get()
-                        )
+                        ),
+                        showSnackBar = { snackBarComponent.setData(it) }
                     )
                 )
             }

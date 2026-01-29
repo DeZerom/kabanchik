@@ -6,6 +6,7 @@ import com.arkivanov.decompose.value.Value
 import ru.kabanchik.client.feature.auth.api.auth.AuthComponent
 import ru.kabanchik.client.feature.auth.api.register.RegisterComponent
 import ru.kabanchik.client.feature.auth.internal.flow.DefaultFlowComponent
+import ru.kabanchik.common.snackBar.api.SnackBarData
 
 interface AuthFlowComponent {
     val stack: Value<ChildStack<*, Child>>
@@ -18,11 +19,13 @@ interface AuthFlowComponent {
     companion object {
         fun create(
             componentContext: ComponentContext,
-            dependencies: AuthFlowDependencies
+            dependencies: AuthFlowDependencies,
+            showSnackBar: (SnackBarData) -> Unit
         ): AuthFlowComponent {
             return DefaultFlowComponent(
                 componentContext = componentContext,
-                dependencies = dependencies
+                dependencies = dependencies,
+                showSnackBar = showSnackBar
             )
         }
     }

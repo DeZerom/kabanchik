@@ -9,15 +9,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -28,7 +23,6 @@ import kabanchik.features.client.auth.generated.resources.auth_reg_has_acc
 import kabanchik.features.client.auth.generated.resources.auth_reg_login
 import kabanchik.features.client.auth.generated.resources.auth_reg_password
 import kabanchik.features.client.auth.generated.resources.auth_reg_registration
-import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.compose.resources.stringResource
 import ru.kabanchik.client.feature.auth.api.register.RegisterComponent
 import ru.kabanchik.client.feature.auth.api.register.RegisterContract
@@ -42,25 +36,14 @@ import ru.kabanchik.common.uiKit.widgets.CommonTextInput
 @Composable
 internal fun RegisterScreen(component: RegisterComponent) {
     val state by component.state.collectAsState()
-    val snackBarHostState = remember { SnackbarHostState() }
 
-    LaunchedEffect(Unit) {
-        component.messagesFlow.collectLatest {
-            snackBarHostState.showSnackbar(message = it)
-        }
-    }
-
-    Scaffold(
-        snackbarHost = { SnackbarHost(hostState = snackBarHostState) }
-    ) {
-        Content(
-            state = state,
-            onLoginChange = component::onLoginChanged,
-            onPasswordChange = component::onPasswordChanged,
-            onCreateAccount = component::onCreateAccountClicked,
-            onHaveAccount = component::onHaveAccountClicked
-        )
-    }
+    Content(
+        state = state,
+        onLoginChange = component::onLoginChanged,
+        onPasswordChange = component::onPasswordChanged,
+        onCreateAccount = component::onCreateAccountClicked,
+        onHaveAccount = component::onHaveAccountClicked
+    )
 }
 
 @Composable
@@ -94,6 +77,7 @@ private fun Content(
             value = state.login,
             label = stringResource(Res.string.auth_reg_login),
             onValueChange = onLoginChange,
+            singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
         VSpacer(16.dp)
@@ -102,6 +86,7 @@ private fun Content(
             label = stringResource(Res.string.auth_reg_password),
             onValueChange = onPasswordChange,
             visualTransformation = PasswordVisualTransformation(),
+            singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
         VSpacer(24.dp)
@@ -110,8 +95,8 @@ private fun Content(
             text = stringResource(Res.string.auth_reg_create_account),
             backgroundColor = KabanchikTheme.colors.accent,
             textColor = KabanchikTheme.colors.mainText,
-            modifier = Modifier.fillMaxWidth(),
-            isLoading = state.isLoading
+            isLoading = state.isLoading,
+            modifier = Modifier.fillMaxWidth()
         )
         VSpacer(8.dp)
         CommonButton(
@@ -119,8 +104,8 @@ private fun Content(
             text = stringResource(Res.string.auth_reg_has_acc),
             backgroundColor = KabanchikTheme.colors.interactive,
             textColor = KabanchikTheme.colors.mainTextInverted,
-            modifier = Modifier.fillMaxWidth(),
-            isEnabled = !state.isLoading
+            isEnabled = !state.isLoading,
+            modifier = Modifier.fillMaxWidth()
         )
     }
 }

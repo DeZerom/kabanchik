@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.build.kmp)
     alias(libs.plugins.build.compose)
+    alias(libs.plugins.build.decompose)
 }
 
 kotlin {
@@ -16,6 +17,8 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            implementation(projects.common.tools)
+
             implementation(libs.components.resources)
         }
     }

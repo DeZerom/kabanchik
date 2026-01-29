@@ -12,10 +12,12 @@ import ru.kabanchik.client.feature.auth.api.flow.AuthFlowDependencies
 import ru.kabanchik.client.feature.auth.internal.auth.DefaultAuthComponent
 import ru.kabanchik.client.feature.auth.internal.register.DefaultRegisterComponent
 import ru.kabanchik.client.feature.auth.internal.register.RegisterDependencies
+import ru.kabanchik.common.snackBar.api.SnackBarData
 
 internal class DefaultFlowComponent(
     componentContext: ComponentContext,
-    private val dependencies: AuthFlowDependencies
+    private val dependencies: AuthFlowDependencies,
+    private val showSnackBar: (SnackBarData) -> Unit
 ) : AuthFlowComponent, ComponentContext by componentContext {
     private val stackNavigation = StackNavigation<Config>()
     override val stack: Value<ChildStack<*, AuthFlowComponent.Child>> = childStack(
@@ -37,7 +39,8 @@ internal class DefaultFlowComponent(
                     component = DefaultRegisterComponent(
                         componentContext = componentContext,
                         dependencies = RegisterDependencies.Factory(dependencies = dependencies),
-                        navigateBack = { stackNavigation.pop() }
+                        navigateBack = { stackNavigation.pop() },
+                        showSnackBar = showSnackBar
                     )
                 )
             }

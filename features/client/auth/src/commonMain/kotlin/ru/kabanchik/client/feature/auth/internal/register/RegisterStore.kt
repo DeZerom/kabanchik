@@ -6,6 +6,7 @@ import ru.kabanchik.client.feature.auth.api.register.RegisterContract.Event
 import ru.kabanchik.client.feature.auth.api.register.RegisterContract.SideEffect
 import ru.kabanchik.client.feature.auth.api.register.RegisterContract.State
 import ru.kabanchik.common.store.BaseCoroutineStore
+import ru.kabanchik.common.tools.textResource.TextResource
 
 internal class RegisterStore(
     private val authInteractor: AuthInteractor
@@ -30,7 +31,7 @@ internal class RegisterStore(
                 password = currentState.password
             )
             if (error != null) {
-                pushSideEffect(SideEffect.Error(error))
+                pushSideEffect(SideEffect.Error(TextResource.Raw(error)))
                 reduceState { copy(isLoading = false) }
             } else {
                 reduceState { initState() }

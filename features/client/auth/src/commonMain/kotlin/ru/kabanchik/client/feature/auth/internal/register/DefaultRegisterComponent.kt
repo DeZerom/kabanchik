@@ -3,18 +3,18 @@ package ru.kabanchik.client.feature.auth.internal.register
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.essenty.instancekeeper.retainedInstance
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.receiveAsFlow
 import ru.kabanchik.client.feature.auth.api.register.RegisterComponent
 import ru.kabanchik.client.feature.auth.api.register.RegisterContract
+import ru.kabanchik.common.snackBar.api.SnackBarData
 
 internal class DefaultRegisterComponent(
     componentContext: ComponentContext,
-    dependencies: RegisterDependencies,
-    private val navigateBack: () -> Unit
+    private val dependencies: RegisterDependencies,
+    private val navigateBack: () -> Unit,
+    private val showSnackBar: (SnackBarData) -> Unit
 ) : RegisterComponent, ComponentContext by componentContext {
     private val store = retainedInstance {
         RegisterStore(
@@ -22,9 +22,6 @@ internal class DefaultRegisterComponent(
         )
     }
     override val state: StateFlow<RegisterContract.State> = store.state
-
-    private val _messagesFlow = Channel<String>(Channel.BUFFERED)
-    override val messagesFlow = _messagesFlow.receiveAsFlow()
 
     private val coroutineScope = coroutineScope()
 
@@ -52,7 +49,7 @@ internal class DefaultRegisterComponent(
         store.sideEffect.onEach { effect ->
             when (effect) {
                 is RegisterContract.SideEffect.Error -> {
-                    _messagesFlow.send(effect.text)
+                    showSnackBar(SnackBarData.Error(text = effect.text))
                 }
             }
         }.launchIn(coroutineScope)

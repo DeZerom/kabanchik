@@ -1,5 +1,7 @@
 package ru.kabanchik.client.feature.auth.api.register
 
+import ru.kabanchik.common.tools.textResource.TextResource
+
 class RegisterContract {
     data class State(
         val login: String = "",
@@ -14,6 +16,6 @@ class RegisterContract {
     }
 
     sealed interface SideEffect {
-        class Error(val text: String) : SideEffect
+        class Error(val text: TextResource) : SideEffect
     }
 }

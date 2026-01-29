@@ -16,7 +16,8 @@ fun CommonTextInput(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     label: String? = null,
-    visualTransformation: VisualTransformation = VisualTransformation.None
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    singleLine: Boolean = false
 ) {
     OutlinedTextField(
         value = value,
@@ -32,6 +33,7 @@ fun CommonTextInput(
             unfocusedTextColor = KabanchikTheme.colors.mainText
         ),
         visualTransformation = visualTransformation,
+        singleLine = singleLine,
         modifier = modifier
     )
 }

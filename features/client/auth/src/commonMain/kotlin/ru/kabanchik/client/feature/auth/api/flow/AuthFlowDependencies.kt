@@ -6,6 +6,6 @@ interface AuthFlowDependencies {
     val authInteractor: AuthInteractor
 
     class Factory(
-        override val authInteractor: AuthInteractor
+        override val authInteractor: AuthInteractor,
     ) : AuthFlowDependencies
 }

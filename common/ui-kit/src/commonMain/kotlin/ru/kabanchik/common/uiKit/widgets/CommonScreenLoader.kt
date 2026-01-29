@@ -1,4 +1,4 @@
-package ru.kabanchik.common.uiKit
+package ru.kabanchik.common.uiKit.widgets
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

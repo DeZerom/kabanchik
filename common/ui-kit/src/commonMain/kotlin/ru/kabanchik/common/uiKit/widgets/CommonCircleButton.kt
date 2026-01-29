@@ -1,4 +1,4 @@
-package ru.kabanchik.common.uiKit
+package ru.kabanchik.common.uiKit.widgets
 
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.sizeIn
@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import ru.kabanchik.common.uiKit.theme.KabanchikTheme
 
 @Composable
-fun CircleButton(
+fun CommonCircleButton(
     onClick: () -> Unit,
     painter: Painter,
     modifier: Modifier = Modifier,

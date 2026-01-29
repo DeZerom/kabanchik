@@ -42,6 +42,17 @@ include(":common:ui-kit")
 include(":common:network")
 include(":common:store")
 include(":common:tools")
+include(":common:data-store")
+
+include(":data:client:auth:logic")
+include(":data:client:auth:model")
+include(":domain:client:auth:logic")
+include(":domain:client:auth:model")
+include(":features:client:auth")
+
+include(":data:client:token:logic")
+include(":domain:client:token:logic")
+include(":domain:client:token:model")
 
 include(":data:client:chat-details:logic")
 include(":data:client:chat-details:model")

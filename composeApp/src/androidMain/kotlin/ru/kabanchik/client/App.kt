@@ -1,6 +1,7 @@
 package ru.kabanchik.client
 
 import android.app.Application
+import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import ru.kabanchik.client.di.appModules
 
@@ -9,6 +10,7 @@ class App: Application() {
         super.onCreate()
 
         startKoin {
+            androidContext(this@App)
             modules(appModules())
         }
     }

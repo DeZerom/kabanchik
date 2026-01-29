@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="auth_auth_entrance">Вход</string>
+    <string name="auth_auth_login">Логин</string>
+    <string name="auth_auth_password">Пароль</string>
+    <string name="auth_auth_enter">Войти</string>
+    <string name="auth_auth_create_account">Создать аккаунт</string>
+    <string name="auth_auth_empty_creds_error">Логин и пароль не должны быть пустыми</string>
+
+    <string name="auth_reg_registration">Регистрация</string>
+    <string name="auth_reg_login">Логин</string>
+    <string name="auth_reg_password">Пароль</string>
+    <string name="auth_reg_create_account">Создать аккаунт</string>
+    <string name="auth_reg_has_acc">У меня есть аккаунт</string>
+    <string name="auth_reg_empty_creds_error">Логин и пароль не должны быть пустыми</string>
+    <string name="auth_reg_successful_registration">Регистрация прошла успешно!</string>
+</resources>

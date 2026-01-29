@@ -32,12 +32,20 @@ kotlin {
     sourceSets {
         androidMain.dependencies {
             implementation(libs.androidx.activity.compose)
-
             implementation(libs.decompose)
+            implementation(libs.koin.android)
         }
         commonMain.dependencies {
             implementation(projects.common.uiKit)
             implementation(projects.common.network)
+            implementation(projects.common.dataStore)
+
+            implementation(projects.data.client.auth.logic)
+            implementation(projects.domain.client.auth.logic)
+            implementation(projects.features.client.auth)
+
+            implementation(projects.data.client.token.logic)
+            implementation(projects.domain.client.token.logic)
 
             implementation(projects.data.client.chatDetails.logic)
             implementation(projects.domain.client.chatDetails.logic)
@@ -53,6 +61,9 @@ kotlin {
             implementation(libs.decompose)
             implementation(libs.decompose.extensionsCompose)
             implementation(libs.essenty)
+
+            implementation(libs.androidx.datastore)
+            implementation(libs.androidx.datastore.preferences)
 
             implementation(libs.kotlinx.serializationJson)
 

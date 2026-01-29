@@ -37,7 +37,6 @@ import ru.kabanchik.common.uiKit.VSpacer
 import ru.kabanchik.common.uiKit.theme.KabanchikTheme
 import ru.kabanchik.common.uiKit.theme.bigTitle
 import ru.kabanchik.common.uiKit.widgets.CommonButton
-import ru.kabanchik.common.uiKit.widgets.CommonScreenLoader
 import ru.kabanchik.common.uiKit.widgets.CommonTextInput
 
 @Composable
@@ -54,17 +53,13 @@ internal fun RegisterScreen(component: RegisterComponent) {
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackBarHostState) }
     ) {
-        if (state.isLoading) {
-            CommonScreenLoader()
-        } else {
-            Content(
-                state = state,
-                onLoginChange = component::onLoginChanged,
-                onPasswordChange = component::onPasswordChanged,
-                onCreateAccount = component::onCreateAccountClicked,
-                onHaveAccount = component::onHaveAccountClicked
-            )
-        }
+        Content(
+            state = state,
+            onLoginChange = component::onLoginChanged,
+            onPasswordChange = component::onPasswordChanged,
+            onCreateAccount = component::onCreateAccountClicked,
+            onHaveAccount = component::onHaveAccountClicked
+        )
     }
 }
 
@@ -115,7 +110,8 @@ private fun Content(
             text = stringResource(Res.string.auth_reg_create_account),
             backgroundColor = KabanchikTheme.colors.accent,
             textColor = KabanchikTheme.colors.mainText,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            isLoading = state.isLoading
         )
         VSpacer(8.dp)
         CommonButton(
@@ -123,7 +119,8 @@ private fun Content(
             text = stringResource(Res.string.auth_reg_has_acc),
             backgroundColor = KabanchikTheme.colors.interactive,
             textColor = KabanchikTheme.colors.mainTextInverted,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            isEnabled = !state.isLoading
         )
     }
 }

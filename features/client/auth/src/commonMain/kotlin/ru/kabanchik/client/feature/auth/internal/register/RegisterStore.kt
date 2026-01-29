@@ -1,5 +1,7 @@
 package ru.kabanchik.client.feature.auth.internal.register
 
+import kabanchik.features.client.auth.generated.resources.Res
+import kabanchik.features.client.auth.generated.resources.auth_reg_empty_creds_error
 import kotlinx.coroutines.launch
 import ru.kabanchik.client.domain.auth.logic.api.AuthInteractor
 import ru.kabanchik.client.feature.auth.api.register.RegisterContract.Event
@@ -24,6 +26,11 @@ internal class RegisterStore(
     }
 
     private fun createAccount() {
+        if (currentState.login.isBlank() || currentState.password.isBlank()) {
+            pushSideEffect(SideEffect.Error(TextResource.Id(Res.string.auth_reg_empty_creds_error)))
+            return
+        }
+
         coroutineScope.launch {
             reduceState { copy(isLoading = true) }
             val error = authInteractor.register(

@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ru.kabanchik.common.snackBar.api.CommonVisuals
+import ru.kabanchik.common.snackBar.api.CommonVisualsType
 import ru.kabanchik.common.tools.extensions.getValue
 import ru.kabanchik.common.uiKit.HSpacer
 import ru.kabanchik.common.uiKit.KabanchikIcons
@@ -37,10 +38,16 @@ fun CommonSnackBar(
             modifier = Modifier.padding(all = 16.dp)
         ) {
             Icon(
-                painter = KabanchikIcons.Close24,
+                painter = when (commonVisuals.type) {
+                    CommonVisualsType.Error -> KabanchikIcons.Close24
+                    CommonVisualsType.Success -> KabanchikIcons.Check24
+                },
                 contentDescription = null,
                 modifier = Modifier.size(36.dp),
-                tint = KabanchikTheme.colors.error
+                tint = when (commonVisuals.type) {
+                    CommonVisualsType.Error -> KabanchikTheme.colors.error
+                    CommonVisualsType.Success -> KabanchikTheme.colors.success
+                }
             )
             HSpacer(8.dp)
             Text(

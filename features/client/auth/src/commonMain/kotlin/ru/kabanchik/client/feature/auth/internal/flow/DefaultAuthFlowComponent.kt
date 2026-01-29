@@ -5,25 +5,28 @@ import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
+import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.value.Value
 import kotlinx.serialization.Serializable
 import ru.kabanchik.client.feature.auth.api.flow.AuthFlowComponent
 import ru.kabanchik.client.feature.auth.api.flow.AuthFlowDependencies
+import ru.kabanchik.client.feature.auth.internal.auth.AuthDependencies
 import ru.kabanchik.client.feature.auth.internal.auth.DefaultAuthComponent
 import ru.kabanchik.client.feature.auth.internal.register.DefaultRegisterComponent
 import ru.kabanchik.client.feature.auth.internal.register.RegisterDependencies
 import ru.kabanchik.common.snackBar.api.SnackBarData
 
-internal class DefaultFlowComponent(
+internal class DefaultAuthFlowComponent(
     componentContext: ComponentContext,
     private val dependencies: AuthFlowDependencies,
-    private val showSnackBar: (SnackBarData) -> Unit
+    private val showSnackBar: (SnackBarData) -> Unit,
+    private val navigateHome: () -> Unit
 ) : AuthFlowComponent, ComponentContext by componentContext {
     private val stackNavigation = StackNavigation<Config>()
     override val stack: Value<ChildStack<*, AuthFlowComponent.Child>> = childStack(
         source = stackNavigation,
         serializer = Config.serializer(),
-        initialStack = { listOf(Config.Register) },
+        initialStack = { listOf(Config.Auth) },
         childFactory = ::createChild
     )
 
@@ -31,7 +34,13 @@ internal class DefaultFlowComponent(
         return when (config) {
             Config.Auth -> {
                 AuthFlowComponent.Child.Auth(
-                    component = DefaultAuthComponent(componentContext)
+                    component = DefaultAuthComponent(
+                        componentContext = componentContext,
+                        dependencies = AuthDependencies.Factory(dependencies = dependencies),
+                        navigateRegistration = { stackNavigation.pushNew(Config.Register) },
+                        navigateHome = navigateHome,
+                        showSnackBar = showSnackBar,
+                    )
                 )
             }
             Config.Register -> {

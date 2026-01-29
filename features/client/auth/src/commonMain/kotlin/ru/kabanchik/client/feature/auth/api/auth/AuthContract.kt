@@ -1,8 +1,8 @@
-package ru.kabanchik.client.feature.auth.api.register
+package ru.kabanchik.client.feature.auth.api.auth
 
 import ru.kabanchik.common.tools.textResource.TextResource
 
-class RegisterContract {
+class AuthContract {
     data class State(
         val login: String = "",
         val password: String = "",
@@ -12,7 +12,7 @@ class RegisterContract {
     sealed interface Event {
         class LoginChanged(val newLogin: String) : Event
         class PasswordChanged(val newPassword: String) : Event
-        object CreateAccountClicked : Event
+        object AuthorizeClicked : Event
     }
 
     sealed interface SideEffect {

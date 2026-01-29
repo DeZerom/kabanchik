@@ -5,7 +5,7 @@ import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
 import ru.kabanchik.client.feature.auth.api.auth.AuthComponent
 import ru.kabanchik.client.feature.auth.api.register.RegisterComponent
-import ru.kabanchik.client.feature.auth.internal.flow.DefaultFlowComponent
+import ru.kabanchik.client.feature.auth.internal.flow.DefaultAuthFlowComponent
 import ru.kabanchik.common.snackBar.api.SnackBarData
 
 interface AuthFlowComponent {
@@ -20,12 +20,14 @@ interface AuthFlowComponent {
         fun create(
             componentContext: ComponentContext,
             dependencies: AuthFlowDependencies,
-            showSnackBar: (SnackBarData) -> Unit
+            showSnackBar: (SnackBarData) -> Unit,
+            navigateHome: () -> Unit
         ): AuthFlowComponent {
-            return DefaultFlowComponent(
+            return DefaultAuthFlowComponent(
                 componentContext = componentContext,
                 dependencies = dependencies,
-                showSnackBar = showSnackBar
+                showSnackBar = showSnackBar,
+                navigateHome = navigateHome
             )
         }
     }

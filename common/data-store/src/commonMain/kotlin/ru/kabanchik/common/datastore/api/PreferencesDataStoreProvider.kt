@@ -7,6 +7,6 @@ interface PreferencesDataStoreProvider {
     fun get(): DataStore<Preferences>
 
     companion object {
-        const val FileName = "datastore.preferences_db"
+        const val FileName = "datastore.preferences_pb"
     }
 }

@@ -17,17 +17,23 @@ internal class DefaultSnackBarComponent(
     private val coroutineScope = coroutineScope()
 
     override fun setData(data: SnackBarData) {
-        coroutineScope.launch {
-            when (data) {
-                is SnackBarData.Error -> {
-                    hostState.showSnackbar(
-                        visuals = CommonVisuals(
-                            type = CommonVisualsType.Error,
-                            textResource = data.text
-                        )
-                    )
-                }
+        val visuals = when (data) {
+            is SnackBarData.Error -> {
+                CommonVisuals(
+                    type = CommonVisualsType.Error,
+                    textResource = data.text
+                )
             }
+            is SnackBarData.Success -> {
+                CommonVisuals(
+                    type = CommonVisualsType.Success,
+                    textResource = data.text
+                )
+            }
+        }
+
+        coroutineScope.launch {
+            hostState.showSnackbar(visuals)
         }
     }
 }

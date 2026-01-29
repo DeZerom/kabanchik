@@ -15,5 +15,5 @@ data class CommonVisuals(
 }
 
 enum class CommonVisualsType {
-    Error
+    Error, Success
 }

@@ -5,6 +5,7 @@ import com.arkivanov.decompose.childContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.router.stack.replaceCurrent
 import com.arkivanov.decompose.value.Value
 import kotlinx.serialization.Serializable
 import org.koin.core.component.KoinComponent
@@ -39,7 +40,8 @@ class DefaultRootComponent(
                         dependencies = AuthFlowDependencies.Factory(
                             authInteractor = get()
                         ),
-                        showSnackBar = { snackBarComponent.setData(it) }
+                        showSnackBar = { snackBarComponent.setData(it) },
+                        navigateHome = { stackNavigation.replaceCurrent(Config.Chat) }
                     )
                 )
             }

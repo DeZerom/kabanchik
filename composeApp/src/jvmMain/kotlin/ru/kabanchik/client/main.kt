@@ -1,5 +1,8 @@
 package ru.kabanchik.client
 
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import com.arkivanov.decompose.DefaultComponentContext
@@ -7,8 +10,10 @@ import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import org.koin.core.context.startKoin
 import ru.kabanchik.client.component.RootComponent
 import ru.kabanchik.client.di.appModules
+import ru.kabanchik.common.screenSize.LocalWindowSizeCompositionProvider
 import javax.swing.SwingUtilities
 
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 fun main() {
     startKoin {
         modules(appModules())
@@ -26,7 +31,12 @@ fun main() {
             onCloseRequest = ::exitApplication,
             title = "kabanchik",
         ) {
-            App(rootComponent)
+            val windowSize = calculateWindowSizeClass()
+            CompositionLocalProvider(
+                LocalWindowSizeCompositionProvider provides windowSize
+            ) {
+                App(rootComponent)
+            }
         }
     }
 }

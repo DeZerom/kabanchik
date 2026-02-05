@@ -54,6 +54,7 @@ kotlin {
             implementation(libs.runtime)
             implementation(libs.foundation)
             implementation(libs.material3)
+            implementation(libs.material3.window.size)
             implementation(libs.ui)
             implementation(libs.components.resources)
             implementation(libs.ui.tooling.preview)

@@ -26,6 +26,7 @@ import kabanchik.features.client.auth.generated.resources.auth_auth_password
 import org.jetbrains.compose.resources.stringResource
 import ru.kabanchik.client.feature.auth.api.auth.AuthComponent
 import ru.kabanchik.client.feature.auth.api.auth.AuthContract
+import ru.kabanchik.common.screenSize.PartFillingScreen
 import ru.kabanchik.common.uiKit.KabanchikImages
 import ru.kabanchik.common.uiKit.VSpacer
 import ru.kabanchik.common.uiKit.theme.KabanchikTheme
@@ -37,13 +38,15 @@ import ru.kabanchik.common.uiKit.widgets.CommonTextInput
 internal fun AuthScreen(component: AuthComponent) {
     val state by component.state.collectAsState()
 
-    Content(
-        state = state,
-        onLoginChange = component::onLoginChanged,
-        onPasswordChange = component::onPasswordChanged,
-        onAuthorizeClicked = component::onAuthorizeClicked,
-        onCreateAccountClicked = component::onCreateAccountClicked
-    )
+    PartFillingScreen {
+        Content(
+            state = state,
+            onLoginChange = component::onLoginChanged,
+            onPasswordChange = component::onPasswordChanged,
+            onAuthorizeClicked = component::onAuthorizeClicked,
+            onCreateAccountClicked = component::onCreateAccountClicked
+        )
+    }
 }
 
 @Composable

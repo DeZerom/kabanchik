@@ -20,6 +20,7 @@ kotlin {
             implementation(projects.common.tools)
 
             implementation(libs.components.resources)
+            implementation(libs.material3.window.size)
         }
     }
 }

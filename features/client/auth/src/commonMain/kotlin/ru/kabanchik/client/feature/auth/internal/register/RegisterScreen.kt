@@ -26,6 +26,7 @@ import kabanchik.features.client.auth.generated.resources.auth_reg_registration
 import org.jetbrains.compose.resources.stringResource
 import ru.kabanchik.client.feature.auth.api.register.RegisterComponent
 import ru.kabanchik.client.feature.auth.api.register.RegisterContract
+import ru.kabanchik.common.screenSize.PartFillingScreen
 import ru.kabanchik.common.uiKit.KabanchikImages
 import ru.kabanchik.common.uiKit.VSpacer
 import ru.kabanchik.common.uiKit.theme.KabanchikTheme
@@ -37,13 +38,15 @@ import ru.kabanchik.common.uiKit.widgets.CommonTextInput
 internal fun RegisterScreen(component: RegisterComponent) {
     val state by component.state.collectAsState()
 
-    Content(
-        state = state,
-        onLoginChange = component::onLoginChanged,
-        onPasswordChange = component::onPasswordChanged,
-        onCreateAccount = component::onCreateAccountClicked,
-        onHaveAccount = component::onHaveAccountClicked
-    )
+    PartFillingScreen {
+        Content(
+            state = state,
+            onLoginChange = component::onLoginChanged,
+            onPasswordChange = component::onPasswordChanged,
+            onCreateAccount = component::onCreateAccountClicked,
+            onHaveAccount = component::onHaveAccountClicked
+        )
+    }
 }
 
 @Composable

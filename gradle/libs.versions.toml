@@ -24,6 +24,7 @@ koin = "4.1.1"
 datetime = "0.7.1"
 krossbow = "9.3.0"
 datastore = "1.2.0"
+material3WindowSizeClassAndroid = "1.4.0"
 
 [libraries]
 components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "composeMultiplatform" }
@@ -68,6 +69,7 @@ krossbow-ktor = { module = "org.hildan.krossbow:krossbow-websocket-ktor", versio
 krossbow-serialization-json = { module = "org.hildan.krossbow:krossbow-stomp-kxserialization-json", version.ref = "krossbow" }
 androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
+material3-window-size = { module = "org.jetbrains.compose.material3:material3-window-size-class", version.ref = "material3" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

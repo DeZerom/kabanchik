@@ -18,10 +18,12 @@ kotlin {
         commonMain.dependencies {
             api(projects.domain.client.chatDetails.model)
         }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+        }
     }
 }
 
 android {
     namespace = "ru.kabanchik.client.domain.logic.chatDetails"
 }
-

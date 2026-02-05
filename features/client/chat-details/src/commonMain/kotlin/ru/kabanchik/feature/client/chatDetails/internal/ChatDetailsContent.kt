@@ -97,12 +97,14 @@ private fun Chat(
         ) {
             LazyColumn(
                 contentPadding = PaddingValues(all = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                verticalArrangement = Arrangement.Bottom,
+                modifier = Modifier.weight(1f)
             ) {
                 items(
                     items = state.messages,
                     key = { it.id }
                 ) { message ->
+                    VSpacer(16.dp)
                     MessageCard(
                         isUserAuthor = message.isUserAuthor,
                         messageDate = message.date,

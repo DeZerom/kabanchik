@@ -22,7 +22,13 @@ class AuthStore(
             is Event.LoginChanged -> reduceState { copy(login = event.newLogin) }
             is Event.PasswordChanged -> reduceState { copy(password = event.newPassword) }
             Event.AuthorizeClicked -> authorize()
+            Event.RegisterClicked -> onRegisterClicked()
         }
+    }
+
+    private fun onRegisterClicked() {
+        reduceState { initState() }
+        pushSideEffect(SideEffect.NavigateRegistration)
     }
 
     private fun authorize() {

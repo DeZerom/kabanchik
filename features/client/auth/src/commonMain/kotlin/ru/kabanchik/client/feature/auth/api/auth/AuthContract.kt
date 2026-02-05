@@ -13,10 +13,12 @@ class AuthContract {
         class LoginChanged(val newLogin: String) : Event
         class PasswordChanged(val newPassword: String) : Event
         object AuthorizeClicked : Event
+        object RegisterClicked : Event
     }
 
     sealed interface SideEffect {
         class Error(val text: TextResource) : SideEffect
         object Success : SideEffect
+        object NavigateRegistration : SideEffect
     }
 }

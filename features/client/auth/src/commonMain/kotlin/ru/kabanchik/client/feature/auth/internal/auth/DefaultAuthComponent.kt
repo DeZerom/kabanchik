@@ -44,7 +44,7 @@ internal class DefaultAuthComponent(
     }
 
     override fun onCreateAccountClicked() {
-        navigateRegistration()
+        store.handleEvent(AuthContract.Event.RegisterClicked)
     }
 
     private fun observeSideEffects() {
@@ -55,6 +55,9 @@ internal class DefaultAuthComponent(
                 }
                 AuthContract.SideEffect.Success -> {
                     navigateHome()
+                }
+                AuthContract.SideEffect.NavigateRegistration -> {
+                    navigateRegistration()
                 }
             }
         }.launchIn(coroutineScope)

@@ -38,6 +38,19 @@ class DefaultChatDetailInteractorTest {
         }
     }
 
+    @Test
+    fun sendEdgeMessage() {
+        val (interactor, repository) = createInteractor()
+
+        val message = Message(authorLogin = "qwe", text = "a".repeat(4096))
+        runBlocking {
+            interactor.sendMessage(message = message)
+
+            assertTrue { repository.messages.size == 1 }
+            assertContains(repository.messages, message)
+        }
+    }
+
     private fun createInteractor(): Pair<DefaultChatDetailsInteractor, MockChatDetailsRepository> {
         val repo = MockChatDetailsRepository()
         val interactor = DefaultChatDetailsInteractor(repo)

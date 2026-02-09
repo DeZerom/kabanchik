@@ -15,7 +15,7 @@ class DefaultChatDetailsInteractor(
     }
 
     override suspend fun sendMessage(message: Message) {
-        if (message.text.length < MessageMaxLength) {
+        if (message.text.length <= MessageMaxLength) {
             chatDetailsRepository.sendMessage(message)
             return
         }

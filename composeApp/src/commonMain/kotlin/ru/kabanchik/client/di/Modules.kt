@@ -27,4 +27,4 @@ val domainModules = listOf(
     DomainClientAuthModule.module,
 )
 
-fun appModules(): List<Module> = platformModules + commonModules + domainModules + dataModules
+fun clientAppModules(): List<Module> = platformModules + commonModules + domainModules + dataModules

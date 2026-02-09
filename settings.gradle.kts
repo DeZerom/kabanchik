@@ -37,6 +37,7 @@ plugins {
 }
 
 include(":composeApp")
+include(":proApp")
 
 include(":common:ui-kit")
 include(":common:network")
@@ -44,6 +45,7 @@ include(":common:store")
 include(":common:tools")
 include(":common:data-store")
 
+// client
 include(":data:client:auth:logic")
 include(":data:client:auth:model")
 include(":domain:client:auth:logic")
@@ -59,3 +61,16 @@ include(":data:client:chat-details:model")
 include(":domain:client:chat-details:logic")
 include(":domain:client:chat-details:model")
 include(":features:client:chat-details")
+
+// pro
+include(":data:pro:auth:logic")
+include(":data:pro:auth:model")
+include(":domain:pro:auth:logic")
+include(":domain:pro:auth:model")
+include(":features:pro:auth")
+
+include(":data:pro:chat-details:logic")
+include(":data:pro:chat-details:model")
+include(":domain:pro:chat-details:logic")
+include(":domain:pro:chat-details:model")
+include(":features:pro:chat-details")

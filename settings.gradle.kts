@@ -52,9 +52,9 @@ include(":domain:client:auth:logic")
 include(":domain:client:auth:model")
 include(":features:client:auth")
 
-include(":data:client:token:logic")
-include(":domain:client:token:logic")
-include(":domain:client:token:model")
+include(":data:common:token:logic")
+include(":domain:common:token:logic")
+include(":domain:common:token:model")
 
 include(":data:client:chat-details:logic")
 include(":data:client:chat-details:model")

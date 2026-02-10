@@ -9,7 +9,7 @@ import com.arkivanov.decompose.extensions.compose.stack.Children
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import ru.kabanchik.common.snackBar.api.CommonSnackBarHost
 import ru.kabanchik.pro.component.RootComponent
-import ru.kabanchik.pro.feature.auth.api.flow.ProAuthFlowScreen
+import ru.kabanchik.pro.feature.auth.api.ProAuthScreen
 
 @Composable
 fun RootScreen(component: RootComponent) {
@@ -23,7 +23,7 @@ fun RootScreen(component: RootComponent) {
             modifier = Modifier.fillMaxSize()
         ) {
             when (val child = it.instance) {
-                is RootComponent.Child.Auth -> ProAuthFlowScreen(component = child.component)
+                is RootComponent.Child.Auth -> ProAuthScreen(component = child.component)
             }
         }
     }

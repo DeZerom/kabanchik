@@ -13,7 +13,7 @@ class JvmPreferencesDataStoreProvider : PreferencesDataStoreProvider {
             produceFile = {
                 val os = System.getProperty("os.name").lowercase()
                 val userHome = System.getProperty("user.home")
-                val appName = "Kabanchik.Pro"
+                val appName = "KabanchikPro"
 
                 val directory = when {
                     os.contains("win") ->

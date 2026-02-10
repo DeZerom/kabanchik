@@ -13,11 +13,17 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            implementation(projects.data.common.token.logic)
+            implementation(projects.domain.common.token.logic)
+
+            implementation(projects.data.pro.auth.logic)
+            implementation(projects.domain.pro.auth.logic)
             implementation(projects.features.pro.auth)
 
             implementation(projects.common.uiKit)
             implementation(projects.common.network)
             implementation(projects.common.dataStore)
+            implementation(projects.common.tools)
 
             implementation(libs.runtime)
             implementation(libs.foundation)

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pro_auth_auth_entrance">Вход</string>
+    <string name="pro_auth_auth_login">Логин</string>
+    <string name="pro_auth_auth_password">Пароль</string>
+    <string name="pro_auth_auth_enter">Войти</string>
+    <string name="pro_auth_auth_empty_creds_error">Логин и пароль не должны быть пустыми</string>
+</resources>

@@ -4,10 +4,10 @@ import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import ru.kabanchik.pro.domain.chatDetails.logic.api.ProChatDetailsInteractor
-import ru.kabanchik.pro.domain.chatDetails.logic.internal.ProDefaultChatDetailsInteractor
+import ru.kabanchik.pro.domain.chatDetails.logic.internal.DefaultProChatDetailsInteractor
 
 object DomainProChatDetailsModule {
     val module = module {
-        factoryOf(::ProDefaultChatDetailsInteractor) bind ProChatDetailsInteractor::class
+        factoryOf(::DefaultProChatDetailsInteractor) bind ProChatDetailsInteractor::class
     }
 }

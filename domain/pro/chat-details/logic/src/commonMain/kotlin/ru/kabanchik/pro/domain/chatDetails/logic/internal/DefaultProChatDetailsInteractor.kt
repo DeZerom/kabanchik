@@ -7,7 +7,7 @@ import ru.kabanchik.pro.domain.chatDetails.logic.api.repository.ProChatDetailsRe
 import ru.kabanchik.pro.domain.chatDetails.logic.api.repository.ProChatDetailsTokenRepository
 import ru.kabanchik.pro.domain.chatDetails.model.ProMessage
 
-internal class ProDefaultChatDetailsInteractor(
+internal class DefaultProChatDetailsInteractor(
     private val chatDetailsRepository: ProChatDetailsRepository,
     private val tokenRepository: ProChatDetailsTokenRepository
 ) : ProChatDetailsInteractor {

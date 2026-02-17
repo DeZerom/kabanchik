@@ -28,6 +28,7 @@ class ChatDetailsContract {
         val date: String = "",
         val time: String = "",
         val isUserAuthor: Boolean = false,
-        val text: String = ""
+        val text: String = "",
+        val authorLogin: String = ""
     )
 }

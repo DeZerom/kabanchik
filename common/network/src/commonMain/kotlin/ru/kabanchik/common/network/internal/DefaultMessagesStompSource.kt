@@ -34,7 +34,9 @@ class DefaultMessagesStompSource(
     }
 
     override suspend fun listenMessages(): Flow<ApiMessage> {
-        return session!!.subscribe(
+        val s = session
+            ?: throw IllegalStateException("call DefaultMessagesStompSource.listenMessages before DefaultMessagesStompSource.connect")
+        return s.subscribe(
             destination = "/topic/messages",
             deserializer = ApiMessage.serializer()
         )

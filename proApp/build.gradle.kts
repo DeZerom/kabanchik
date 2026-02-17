@@ -16,9 +16,16 @@ kotlin {
             implementation(projects.data.common.token.logic)
             implementation(projects.domain.common.token.logic)
 
+            implementation(projects.domain.common.user.logic)
+            implementation(projects.data.common.user.logic)
+
             implementation(projects.data.pro.auth.logic)
             implementation(projects.domain.pro.auth.logic)
             implementation(projects.features.pro.auth)
+
+            implementation(projects.data.pro.chatDetails.logic)
+            implementation(projects.domain.pro.chatDetails.logic)
+            implementation(projects.features.pro.chatDetails)
 
             implementation(projects.common.uiKit)
             implementation(projects.common.network)

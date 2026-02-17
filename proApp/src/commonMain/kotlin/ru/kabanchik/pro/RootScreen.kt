@@ -8,11 +8,12 @@ import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.extensions.compose.stack.Children
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import ru.kabanchik.common.snackBar.api.CommonSnackBarHost
-import ru.kabanchik.pro.component.RootComponent
+import ru.kabanchik.pro.component.ProRootComponent
 import ru.kabanchik.pro.feature.auth.api.ProAuthScreen
+import ru.kabanchik.pro.feature.chatDetails.api.ProChatDetailsScreen
 
 @Composable
-fun RootScreen(component: RootComponent) {
+fun RootScreen(component: ProRootComponent) {
     val stack by component.stack.subscribeAsState()
 
     Scaffold(
@@ -23,7 +24,8 @@ fun RootScreen(component: RootComponent) {
             modifier = Modifier.fillMaxSize()
         ) {
             when (val child = it.instance) {
-                is RootComponent.Child.Auth -> ProAuthScreen(component = child.component)
+                is ProRootComponent.Child.Auth -> ProAuthScreen(component = child.component)
+                is ProRootComponent.Child.ChatDetails -> ProChatDetailsScreen(component = child.component)
             }
         }
     }

@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -28,6 +27,7 @@ import ru.kabanchik.common.uiKit.theme.KabanchikTheme
 import ru.kabanchik.common.uiKit.theme.cardDefault
 import ru.kabanchik.common.uiKit.widgets.CommonButton
 import ru.kabanchik.common.uiKit.widgets.CommonCircleButton
+import ru.kabanchik.common.uiKit.widgets.CommonMessageCard
 import ru.kabanchik.common.uiKit.widgets.CommonScreenLoader
 import ru.kabanchik.common.uiKit.widgets.CommonTextInput
 import ru.kabanchik.feature.client.chatDetails.api.ChatDetailsContract
@@ -39,23 +39,19 @@ internal fun ChatDetailsContent(
     onMessageTextChanged: (String) -> Unit,
     onMessageSent: () -> Unit,
 ) {
-    Scaffold { paddingValues ->
-        Box(modifier = Modifier.padding(paddingValues)) {
-            when (state) {
-                ChatDetailsContract.State.Loading -> {
-                    CommonScreenLoader()
-                }
-                ChatDetailsContract.State.NoLogin -> {
-                    SelectLogin(onLoginSelected)
-                }
-                is ChatDetailsContract.State.Chat -> {
-                    Chat(
-                        state = state,
-                        onMessageTextChanged = onMessageTextChanged,
-                        onMessageSent = onMessageSent
-                    )
-                }
-            }
+    when (state) {
+        ChatDetailsContract.State.Loading -> {
+            CommonScreenLoader()
+        }
+        ChatDetailsContract.State.NoLogin -> {
+            SelectLogin(onLoginSelected)
+        }
+        is ChatDetailsContract.State.Chat -> {
+            Chat(
+                state = state,
+                onMessageTextChanged = onMessageTextChanged,
+                onMessageSent = onMessageSent
+            )
         }
     }
 }
@@ -123,11 +119,12 @@ private fun Chat(
                     key = { it.id }
                 ) { message ->
                     VSpacer(16.dp)
-                    MessageCard(
+                    CommonMessageCard(
                         isUserAuthor = message.isUserAuthor,
                         messageDate = message.date,
                         messageTime = message.time,
                         messageText = message.text,
+                        authorLogin = message.authorLogin
                     )
                 }
             }

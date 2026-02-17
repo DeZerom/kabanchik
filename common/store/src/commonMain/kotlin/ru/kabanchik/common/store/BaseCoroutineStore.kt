@@ -23,8 +23,8 @@ abstract class BaseCoroutineStore<Event, State, SideEffect>(): InstanceKeeper.In
 
     protected val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
-    abstract fun handleEvent(event: Event)
     protected abstract fun initState(): State
+    abstract fun handleEvent(event: Event)
 
     protected fun reduceState(reducer: State.() -> State) {
         _state.value = reducer(state.value)

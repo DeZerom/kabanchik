@@ -19,7 +19,8 @@ internal class DefaultProAuthComponent(
 ) : ProAuthComponent, ComponentContext by componentContext {
     private val store = retainedInstance {
         ProAuthStore(
-            authInteractor = dependencies.authInteractor
+            authInteractor = dependencies.authInteractor,
+            userInteractor = dependencies.userInteractor
         )
     }
 

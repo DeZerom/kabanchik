@@ -5,18 +5,20 @@ import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
 import ru.kabanchik.common.snackBar.api.SnackBarComponent
 import ru.kabanchik.pro.feature.auth.api.ProAuthComponent
+import ru.kabanchik.pro.feature.chatDetails.api.ProChatDetailsComponent
 
-interface RootComponent {
+interface ProRootComponent {
     val stack: Value<ChildStack<*, Child>>
     val snackBarComponent: SnackBarComponent
 
     sealed interface Child {
         class Auth(val component: ProAuthComponent) : Child
+        class ChatDetails(val component: ProChatDetailsComponent) : Child
     }
 
-    companion object {
-        fun create(componentContext: ComponentContext): RootComponent {
-            return DefaultRootComponent(componentContext)
+    companion object Companion {
+        fun create(componentContext: ComponentContext): ProRootComponent {
+            return DefaultProRootComponent(componentContext)
         }
     }
 }

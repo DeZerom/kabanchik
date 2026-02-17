@@ -28,6 +28,7 @@ kotlin {
             implementation(libs.krossbow.ktor)
             implementation(libs.krossbow.serialization.json)
 
+            implementation(projects.data.pro.chatDetails.logic)
             implementation(projects.data.pro.auth.logic)
 
             implementation(projects.data.client.chatDetails.logic)

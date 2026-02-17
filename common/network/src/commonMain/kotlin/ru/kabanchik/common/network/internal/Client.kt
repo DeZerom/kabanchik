@@ -25,6 +25,7 @@ internal fun createClient(): HttpClient {
             json(
                 Json {
                     prettyPrint = true
+                    ignoreUnknownKeys = true
                 }
             )
         }

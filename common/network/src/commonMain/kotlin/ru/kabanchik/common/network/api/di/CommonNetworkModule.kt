@@ -8,15 +8,18 @@ import org.koin.dsl.module
 import ru.kabanchik.client.data.auth.logic.api.sources.AuthApi
 import ru.kabanchik.client.data.chatDetails.logic.api.MessagesStompSource
 import ru.kabanchik.common.network.internal.DefaultMessagesStompSource
+import ru.kabanchik.common.network.internal.DefaultProMessagesStompSource
 import ru.kabanchik.common.network.internal.api.DefaultAuthApi
 import ru.kabanchik.common.network.internal.api.DefaultProAuthApi
 import ru.kabanchik.common.network.internal.createClient
 import ru.kabanchik.pro.data.auth.logic.api.sources.ProAuthApi
+import ru.kabanchik.pro.data.chatDetails.logic.api.ProMessagesStompSource
 
 object CommonNetworkModule {
     val module = module {
         singleOf<HttpClient>(::createClient)
         factoryOf(::DefaultMessagesStompSource) bind MessagesStompSource::class
+        factoryOf(::DefaultProMessagesStompSource) bind ProMessagesStompSource::class
 
         factoryOf(::DefaultAuthApi) bind AuthApi::class
         factoryOf(::DefaultProAuthApi) bind ProAuthApi::class

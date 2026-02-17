@@ -9,7 +9,7 @@ import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import org.koin.core.context.startKoin
 import ru.kabanchik.common.screenSize.LocalWindowSizeCompositionProvider
-import ru.kabanchik.pro.component.RootComponent
+import ru.kabanchik.pro.component.ProRootComponent
 import ru.kabanchik.pro.di.proAppModules
 import javax.swing.SwingUtilities
 
@@ -21,7 +21,7 @@ fun main() {
 
     val lifecycle = LifecycleRegistry()
     val rootComponent = runOnUiThread {
-        RootComponent.create(
+        ProRootComponent.create(
             componentContext = DefaultComponentContext(lifecycle = lifecycle)
         )
     }

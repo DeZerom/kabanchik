@@ -45,16 +45,22 @@ include(":common:store")
 include(":common:tools")
 include(":common:data-store")
 
+// common
+include(":data:common:token:logic")
+include(":domain:common:token:logic")
+include(":domain:common:token:model")
+
+include(":domain:common:user:logic")
+include(":data:common:user:logic")
+
+include("domain:common:chat-details:logic")
+
 // client
 include(":data:client:auth:logic")
 include(":data:client:auth:model")
 include(":domain:client:auth:logic")
 include(":domain:client:auth:model")
 include(":features:client:auth")
-
-include(":data:common:token:logic")
-include(":domain:common:token:logic")
-include(":domain:common:token:model")
 
 include(":data:client:chat-details:logic")
 include(":data:client:chat-details:model")

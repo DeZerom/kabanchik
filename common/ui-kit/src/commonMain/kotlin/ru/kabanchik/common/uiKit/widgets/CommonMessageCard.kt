@@ -1,4 +1,4 @@
-package ru.kabanchik.feature.client.chatDetails.internal
+package ru.kabanchik.common.uiKit.widgets
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,10 +10,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import kabanchik.features.client.chat_details.generated.resources.Res
-import kabanchik.features.client.chat_details.generated.resources.chat_details_date_time
-import kabanchik.features.client.chat_details.generated.resources.chat_details_operator
-import kabanchik.features.client.chat_details.generated.resources.chat_details_you
+import kabanchik.common.ui_kit.generated.resources.Res
+import kabanchik.common.ui_kit.generated.resources.chat_details_date_time
+import kabanchik.common.ui_kit.generated.resources.chat_details_you
 import org.jetbrains.compose.resources.stringResource
 import ru.kabanchik.common.uiKit.VSpacer
 import ru.kabanchik.common.uiKit.theme.KabanchikTheme
@@ -22,11 +21,12 @@ import ru.kabanchik.common.uiKit.theme.extraSmallText
 import ru.kabanchik.common.uiKit.theme.regularText
 
 @Composable
-internal fun MessageCard(
+fun CommonMessageCard(
     isUserAuthor: Boolean,
     messageDate: String,
     messageTime: String,
     messageText: String,
+    authorLogin: String,
     modifier: Modifier = Modifier
 ) {
     Surface(
@@ -45,9 +45,11 @@ internal fun MessageCard(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = stringResource(
-                        if (isUserAuthor) Res.string.chat_details_you else Res.string.chat_details_operator
-                    ),
+                    text = if (isUserAuthor) {
+                        stringResource(Res.string.chat_details_you)
+                    } else {
+                        authorLogin
+                    },
                     style = KabanchikTheme.typography.extraSmallText,
                     color = KabanchikTheme.colors.secondaryText,
                 )

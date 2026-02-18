@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -131,6 +132,7 @@ private fun Chat(
             Surface(
                 color = KabanchikTheme.colors.card,
                 shape = KabanchikTheme.shapes.cardDefault,
+                modifier = Modifier.navigationBarsPadding()
             ) {
                 Row(
                     verticalAlignment = Alignment.Bottom,

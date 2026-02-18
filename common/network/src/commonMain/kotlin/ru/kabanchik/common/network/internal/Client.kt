@@ -16,6 +16,8 @@ import kotlin.time.Duration.Companion.seconds
 
 internal fun createClient(): HttpClient {
     return HttpClient(CIO) {
+        expectSuccess = true
+
         defaultRequest {
             url("http://185.102.139.25:8081/")
             contentType(ContentType.Application.Json)

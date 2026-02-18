@@ -5,5 +5,5 @@ import ru.kabanchik.client.data.auht.model.ApiCredentials
 
 interface AuthApi {
     suspend fun authorize(credentials: ApiCredentials): ApiAuthResult
-    suspend fun register(credentials: ApiCredentials): ApiAuthResult
+    suspend fun register(credentials: ApiCredentials): Int
 }

@@ -13,7 +13,7 @@ internal class DefaultAuthRepository(
         return authApi.authorize(credentials = ApiCredentials(login = login, password = password)).toDomain()
     }
 
-    override suspend fun register(login: String, password: String): AuthResult {
-        return authApi.register(credentials = ApiCredentials(login = login, password = password)).toDomain()
+    override suspend fun register(login: String, password: String): Int {
+        return authApi.register(credentials = ApiCredentials(login = login, password = password))
     }
 }

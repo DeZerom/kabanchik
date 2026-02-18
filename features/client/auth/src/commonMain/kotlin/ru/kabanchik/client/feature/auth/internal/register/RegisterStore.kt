@@ -33,17 +33,12 @@ internal class RegisterStore(
 
         coroutineScope.launch {
             reduceState { copy(isLoading = true) }
-            val error = authInteractor.register(
+            authInteractor.register(
                 login = currentState.login,
                 password = currentState.password
             )
-            if (error != null) {
-                pushSideEffect(SideEffect.Error(TextResource.Raw(error)))
-                reduceState { copy(isLoading = false) }
-            } else {
-                reduceState { initState() }
-                pushSideEffect(SideEffect.Success)
-            }
+            reduceState { initState() }
+            pushSideEffect(SideEffect.Success)
         }
     }
 }

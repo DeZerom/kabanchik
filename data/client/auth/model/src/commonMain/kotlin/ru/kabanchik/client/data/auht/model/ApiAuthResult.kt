@@ -5,9 +5,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ApiAuthResult(
-    @SerialName("status")
-    val status: String,
-
-    @SerialName("message")
-    val message: String
+    @SerialName("token")
+    val token: String
 )

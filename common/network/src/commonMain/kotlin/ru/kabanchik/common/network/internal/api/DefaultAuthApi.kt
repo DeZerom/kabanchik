@@ -17,9 +17,9 @@ internal class DefaultAuthApi(
         }.body()
     }
 
-    override suspend fun register(credentials: ApiCredentials): ApiAuthResult {
+    override suspend fun register(credentials: ApiCredentials): Int {
         return httpClient.post(urlString = "/api/register-user") {
             setBody(credentials)
-        }.body()
+        }.status.value
     }
 }

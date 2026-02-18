@@ -39,15 +39,11 @@ class AuthStore(
 
         coroutineScope.launch {
             reduceState { copy(isLoading = true) }
-            val error = authInteractor.authorize(
+            authInteractor.authorize(
                 login = currentState.login,
                 password = currentState.password
             )
-            if (error != null) {
-                pushSideEffect(SideEffect.Error(TextResource.Raw(error)))
-            } else {
-                pushSideEffect(SideEffect.Success)
-            }
+            pushSideEffect(SideEffect.Success)
             reduceState { copy(isLoading = false) }
         }
     }

@@ -15,6 +15,7 @@ internal fun ProMessage.toUiState(userLogin: String): ProChatDetailsContract.Pro
         date = dateTime.toYearMonthDay(),
         time = dateTime.toHoursMinutes(),
         isUserAuthor = isUserAuthor(userLogin),
-        text = text
+        text = text,
+        authorLogin = authorLogin
     )
 }

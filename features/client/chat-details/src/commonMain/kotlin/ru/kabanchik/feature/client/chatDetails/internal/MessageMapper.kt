@@ -15,6 +15,7 @@ internal fun Message.toUiState(userLogin: String): ChatDetailsContract.Message {
         date = dateTime.toYearMonthDay(),
         time = dateTime.toHoursMinutes(),
         isUserAuthor = isUserAuthor(userLogin),
-        text = text
+        text = text,
+        authorLogin = authorLogin
     )
 }

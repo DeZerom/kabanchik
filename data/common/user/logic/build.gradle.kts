@@ -17,6 +17,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.domain.common.user.logic)
+            implementation(projects.domain.pro.auth.logic)
 
             implementation(projects.common.dataStore)
 

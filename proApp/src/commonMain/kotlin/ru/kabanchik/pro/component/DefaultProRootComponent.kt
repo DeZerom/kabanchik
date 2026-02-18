@@ -40,7 +40,6 @@ class DefaultProRootComponent(
                         componentContext = componentContext,
                         dependencies = Factory(
                             authInteractor = get(),
-                            userInteractor = get()
                         ),
                         onAuthorize = { stackNavigation.pushNew(Config.ChatDetails) },
                         onError = { snackBarComponent.setData(Error(it)) },

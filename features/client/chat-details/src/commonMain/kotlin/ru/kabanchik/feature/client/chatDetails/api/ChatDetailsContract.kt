@@ -5,7 +5,6 @@ import kotlin.uuid.Uuid
 
 class ChatDetailsContract {
     sealed class State {
-        object NoLogin : State()
         object Loading : State()
         data class Chat(
             val login: String = "",
@@ -15,7 +14,6 @@ class ChatDetailsContract {
     }
 
     sealed interface Event {
-        class UserSelected(val userLogin: String) : Event
         class MessageTextChanged(val newText: String) : Event
         object MessageSent : Event
     }

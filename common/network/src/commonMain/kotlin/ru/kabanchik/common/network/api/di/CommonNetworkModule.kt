@@ -7,11 +7,11 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 import ru.kabanchik.client.data.auth.logic.api.sources.AuthApi
 import ru.kabanchik.client.data.chatDetails.logic.api.MessagesStompSource
-import ru.kabanchik.common.network.internal.DefaultMessagesStompSource
-import ru.kabanchik.common.network.internal.DefaultProMessagesStompSource
 import ru.kabanchik.common.network.internal.api.DefaultAuthApi
 import ru.kabanchik.common.network.internal.api.DefaultProAuthApi
 import ru.kabanchik.common.network.internal.createClient
+import ru.kabanchik.common.network.internal.ws.DefaultMessagesStompSource
+import ru.kabanchik.common.network.internal.ws.DefaultProMessagesStompSource
 import ru.kabanchik.pro.data.auth.logic.api.sources.ProAuthApi
 import ru.kabanchik.pro.data.chatDetails.logic.api.ProMessagesStompSource
 

@@ -7,7 +7,6 @@ import ru.kabanchik.feature.client.chatDetails.internal.DefaultChatDetailsCompon
 interface ChatDetailsComponent {
     val state: StateFlow<ChatDetailsContract.State>
 
-    fun loginSelected(login: String)
     fun messageTextChanged(newText: String)
     fun messageSent()
 

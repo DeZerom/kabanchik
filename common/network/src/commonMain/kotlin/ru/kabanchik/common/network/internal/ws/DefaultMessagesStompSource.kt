@@ -1,4 +1,4 @@
-package ru.kabanchik.common.network.internal
+package ru.kabanchik.common.network.internal.ws
 
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.flow.Flow
@@ -11,18 +11,19 @@ import org.hildan.krossbow.websocket.ktor.KtorWebSocketClient
 import ru.kabanchik.client.data.chatDetails.logic.api.MessagesStompSource
 import ru.kabanchik.client.data.chatDetails.model.ApiMessage
 
-class DefaultMessagesStompSource(
+internal class DefaultMessagesStompSource(
     private val httpClient: HttpClient
 ) : MessagesStompSource {
     var session: StompSessionWithKxSerialization? = null
 
-    override suspend fun connect() {
+    override suspend fun connect(token: String) {
         session = StompClient(
             webSocketClient = KtorWebSocketClient(
                 httpClient = httpClient
             )
         ).connect(
             url = "ws://185.102.139.25:8080/ws",
+            customStompConnectHeaders = createAuthHeader(token)
         ).withJsonConversions()
     }
 

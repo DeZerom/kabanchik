@@ -2,16 +2,19 @@ package ru.kabanchik.client.domain.logic.chatDetails.internal
 
 import kotlinx.coroutines.flow.Flow
 import ru.kabanchik.client.domain.logic.chatDetails.api.ChatDetailsInteractor
-import ru.kabanchik.client.domain.logic.chatDetails.api.ChatDetailsRepository
+import ru.kabanchik.client.domain.logic.chatDetails.api.repository.ChatDetailsRepository
+import ru.kabanchik.client.domain.logic.chatDetails.api.repository.ChatDetailsTokenRepository
 import ru.kabanchik.client.domain.model.chatDetails.Message
 
 private const val MessageMaxLength = 4096
 
 class DefaultChatDetailsInteractor(
-    private val chatDetailsRepository: ChatDetailsRepository
+    private val chatDetailsRepository: ChatDetailsRepository,
+    private val tokenRepository: ChatDetailsTokenRepository
 ) : ChatDetailsInteractor {
     override suspend fun initChat() {
-        return chatDetailsRepository.initChat()
+        val token = tokenRepository.getToken().orEmpty()
+        return chatDetailsRepository.initChat(token = token)
     }
 
     override suspend fun sendMessage(message: Message) {

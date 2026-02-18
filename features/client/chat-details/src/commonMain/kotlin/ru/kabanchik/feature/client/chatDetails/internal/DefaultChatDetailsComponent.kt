@@ -13,14 +13,11 @@ internal class DefaultChatDetailsComponent(
 ) : ChatDetailsComponent, ComponentContext by componentContext {
     private val store = retainedInstance {
         ChatDetailsStore(
-            chatDetailsInteractor = dependencies.chatDetailsInteractor
+            chatDetailsInteractor = dependencies.chatDetailsInteractor,
+            userInteractor = dependencies.userInteractor
         )
     }
     override val state: StateFlow<ChatDetailsContract.State> = store.state
-
-    override fun loginSelected(login: String) {
-        store.handleEvent(ChatDetailsContract.Event.UserSelected(login))
-    }
 
     override fun messageTextChanged(newText: String) {
         store.handleEvent(ChatDetailsContract.Event.MessageTextChanged(newText))

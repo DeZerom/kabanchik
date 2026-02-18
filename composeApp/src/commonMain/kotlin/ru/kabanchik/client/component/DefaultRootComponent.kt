@@ -50,7 +50,8 @@ class DefaultRootComponent(
                     component = ChatDetailsComponent.create(
                         componentContext = context,
                         dependencies = ChatDetailsDependencies.Factory(
-                            chatDetailsInteractor = get()
+                            chatDetailsInteractor = get(),
+                            userInteractor = get()
                         )
                     )
                 )

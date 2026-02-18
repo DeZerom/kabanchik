@@ -15,7 +15,6 @@ fun ChatDetailsScreen(
     PartFillingScreen {
         ChatDetailsContent(
             state = state,
-            onLoginSelected = component::loginSelected,
             onMessageTextChanged = component::messageTextChanged,
             onMessageSent = component::messageSent
         )

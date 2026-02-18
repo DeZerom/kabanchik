@@ -3,30 +3,37 @@ package ru.kabanchik.feature.client.chatDetails.internal
 import kotlinx.coroutines.launch
 import ru.kabanchik.client.domain.logic.chatDetails.api.ChatDetailsInteractor
 import ru.kabanchik.client.domain.model.chatDetails.Message
+import ru.kabanchik.common.domain.user.logic.api.UserInteractor
 import ru.kabanchik.common.store.BaseCoroutineStore
 import ru.kabanchik.feature.client.chatDetails.api.ChatDetailsContract
 
 internal class ChatDetailsStore(
-    private val chatDetailsInteractor: ChatDetailsInteractor
+    private val chatDetailsInteractor: ChatDetailsInteractor,
+    private val userInteractor: UserInteractor
 ): BaseCoroutineStore<ChatDetailsContract.Event, ChatDetailsContract.State, ChatDetailsContract.SideEffect>() {
+
+    init {
+        initChat()
+    }
+
     override fun handleEvent(event: ChatDetailsContract.Event) {
         when (event) {
-            is ChatDetailsContract.Event.UserSelected -> initChat(event.userLogin)
             is ChatDetailsContract.Event.MessageTextChanged -> reduceChatState { copy(currentMessage = event.newText) }
             ChatDetailsContract.Event.MessageSent -> sendMessage()
         }
     }
 
     override fun initState(): ChatDetailsContract.State {
-        return ChatDetailsContract.State.NoLogin
+        return ChatDetailsContract.State.Loading
     }
 
-    private fun initChat(login: String) {
+    private fun initChat() {
         coroutineScope.launch {
             reduceState { ChatDetailsContract.State.Loading }
             chatDetailsInteractor.initChat()
             listenMessages()
-            reduceState { ChatDetailsContract.State.Chat(login = login) }
+            val login = userInteractor.getUserLogin()
+            reduceState { ChatDetailsContract.State.Chat(login = login.orEmpty()) }
         }
     }
 

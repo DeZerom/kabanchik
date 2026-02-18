@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -26,7 +25,6 @@ import ru.kabanchik.common.uiKit.KabanchikIcons
 import ru.kabanchik.common.uiKit.VSpacer
 import ru.kabanchik.common.uiKit.theme.KabanchikTheme
 import ru.kabanchik.common.uiKit.theme.cardDefault
-import ru.kabanchik.common.uiKit.widgets.CommonButton
 import ru.kabanchik.common.uiKit.widgets.CommonCircleButton
 import ru.kabanchik.common.uiKit.widgets.CommonMessageCard
 import ru.kabanchik.common.uiKit.widgets.CommonScreenLoader
@@ -36,16 +34,12 @@ import ru.kabanchik.feature.client.chatDetails.api.ChatDetailsContract
 @Composable
 internal fun ChatDetailsContent(
     state: ChatDetailsContract.State,
-    onLoginSelected: (String) -> Unit,
     onMessageTextChanged: (String) -> Unit,
     onMessageSent: () -> Unit,
 ) {
     when (state) {
         ChatDetailsContract.State.Loading -> {
             CommonScreenLoader()
-        }
-        ChatDetailsContract.State.NoLogin -> {
-            SelectLogin(onLoginSelected)
         }
         is ChatDetailsContract.State.Chat -> {
             Chat(
@@ -54,30 +48,6 @@ internal fun ChatDetailsContent(
                 onMessageSent = onMessageSent
             )
         }
-    }
-}
-
-@Composable
-private fun SelectLogin(
-    onLoginSelected: (String) -> Unit
-) {
-    Column(
-        verticalArrangement = Arrangement.Center,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp)
-    ) {
-        CommonButton(
-            onClick = { onLoginSelected("Bob") },
-            text = "Bob",
-            modifier = Modifier.fillMaxWidth()
-        )
-        VSpacer(16.dp)
-        CommonButton(
-            onClick = { onLoginSelected("Alice") },
-            text = "Alice",
-            modifier = Modifier.fillMaxWidth()
-        )
     }
 }
 

@@ -1,4 +1,4 @@
-package ru.kabanchik.common.network.internal
+package ru.kabanchik.common.network.internal.ws
 
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.flow.Flow
@@ -11,7 +11,7 @@ import org.hildan.krossbow.websocket.ktor.KtorWebSocketClient
 import ru.kabanchik.pro.data.chatDetails.logic.api.ProMessagesStompSource
 import ru.kabanchik.pro.data.chatDetails.model.ApiProMessage
 
-class DefaultProMessagesStompSource(
+internal class DefaultProMessagesStompSource(
     private val httpClient: HttpClient
 ) : ProMessagesStompSource {
     var session: StompSessionWithKxSerialization? = null
@@ -23,9 +23,7 @@ class DefaultProMessagesStompSource(
             )
         ).connect(
             url = "ws://185.102.139.25:8080/ws",
-            customStompConnectHeaders = mapOf(
-                "Authorization" to "Bearer $token"
-            )
+            customStompConnectHeaders = createAuthHeader(token)
         ).withJsonConversions()
     }
 

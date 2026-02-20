@@ -2,17 +2,24 @@ package ru.kabanchik.client.feature.auth.internal.auth
 
 import kabanchik.features.client.auth.generated.resources.Res
 import kabanchik.features.client.auth.generated.resources.auth_auth_empty_creds_error
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import ru.kabanchik.client.domain.auth.logic.api.AuthInteractor
 import ru.kabanchik.client.feature.auth.api.auth.AuthContract.Event
 import ru.kabanchik.client.feature.auth.api.auth.AuthContract.SideEffect
 import ru.kabanchik.client.feature.auth.api.auth.AuthContract.State
+import ru.kabanchik.common.errorHandler.logic.api.ErrorHandler
 import ru.kabanchik.common.store.BaseCoroutineStore
 import ru.kabanchik.common.tools.textResource.TextResource
 
 class AuthStore(
-    private val authInteractor: AuthInteractor
+    private val authInteractor: AuthInteractor,
+    private val errorHandler: ErrorHandler
 ) : BaseCoroutineStore<Event, State, SideEffect>() {
+    private val coroutineErrorHandler = CoroutineExceptionHandler { _, error ->
+        pushSideEffect(SideEffect.Error(errorHandler.handleError(error).defaultMessage))
+    }
+
     override fun initState(): State {
         return State()
     }
@@ -37,13 +44,15 @@ class AuthStore(
             return
         }
 
-        coroutineScope.launch {
+        coroutineScope.launch(coroutineErrorHandler) {
             reduceState { copy(isLoading = true) }
             authInteractor.authorize(
                 login = currentState.login,
                 password = currentState.password
             )
             pushSideEffect(SideEffect.Success)
+            reduceState { initState() }
+        }.invokeOnCompletion {
             reduceState { copy(isLoading = false) }
         }
     }

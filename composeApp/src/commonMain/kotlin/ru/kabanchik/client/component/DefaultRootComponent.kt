@@ -38,7 +38,8 @@ class DefaultRootComponent(
                     component = AuthFlowComponent.create(
                         componentContext = context,
                         dependencies = AuthFlowDependencies.Factory(
-                            authInteractor = get()
+                            authInteractor = get(),
+                            errorHandler = get()
                         ),
                         showSnackBar = { snackBarComponent.setData(it) },
                         navigateHome = { stackNavigation.replaceCurrent(Config.Chat) }
@@ -51,8 +52,10 @@ class DefaultRootComponent(
                         componentContext = context,
                         dependencies = ChatDetailsDependencies.Factory(
                             chatDetailsInteractor = get(),
-                            userInteractor = get()
-                        )
+                            userInteractor = get(),
+                            errorHandler = get()
+                        ),
+                        showSnackBar = { snackBarComponent.setData(it) }
                     )
                 )
             }

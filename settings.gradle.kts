@@ -44,6 +44,7 @@ include(":common:network")
 include(":common:store")
 include(":common:tools")
 include(":common:data-store")
+include(":common:error-handler:logic")
 
 // common
 include(":data:common:token:logic")

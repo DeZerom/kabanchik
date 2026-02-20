@@ -2,7 +2,9 @@ package ru.kabanchik.pro.feature.auth.internal
 
 import kabanchik.features.pro.auth.generated.resources.Res
 import kabanchik.features.pro.auth.generated.resources.pro_auth_auth_empty_creds_error
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
+import ru.kabanchik.common.errorHandler.logic.api.ErrorHandler
 import ru.kabanchik.common.store.BaseCoroutineStore
 import ru.kabanchik.common.tools.textResource.TextResource
 import ru.kabanchik.pro.domain.auth.logic.api.ProAuthInteractor
@@ -12,7 +14,12 @@ import ru.kabanchik.pro.feature.auth.api.ProAuthContract.State
 
 class ProAuthStore(
     private val authInteractor: ProAuthInteractor,
+    private val errorHandler: ErrorHandler
 ) : BaseCoroutineStore<Event, State, SideEffect>() {
+    private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        pushSideEffect(SideEffect.Error(errorHandler.handleError(throwable).defaultMessage))
+    }
+
     override fun initState(): State {
         return State()
     }
@@ -31,14 +38,15 @@ class ProAuthStore(
             return
         }
 
-        coroutineScope.launch {
+        coroutineScope.launch(coroutineExceptionHandler) {
             reduceState { copy(isLoading = true) }
             authInteractor.authorize(
                 login = currentState.login,
                 password = currentState.password
             )
             pushSideEffect(SideEffect.Authorized)
-
+            reduceState { initState() }
+        }.invokeOnCompletion {
             reduceState { copy(isLoading = false) }
         }
     }

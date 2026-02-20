@@ -1,5 +1,6 @@
 package ru.kabanchik.pro.feature.chatDetails.api
 
+import ru.kabanchik.common.tools.textResource.TextResource
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -18,7 +19,9 @@ class ProChatDetailsContract {
         object MessageSent : Event
     }
 
-    sealed interface SideEffect
+    sealed interface SideEffect {
+        class Error(val text: TextResource) : SideEffect
+    }
 
     @OptIn(ExperimentalUuidApi::class)
     data class ProMessage(

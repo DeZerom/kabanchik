@@ -20,7 +20,8 @@ internal class DefaultAuthComponent(
 ) : AuthComponent, ComponentContext by componentContext {
     private val store = retainedInstance {
         AuthStore(
-            authInteractor = dependencies.authInteractor
+            authInteractor = dependencies.authInteractor,
+            errorHandler = dependencies.errorHandler
         )
     }
     override val state: StateFlow<AuthContract.State> = store.state

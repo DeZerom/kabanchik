@@ -2,6 +2,7 @@ package ru.kabanchik.pro.feature.chatDetails.api
 
 import com.arkivanov.decompose.ComponentContext
 import kotlinx.coroutines.flow.StateFlow
+import ru.kabanchik.common.snackBar.api.SnackBarData
 import ru.kabanchik.pro.feature.chatDetails.internal.DefaultProChatDetailsComponent
 
 interface ProChatDetailsComponent {
@@ -13,11 +14,13 @@ interface ProChatDetailsComponent {
     companion object {
         fun create(
             componentContext: ComponentContext,
-            dependencies: ProChatDetailsDependencies
+            dependencies: ProChatDetailsDependencies,
+            showSnackBar: (SnackBarData) -> Unit
         ): ProChatDetailsComponent {
             return DefaultProChatDetailsComponent(
                 componentContext = componentContext,
-                dependencies = dependencies
+                dependencies = dependencies,
+                showSnackBar = showSnackBar
             )
         }
     }

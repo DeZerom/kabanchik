@@ -31,6 +31,7 @@ kotlin {
             implementation(projects.common.network)
             implementation(projects.common.dataStore)
             implementation(projects.common.tools)
+            implementation(projects.common.errorHandler.logic)
 
             implementation(libs.runtime)
             implementation(libs.foundation)

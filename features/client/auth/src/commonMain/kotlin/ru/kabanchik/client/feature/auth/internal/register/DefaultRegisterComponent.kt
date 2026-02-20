@@ -21,7 +21,8 @@ internal class DefaultRegisterComponent(
 ) : RegisterComponent, ComponentContext by componentContext {
     private val store = retainedInstance {
         RegisterStore(
-            authInteractor = dependencies.authInteractor
+            authInteractor = dependencies.authInteractor,
+            errorHandler = dependencies.errorHandler
         )
     }
     override val state: StateFlow<RegisterContract.State> = store.state

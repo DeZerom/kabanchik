@@ -23,6 +23,7 @@ kotlin {
             implementation(projects.common.uiKit)
             implementation(projects.common.store)
             implementation(projects.common.tools)
+            implementation(projects.common.errorHandler.logic)
 
             implementation(libs.components.resources)
             implementation(libs.kotlinx.datetime)

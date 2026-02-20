@@ -14,4 +14,5 @@
     <string name="auth_reg_has_acc">У меня есть аккаунт</string>
     <string name="auth_reg_empty_creds_error">Логин и пароль не должны быть пустыми</string>
     <string name="auth_reg_successful_registration">Регистрация прошла успешно!</string>
+    <string name="auth_reg_has_acc_error">Логин уже занят</string>
 </resources>

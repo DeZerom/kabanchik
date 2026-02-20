@@ -20,6 +20,7 @@ internal class DefaultProAuthComponent(
     private val store = retainedInstance {
         ProAuthStore(
             authInteractor = dependencies.authInteractor,
+            errorHandler = dependencies.errorHandler
         )
     }
 

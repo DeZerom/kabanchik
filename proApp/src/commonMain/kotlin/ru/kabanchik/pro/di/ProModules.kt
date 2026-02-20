@@ -5,6 +5,7 @@ import ru.kabanchik.client.data.token.logic.api.di.DataCommonTokenModule
 import ru.kabanchik.common.data.user.logic.api.di.DataCommonUserModule
 import ru.kabanchik.common.datastore.api.di.CommonDataStoreModule
 import ru.kabanchik.common.domain.user.logic.api.di.DomainCommonUserModule
+import ru.kabanchik.common.errorHandler.logic.api.di.CommonErrorHandlerModule
 import ru.kabanchik.common.network.api.di.CommonNetworkModule
 import ru.kabanchik.pro.data.auth.logic.api.di.DataProAuthModule
 import ru.kabanchik.pro.data.chatDetails.logic.api.di.DataProChatDetailsModule
@@ -15,7 +16,8 @@ expect val platformModules: List<Module>
 
 private val commonModules = listOf(
     CommonDataStoreModule.module,
-    CommonNetworkModule.module
+    CommonNetworkModule.module,
+    CommonErrorHandlerModule.module
 )
 
 private val domainModules = listOf(

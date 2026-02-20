@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.build.kmp)
+    alias(libs.plugins.build.koin)
     alias(libs.plugins.build.compose)
-    alias(libs.plugins.build.decompose)
 }
 
 kotlin {
@@ -10,26 +10,21 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "FeatureProAuth"
+            baseName = "CommonErrorHandlerLogic"
             isStatic = true
         }
     }
 
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.domain.pro.auth.logic)
-
-            implementation(projects.common.uiKit)
-            implementation(projects.common.store)
             implementation(projects.common.tools)
-            implementation(projects.common.errorHandler.logic)
 
+            implementation(libs.ktor.core)
             implementation(libs.components.resources)
         }
     }
 }
 
 android {
-    namespace = "ru.kabanchik.pro.feature.auth"
+    namespace = "ru.kabanchik.common.errorHandler.logic"
 }
-

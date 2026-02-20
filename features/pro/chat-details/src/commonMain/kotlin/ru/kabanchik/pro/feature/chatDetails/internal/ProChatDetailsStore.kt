@@ -1,7 +1,10 @@
 package ru.kabanchik.pro.feature.chatDetails.internal
 
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import ru.kabanchik.common.domain.user.logic.api.UserInteractor
+import ru.kabanchik.common.errorHandler.logic.api.ErrorHandler
 import ru.kabanchik.common.store.BaseCoroutineStore
 import ru.kabanchik.pro.domain.chatDetails.logic.api.ProChatDetailsInteractor
 import ru.kabanchik.pro.domain.chatDetails.model.ProMessage
@@ -11,8 +14,13 @@ import ru.kabanchik.pro.feature.chatDetails.api.ProChatDetailsContract.State
 
 internal class ProChatDetailsStore(
     private val chatDetailsInteractor: ProChatDetailsInteractor,
-    private val userInteractor: UserInteractor
+    private val userInteractor: UserInteractor,
+    private val errorHandler: ErrorHandler
 ) : BaseCoroutineStore<Event, State, SideEffect>() {
+    private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        pushSideEffect(SideEffect.Error(errorHandler.handleError(throwable).defaultMessage))
+    }
+
     override fun initState(): State {
         return State.Loading
     }
@@ -29,7 +37,7 @@ internal class ProChatDetailsStore(
     }
 
     private fun initChat() {
-        coroutineScope.launch {
+        coroutineScope.launch(coroutineExceptionHandler) {
             reduceState { State.Loading }
             chatDetailsInteractor.initChat()
             listenMessages()
@@ -42,7 +50,7 @@ internal class ProChatDetailsStore(
         val chatState = currentState as? State.Chat ?: return
         if (chatState.currentMessage.isBlank()) return
 
-        coroutineScope.launch {
+        coroutineScope.launch(coroutineExceptionHandler) {
             chatDetailsInteractor.sendMessage(
                 message = ProMessage(
                     authorLogin = chatState.login,
@@ -55,9 +63,12 @@ internal class ProChatDetailsStore(
 
     private fun listenMessages() {
         coroutineScope.launch {
-            chatDetailsInteractor.listenMessages().collect {
-                addMessage(it)
-            }
+            chatDetailsInteractor.listenMessages()
+                .catch {
+                    pushSideEffect(SideEffect.Error(errorHandler.handleError(it).defaultMessage))
+                }.collect {
+                    addMessage(it)
+                }
         }
     }
 

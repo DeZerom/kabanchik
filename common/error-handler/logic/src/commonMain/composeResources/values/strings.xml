@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_handler_bad_request">Неверно переданы данные</string>
+    <string name="error_handler_unauthorized">Не удалось авторизоваться</string>
+    <string name="error_handler_unknown">Что-то пошло не так</string>
+</resources>

@@ -9,13 +9,15 @@ import ru.kabanchik.client.domain.logic.chatDetails.api.di.DomainClientChatDetai
 import ru.kabanchik.common.data.user.logic.api.di.DataCommonUserModule
 import ru.kabanchik.common.datastore.api.di.CommonDataStoreModule
 import ru.kabanchik.common.domain.user.logic.api.di.DomainCommonUserModule
+import ru.kabanchik.common.errorHandler.logic.api.di.CommonErrorHandlerModule
 import ru.kabanchik.common.network.api.di.CommonNetworkModule
 
 expect val platformModules: List<Module>
 
 val commonModules = listOf(
     CommonNetworkModule.module,
-    CommonDataStoreModule.module
+    CommonDataStoreModule.module,
+    CommonErrorHandlerModule.module
 )
 
 val dataModules = listOf(

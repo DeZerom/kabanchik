@@ -92,8 +92,8 @@ android {
         applicationId = "ru.kabanchik.client"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 2
-        versionName = "0.0.6"
+        versionCode = 3
+        versionName = "0.0.7"
     }
     packaging {
         resources {
@@ -122,7 +122,7 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "ru.kabanchik.client"
-            packageVersion = "1.0.0"
+            packageVersion = "1.0.7"
         }
 
         buildTypes {

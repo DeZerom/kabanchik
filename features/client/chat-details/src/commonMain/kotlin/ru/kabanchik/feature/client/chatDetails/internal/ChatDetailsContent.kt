@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import kabanchik.features.client.chat_details.generated.resources.Res
 import kabanchik.features.client.chat_details.generated.resources.chat_details_hint
 import org.jetbrains.compose.resources.stringResource
+import ru.kabanchik.common.modifier.sendMessageModifier
 import ru.kabanchik.common.uiKit.HSpacer
 import ru.kabanchik.common.uiKit.KabanchikIcons
 import ru.kabanchik.common.uiKit.VSpacer
@@ -80,7 +81,7 @@ private fun Chat(
                 .padding(bottom = 16.dp)
         ) {
             LazyColumn(
-                contentPadding = PaddingValues(all = 16.dp),
+                contentPadding = PaddingValues(vertical = 16.dp),
                 verticalArrangement = Arrangement.Bottom,
                 state = listState,
                 modifier = Modifier.weight(1f)
@@ -112,7 +113,9 @@ private fun Chat(
                         value = state.currentMessage,
                         onValueChange = onMessageTextChanged,
                         label = stringResource(Res.string.chat_details_hint),
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier
+                            .weight(1f)
+                            .sendMessageModifier(onMessageSent)
                     )
                     HSpacer(12.dp)
                     CommonCircleButton(

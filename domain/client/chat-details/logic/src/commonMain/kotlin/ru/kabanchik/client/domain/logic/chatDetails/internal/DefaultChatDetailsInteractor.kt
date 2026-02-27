@@ -5,8 +5,7 @@ import ru.kabanchik.client.domain.logic.chatDetails.api.ChatDetailsInteractor
 import ru.kabanchik.client.domain.logic.chatDetails.api.repository.ChatDetailsRepository
 import ru.kabanchik.client.domain.logic.chatDetails.api.repository.ChatDetailsTokenRepository
 import ru.kabanchik.client.domain.model.chatDetails.Message
-
-private const val MessageMaxLength = 4096
+import ru.kabanchik.common.domain.chatDetails.logic.api.splitAndTrimMessage
 
 class DefaultChatDetailsInteractor(
     private val chatDetailsRepository: ChatDetailsRepository,
@@ -18,25 +17,15 @@ class DefaultChatDetailsInteractor(
     }
 
     override suspend fun sendMessage(message: Message) {
-        if (message.text.length <= MessageMaxLength) {
-            chatDetailsRepository.sendMessage(message)
-            return
-        }
+        val messages = splitAndTrimMessage(message.text)
 
-        val messages = mutableListOf<Message>()
-        for (i in 0..(message.text.length / MessageMaxLength)) {
-            val startIndex = i * MessageMaxLength
-            val endIndex = (startIndex + MessageMaxLength).coerceAtMost(message.text.length)
-            val part = message.text.substring(startIndex = startIndex, endIndex = endIndex)
-            val partialMessage = Message(
-                authorLogin = message.authorLogin,
-                text = part
+        messages.forEach { messagePart ->
+            chatDetailsRepository.sendMessage(
+                message = Message(
+                    authorLogin = message.authorLogin,
+                    text = messagePart
+                )
             )
-            messages.add(partialMessage)
-        }
-
-        messages.forEach {
-            chatDetailsRepository.sendMessage(it)
         }
     }
 

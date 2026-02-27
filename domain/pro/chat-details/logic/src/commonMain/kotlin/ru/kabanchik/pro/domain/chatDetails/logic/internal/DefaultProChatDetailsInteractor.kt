@@ -1,7 +1,7 @@
 package ru.kabanchik.pro.domain.chatDetails.logic.internal
 
 import kotlinx.coroutines.flow.Flow
-import ru.kabanchik.common.domain.chatDetails.logic.api.splitMessage
+import ru.kabanchik.common.domain.chatDetails.logic.api.splitAndTrimMessage
 import ru.kabanchik.pro.domain.chatDetails.logic.api.ProChatDetailsInteractor
 import ru.kabanchik.pro.domain.chatDetails.logic.api.repository.ProChatDetailsRepository
 import ru.kabanchik.pro.domain.chatDetails.logic.api.repository.ProChatDetailsTokenRepository
@@ -16,7 +16,7 @@ internal class DefaultProChatDetailsInteractor(
     }
 
     override suspend fun sendMessage(message: ProMessage) {
-        val messagesParts = splitMessage(message.text)
+        val messagesParts = splitAndTrimMessage(message.text)
 
         messagesParts.forEach { messagePart ->
             chatDetailsRepository.sendMessage(

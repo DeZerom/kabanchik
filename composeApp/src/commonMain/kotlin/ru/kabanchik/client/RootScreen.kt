@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.extensions.compose.stack.Children
+import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import ru.kabanchik.client.component.RootComponent
 import ru.kabanchik.client.feature.auth.api.flow.AuthFlowScreen
@@ -21,6 +22,7 @@ fun RootScreen(component: RootComponent) {
     ) {
         Children(
             stack = stack,
+            animation = stackAnimation(),
             modifier = Modifier.fillMaxSize()
         ) {
             when (val child = it.instance) {

@@ -23,7 +23,7 @@ kotlin {
             implementation(projects.domain.pro.auth.logic)
             implementation(projects.features.pro.auth)
 
-            implementation(projects.data.pro.chatDetails.logic)
+            implementation(projects.data.pro.chat.logic)
             implementation(projects.domain.pro.chatDetails.logic)
             implementation(projects.features.pro.chatDetails)
 

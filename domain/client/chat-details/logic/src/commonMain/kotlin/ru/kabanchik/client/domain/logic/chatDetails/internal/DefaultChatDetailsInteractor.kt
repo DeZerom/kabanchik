@@ -13,7 +13,7 @@ class DefaultChatDetailsInteractor(
 ) : ChatDetailsInteractor {
     override suspend fun initChat() {
         val token = tokenRepository.getToken().orEmpty()
-        return chatDetailsRepository.initChat(token = token)
+        chatDetailsRepository.initChat(token = token)
     }
 
     override suspend fun sendMessage(message: Message) {

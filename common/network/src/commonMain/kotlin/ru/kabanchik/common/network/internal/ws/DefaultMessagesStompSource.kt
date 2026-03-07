@@ -7,13 +7,20 @@ import org.hildan.krossbow.stomp.conversions.kxserialization.StompSessionWithKxS
 import org.hildan.krossbow.stomp.conversions.kxserialization.convertAndSend
 import org.hildan.krossbow.stomp.conversions.kxserialization.json.withJsonConversions
 import org.hildan.krossbow.stomp.conversions.kxserialization.subscribe
+import org.hildan.krossbow.stomp.sendEmptyMsg
 import org.hildan.krossbow.websocket.ktor.KtorWebSocketClient
-import ru.kabanchik.client.data.chatDetails.logic.api.MessagesStompSource
-import ru.kabanchik.client.data.chatDetails.model.ApiMessage
+import ru.kabanchik.client.data.chatDetails.logic.api.ClientMessagesStompSource
+import ru.kabanchik.common.data.chatDetails.model.CommonApiMessage
+import ru.kabanchik.common.data.chatDetails.model.CommonApiSendMessage
+import ru.kabanchik.common.data.chatDetails.model.CommonApiSessionMessage
+import ru.kabanchik.common.data.chatDetails.model.CommonApiSystemMessage
+import ru.kabanchik.pro.data.chatDetails.logic.api.ProMessagesStompSource
+import ru.kabanchik.pro.data.chatDetails.model.ProApiAcceptChat
+import ru.kabanchik.pro.data.chatDetails.model.ProApiIncoming
 
 internal class DefaultMessagesStompSource(
     private val httpClient: HttpClient
-) : MessagesStompSource {
+) : ClientMessagesStompSource, ProMessagesStompSource {
     var session: StompSessionWithKxSerialization? = null
 
     override suspend fun connect(token: String) {
@@ -27,19 +34,65 @@ internal class DefaultMessagesStompSource(
         ).withJsonConversions()
     }
 
-    override suspend fun send(message: ApiMessage) {
-        session?.convertAndSend(
-            destination = "/app/chat",
+    override suspend fun startChat() {
+        requireSession().sendEmptyMsg(destination = "/app/chat.request")
+    }
+
+    override suspend fun endChat() {
+        requireSession().sendEmptyMsg(destination = "/app/chat.end")
+    }
+
+    override suspend fun acceptChat(message: ProApiAcceptChat) {
+        requireSession().convertAndSend(
+            destination = "/app/chat.accept",
             body = message
         )
     }
 
-    override suspend fun listenMessages(): Flow<ApiMessage> {
-        val s = session
-            ?: throw IllegalStateException("call DefaultMessagesStompSource.listenMessages before DefaultMessagesStompSource.connect")
-        return s.subscribe(
-            destination = "/topic/messages",
-            deserializer = ApiMessage.serializer()
+    override suspend fun send(message: CommonApiSendMessage) {
+        requireSession().convertAndSend(
+            destination = "/app/chat.send",
+            body = message
         )
+    }
+
+    override suspend fun listenSystem(): Flow<CommonApiSystemMessage> {
+        return requireSession().subscribe(
+            destination = "/user/queue/system",
+            deserializer = CommonApiSystemMessage.serializer()
+        )
+    }
+
+    override suspend fun listenSession(): Flow<CommonApiSessionMessage> {
+        return requireSession().subscribe(
+            destination = "/user/queue/session",
+            deserializer = CommonApiSessionMessage.serializer()
+        )
+    }
+
+    override suspend fun listenIncoming(): Flow<ProApiIncoming> {
+        return requireSession().subscribe(
+            destination = "/user/queue/incoming",
+            deserializer = ProApiIncoming.serializer()
+        )
+    }
+
+    override suspend fun listenMessages(): Flow<CommonApiMessage> {
+        return requireSession().subscribe(
+            destination = "/user/queue/messages",
+            deserializer = CommonApiMessage.serializer()
+        )
+    }
+
+    override suspend fun listenSessionEnd(): Flow<CommonApiMessage> {
+        return requireSession().subscribe(
+            destination = "/user/queue/session-end",
+            deserializer = CommonApiMessage.serializer()
+        )
+    }
+
+    private fun requireSession(): StompSessionWithKxSerialization {
+        return session
+            ?: throw IllegalStateException("call session before connect()")
     }
 }

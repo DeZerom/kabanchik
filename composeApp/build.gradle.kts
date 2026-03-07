@@ -53,7 +53,7 @@ kotlin {
 
             implementation(projects.data.client.chatDetails.logic)
             implementation(projects.domain.client.chatDetails.logic)
-            implementation(projects.features.client.chatDetails)
+            implementation(projects.features.client.chat)
 
             implementation(libs.runtime)
             implementation(libs.foundation)

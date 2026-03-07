@@ -1,4 +1,4 @@
-package ru.kabanchik.feature.client.chatDetails.internal
+package ru.kabanchik.feature.client.chatDetails.internal.details
 
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.catch
@@ -8,9 +8,9 @@ import ru.kabanchik.client.domain.model.chatDetails.Message
 import ru.kabanchik.common.domain.user.logic.api.UserInteractor
 import ru.kabanchik.common.errorHandler.logic.api.ErrorHandler
 import ru.kabanchik.common.store.BaseCoroutineStore
-import ru.kabanchik.feature.client.chatDetails.api.ChatDetailsContract.Event
-import ru.kabanchik.feature.client.chatDetails.api.ChatDetailsContract.SideEffect
-import ru.kabanchik.feature.client.chatDetails.api.ChatDetailsContract.State
+import ru.kabanchik.feature.client.chatDetails.api.details.ChatDetailsContract.Event
+import ru.kabanchik.feature.client.chatDetails.api.details.ChatDetailsContract.SideEffect
+import ru.kabanchik.feature.client.chatDetails.api.details.ChatDetailsContract.State
 
 internal class ChatDetailsStore(
     private val chatDetailsInteractor: ChatDetailsInteractor,

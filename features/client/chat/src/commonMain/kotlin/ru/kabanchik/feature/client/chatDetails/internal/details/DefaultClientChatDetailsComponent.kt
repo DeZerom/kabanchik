@@ -1,4 +1,4 @@
-package ru.kabanchik.feature.client.chatDetails.internal
+package ru.kabanchik.feature.client.chatDetails.internal.details
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.essenty.instancekeeper.retainedInstance
@@ -7,15 +7,15 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import ru.kabanchik.common.snackBar.api.SnackBarData
-import ru.kabanchik.feature.client.chatDetails.api.ChatDetailsComponent
-import ru.kabanchik.feature.client.chatDetails.api.ChatDetailsContract
-import ru.kabanchik.feature.client.chatDetails.api.ChatDetailsDependencies
+import ru.kabanchik.feature.client.chatDetails.api.details.ChatDetailsContract
+import ru.kabanchik.feature.client.chatDetails.api.details.ClientChatDetailsComponent
+import ru.kabanchik.feature.client.chatDetails.api.details.ClientChatDetailsDependencies
 
-internal class DefaultChatDetailsComponent(
+internal class DefaultClientChatDetailsComponent(
     componentContext: ComponentContext,
-    dependencies: ChatDetailsDependencies,
+    dependencies: ClientChatDetailsDependencies,
     private val showSnackBar: (SnackBarData) -> Unit,
-) : ChatDetailsComponent, ComponentContext by componentContext {
+) : ClientChatDetailsComponent, ComponentContext by componentContext {
     private val store = retainedInstance {
         ChatDetailsStore(
             chatDetailsInteractor = dependencies.chatDetailsInteractor,

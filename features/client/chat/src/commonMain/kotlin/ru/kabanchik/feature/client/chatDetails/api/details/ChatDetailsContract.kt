@@ -1,4 +1,4 @@
-package ru.kabanchik.feature.client.chatDetails.api
+package ru.kabanchik.feature.client.chatDetails.api.details
 
 import ru.kabanchik.common.tools.textResource.TextResource
 import kotlin.uuid.ExperimentalUuidApi
@@ -25,7 +25,7 @@ class ChatDetailsContract {
 
     @OptIn(ExperimentalUuidApi::class)
     data class Message(
-        val id: String = Uuid.random().toString(),
+        val id: String = Uuid.Companion.random().toString(),
         val date: String = "",
         val time: String = "",
         val isUserAuthor: Boolean = false,

@@ -1,11 +1,11 @@
-package ru.kabanchik.feature.client.chatDetails.internal
+package ru.kabanchik.feature.client.chatDetails.internal.details
 
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import ru.kabanchik.client.domain.model.chatDetails.Message
 import ru.kabanchik.common.tools.extensions.toHoursMinutes
 import ru.kabanchik.common.tools.extensions.toYearMonthDay
-import ru.kabanchik.feature.client.chatDetails.api.ChatDetailsContract
+import ru.kabanchik.feature.client.chatDetails.api.details.ChatDetailsContract
 import kotlin.time.Clock
 
 internal fun Message.toUiState(userLogin: String): ChatDetailsContract.Message {

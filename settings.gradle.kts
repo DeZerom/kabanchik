@@ -67,7 +67,7 @@ include(":data:client:chat-details:logic")
 include(":data:client:chat-details:model")
 include(":domain:client:chat-details:logic")
 include(":domain:client:chat-details:model")
-include(":features:client:chat-details")
+include(":features:client:chat")
 
 // pro
 include(":data:pro:auth:logic")

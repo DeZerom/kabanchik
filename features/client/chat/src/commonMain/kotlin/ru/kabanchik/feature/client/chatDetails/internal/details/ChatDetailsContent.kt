@@ -1,4 +1,4 @@
-package ru.kabanchik.feature.client.chatDetails.internal
+package ru.kabanchik.feature.client.chatDetails.internal.details
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,8 +17,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import kabanchik.features.client.chat_details.generated.resources.Res
-import kabanchik.features.client.chat_details.generated.resources.chat_details_hint
+import kabanchik.features.client.chat.generated.resources.Res
+import kabanchik.features.client.chat.generated.resources.chat_details_hint
 import org.jetbrains.compose.resources.stringResource
 import ru.kabanchik.common.modifier.sendMessageModifier
 import ru.kabanchik.common.uiKit.HSpacer
@@ -30,7 +30,7 @@ import ru.kabanchik.common.uiKit.widgets.CommonCircleButton
 import ru.kabanchik.common.uiKit.widgets.CommonMessageCard
 import ru.kabanchik.common.uiKit.widgets.CommonScreenLoader
 import ru.kabanchik.common.uiKit.widgets.CommonTextInput
-import ru.kabanchik.feature.client.chatDetails.api.ChatDetailsContract
+import ru.kabanchik.feature.client.chatDetails.api.details.ChatDetailsContract
 
 @Composable
 internal fun ChatDetailsContent(

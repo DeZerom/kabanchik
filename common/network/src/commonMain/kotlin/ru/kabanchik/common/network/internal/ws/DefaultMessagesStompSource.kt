@@ -9,12 +9,12 @@ import org.hildan.krossbow.stomp.conversions.kxserialization.json.withJsonConver
 import org.hildan.krossbow.stomp.conversions.kxserialization.subscribe
 import org.hildan.krossbow.stomp.sendEmptyMsg
 import org.hildan.krossbow.websocket.ktor.KtorWebSocketClient
-import ru.kabanchik.client.data.chatDetails.logic.api.ClientMessagesStompSource
+import ru.kabanchik.client.data.chat.logic.api.ClientMessagesStompSource
 import ru.kabanchik.common.data.chatDetails.model.CommonApiMessage
 import ru.kabanchik.common.data.chatDetails.model.CommonApiSendMessage
 import ru.kabanchik.common.data.chatDetails.model.CommonApiSessionMessage
 import ru.kabanchik.common.data.chatDetails.model.CommonApiSystemMessage
-import ru.kabanchik.pro.data.chatDetails.logic.api.ProMessagesStompSource
+import ru.kabanchik.pro.data.chat.logic.api.ProMessagesStompSource
 import ru.kabanchik.pro.data.chatDetails.model.ProApiAcceptChat
 import ru.kabanchik.pro.data.chatDetails.model.ProApiIncoming
 

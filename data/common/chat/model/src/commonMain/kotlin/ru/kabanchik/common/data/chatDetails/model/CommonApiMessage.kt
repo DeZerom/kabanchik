@@ -18,8 +18,17 @@ data class CommonApiMessage(
     val content: String,
 
     @SerialName("type")
-    val type: String,
+    val type: CommonApiMessageType,
 
     @SerialName("timestamp")
     val timestamp: String,
 )
+
+@Serializable
+enum class CommonApiMessageType {
+    @SerialName("TEXT")
+    Text,
+
+    @SerialName("SYSTEM")
+    System
+}

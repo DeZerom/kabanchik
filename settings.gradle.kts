@@ -54,8 +54,10 @@ include(":domain:common:token:model")
 include(":domain:common:user:logic")
 include(":data:common:user:logic")
 
+include("data:common:chat:logic")
 include("data:common:chat:model")
-include("domain:common:chat-details:logic")
+include("domain:common:chat:logic")
+include("domain:common:chat:model")
 
 // client
 include(":data:client:auth:logic")
@@ -66,8 +68,8 @@ include(":features:client:auth")
 
 include(":data:client:chat:logic")
 include(":data:client:chat:model")
-include(":domain:client:chat-details:logic")
-include(":domain:client:chat-details:model")
+include(":domain:client:chat:logic")
+include(":domain:client:chat:model")
 include(":features:client:chat")
 
 // pro
@@ -79,6 +81,6 @@ include(":features:pro:auth")
 
 include(":data:pro:chat:logic")
 include(":data:pro:chat:model")
-include(":domain:pro:chat-details:logic")
-include(":domain:pro:chat-details:model")
+include(":domain:pro:chat:logic")
+include(":domain:pro:chat:model")
 include(":features:pro:chat-details")

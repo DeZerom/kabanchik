@@ -8,7 +8,7 @@ import ru.kabanchik.common.domain.user.logic.api.di.DomainCommonUserModule
 import ru.kabanchik.common.errorHandler.logic.api.di.CommonErrorHandlerModule
 import ru.kabanchik.common.network.api.di.CommonNetworkModule
 import ru.kabanchik.pro.data.auth.logic.api.di.DataProAuthModule
-import ru.kabanchik.pro.data.chatDetails.logic.api.di.DataProChatDetailsModule
+import ru.kabanchik.pro.data.chat.logic.api.di.DataProChatDetailsModule
 import ru.kabanchik.pro.domain.auth.logic.api.di.DomainProAuthDiModule
 import ru.kabanchik.pro.domain.chatDetails.logic.api.di.DomainProChatDetailsModule
 

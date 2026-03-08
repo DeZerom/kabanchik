@@ -10,7 +10,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "DataChatDetailsLogic"
+            baseName = "DataChatLogic"
             isStatic = true
         }
     }
@@ -18,9 +18,10 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(projects.data.client.chat.model)
-            api(projects.data.common.chat.model)
+            api(projects.data.common.chat.logic)
 
-            implementation(projects.domain.client.chatDetails.logic)
+            implementation(projects.domain.common.chat.model)
+            implementation(projects.domain.client.chat.logic)
 
             implementation(libs.kotlinx.serializationJson)
         }
@@ -28,6 +29,6 @@ kotlin {
 }
 
 android {
-    namespace = "ru.kabanchik.client.data.chatDetails.logic"
+    namespace = "ru.kabanchik.client.data.chat.logic"
 }
 

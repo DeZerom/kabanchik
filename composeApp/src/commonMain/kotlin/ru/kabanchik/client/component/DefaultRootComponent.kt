@@ -52,6 +52,7 @@ class DefaultRootComponent(
                         componentContext = context,
                         showSnackBar = { snackBarComponent.setData(it) },
                         dependencies = ClientChatFlowDependencies.Factory(
+                            listInteractor = get(),
                             chatDetailsInteractor = get(),
                             userInteractor = get(),
                             errorHandler = get()

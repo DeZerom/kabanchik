@@ -4,7 +4,7 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import ru.kabanchik.client.domain.logic.chatDetails.api.ChatDetailsInteractor
-import ru.kabanchik.client.domain.model.chatDetails.Message
+import ru.kabanchik.common.chat.model.CommonMessage
 import ru.kabanchik.common.domain.user.logic.api.UserInteractor
 import ru.kabanchik.common.errorHandler.logic.api.ErrorHandler
 import ru.kabanchik.common.store.BaseCoroutineStore
@@ -52,13 +52,13 @@ internal class ChatDetailsStore(
         if (chatState.currentMessage.isBlank()) return
 
         coroutineScope.launch(coroutineExceptionHandler) {
-            val message = Message(
-                authorLogin = chatState.login,
-                text = chatState.currentMessage
-            )
-
-            chatDetailsInteractor.sendMessage(message)
-            reduceChatState { copy(currentMessage = "") }
+//            val message = CommonMessage(
+//                authorLogin = chatState.login,
+//                text = chatState.currentMessage
+//            )
+//
+//            chatDetailsInteractor.sendMessage(message)
+//            reduceChatState { copy(currentMessage = "") }
         }
     }
 
@@ -78,7 +78,7 @@ internal class ChatDetailsStore(
         reduceState { reducer(chatState) }
     }
 
-    private fun addMessage(message: Message) {
+    private fun addMessage(message: CommonMessage) {
         reduceChatState {
             copy(messages = messages + message.toUiState(login))
         }

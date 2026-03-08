@@ -52,7 +52,7 @@ kotlin {
             implementation(projects.features.client.auth)
 
             implementation(projects.data.client.chat.logic)
-            implementation(projects.domain.client.chatDetails.logic)
+            implementation(projects.domain.client.chat.logic)
             implementation(projects.features.client.chat)
 
             implementation(libs.runtime)

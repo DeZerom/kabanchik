@@ -17,8 +17,9 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.domain.client.chatDetails.logic)
+            implementation(projects.domain.client.chat.logic)
             implementation(projects.domain.common.user.logic)
+            implementation(projects.domain.common.chat.model)
 
             implementation(projects.common.uiKit)
             implementation(projects.common.store)

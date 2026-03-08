@@ -4,7 +4,6 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import ru.kabanchik.common.tools.extensions.toHoursMinutes
 import ru.kabanchik.common.tools.extensions.toYearMonthDay
-import ru.kabanchik.pro.domain.chatDetails.model.ProMessage
 import ru.kabanchik.pro.feature.chatDetails.api.ProChatDetailsContract
 import kotlin.time.Clock
 

@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="chat_details_hint">Подсказка</string>
+    <string name="chat_list_request_client">Запросить клиента</string>
+
+    <string name="chat_details_hint">Введите сообщение</string>
 </resources>

@@ -9,7 +9,7 @@ import ru.kabanchik.common.data.chat.logic.api.toDomain
 import ru.kabanchik.pro.data.chat.logic.api.ProMessagesStompSource
 import ru.kabanchik.pro.data.chat.logic.internal.mappers.toDomain
 import ru.kabanchik.pro.data.chatDetails.model.ProApiAcceptChat
-import ru.kabanchik.pro.domain.chatDetails.logic.api.repository.ProChatDetailsRepository
+import ru.kabanchik.pro.domain.chat.logic.api.repository.ProChatDetailsRepository
 import ru.kabanchik.pro.domain.chatDetails.model.ProIncoming
 
 internal class DefaultProChatDetailsRepository(

@@ -18,9 +18,10 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(projects.data.pro.chat.model)
-            api(projects.data.common.chat.logic)
+            api(projects.data.common.chat.model)
+            implementation(projects.data.common.chat.logic)
 
-            implementation(projects.domain.common.chat.model)
+            implementation(projects.domain.common.chat.logic)
             implementation(projects.domain.pro.chat.logic)
 
             implementation(libs.kotlinx.serializationJson)

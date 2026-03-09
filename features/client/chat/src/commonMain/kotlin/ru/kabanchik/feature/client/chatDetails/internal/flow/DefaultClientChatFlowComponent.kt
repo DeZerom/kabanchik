@@ -44,7 +44,8 @@ internal class DefaultClientChatFlowComponent(
                     component = DefaultClientChatsListComponent(
                         componentContext = componentContext,
                         navigateChatDetails = { stack.pushNew(Config.Details) },
-                        dependencies = ClientChatsListDependencies.Factory(dependencies)
+                        dependencies = ClientChatsListDependencies.Factory(dependencies),
+                        showSnackBar = showSnackBar
                     )
                 )
             }

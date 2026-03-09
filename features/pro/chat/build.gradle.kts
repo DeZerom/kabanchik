@@ -10,13 +10,14 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "FeatureProChatDetails"
+            baseName = "FeatureProChat"
             isStatic = true
         }
     }
 
     sourceSets {
         commonMain.dependencies {
+            implementation(projects.domain.common.chat.logic)
             implementation(projects.domain.pro.chat.logic)
             implementation(projects.domain.common.user.logic)
 
@@ -32,6 +33,6 @@ kotlin {
 }
 
 android {
-    namespace = "ru.kabanchik.pro.feature.chatDetails"
+    namespace = "ru.kabanchik.pro.feature.chat"
 }
 

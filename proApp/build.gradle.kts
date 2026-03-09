@@ -23,7 +23,9 @@ kotlin {
             implementation(projects.domain.pro.auth.logic)
             implementation(projects.features.pro.auth)
 
+            implementation(projects.data.common.chat.logic)
             implementation(projects.data.pro.chat.logic)
+            implementation(projects.domain.common.chat.logic)
             implementation(projects.domain.pro.chat.logic)
             implementation(projects.features.pro.chat)
 

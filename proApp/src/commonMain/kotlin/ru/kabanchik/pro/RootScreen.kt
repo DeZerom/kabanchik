@@ -10,7 +10,7 @@ import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import ru.kabanchik.common.snackBar.api.CommonSnackBarHost
 import ru.kabanchik.pro.component.ProRootComponent
 import ru.kabanchik.pro.feature.auth.api.ProAuthScreen
-import ru.kabanchik.pro.feature.chatDetails.api.flow.ProChatFlowScreen
+import ru.kabanchik.pro.feature.chat.api.flow.ProChatFlowScreen
 
 @Composable
 fun RootScreen(component: ProRootComponent) {

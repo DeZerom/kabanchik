@@ -5,7 +5,7 @@ import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
 import ru.kabanchik.common.snackBar.api.SnackBarComponent
 import ru.kabanchik.pro.feature.auth.api.ProAuthComponent
-import ru.kabanchik.pro.feature.chatDetails.api.flow.ProChatFlowComponent
+import ru.kabanchik.pro.feature.chat.api.flow.ProChatFlowComponent
 
 interface ProRootComponent {
     val stack: Value<ChildStack<*, Child>>

@@ -14,7 +14,7 @@ internal class ClientChatsListStore(
     private val errorHandler: ErrorHandler
 ) : BaseCoroutineStore<Event, State, SideEffect>() {
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        errorHandler.handleError(throwable)
+        pushSideEffect(SideEffect.ShowError(errorHandler.handleError(throwable).defaultMessage))
     }
 
     init {

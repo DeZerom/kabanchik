@@ -14,8 +14,8 @@ import ru.kabanchik.common.snackBar.api.SnackBarComponent
 import ru.kabanchik.common.snackBar.api.SnackBarData.Error
 import ru.kabanchik.pro.feature.auth.api.ProAuthComponent
 import ru.kabanchik.pro.feature.auth.api.ProAuthDependencies.Factory
-import ru.kabanchik.pro.feature.chatDetails.api.ProChatDetailsComponent
-import ru.kabanchik.pro.feature.chatDetails.api.ProChatDetailsDependencies
+import ru.kabanchik.pro.feature.chatDetails.api.flow.ProChatFlowComponent
+import ru.kabanchik.pro.feature.chatDetails.api.flow.ProChatFlowDependencies
 
 class DefaultProRootComponent(
     componentContext: ComponentContext
@@ -48,15 +48,15 @@ class DefaultProRootComponent(
                 )
             }
             Config.ChatDetails -> {
-                ProRootComponent.Child.ChatDetails(
-                    component = ProChatDetailsComponent.create(
+                ProRootComponent.Child.Chat(
+                    component = ProChatFlowComponent.create(
                         componentContext = componentContext,
-                        dependencies = ProChatDetailsDependencies.Factory(
+                        showSnackBar = { snackBarComponent.setData(it) },
+                        dependencies = ProChatFlowDependencies.Factory(
                             chatDetailsInteractor = get(),
                             userInteractor = get(),
                             errorHandler = get()
-                        ),
-                        showSnackBar = { snackBarComponent.setData(it) }
+                        )
                     )
                 )
             }

@@ -5,7 +5,7 @@ import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
 import ru.kabanchik.common.snackBar.api.SnackBarComponent
 import ru.kabanchik.pro.feature.auth.api.ProAuthComponent
-import ru.kabanchik.pro.feature.chatDetails.api.ProChatDetailsComponent
+import ru.kabanchik.pro.feature.chatDetails.api.flow.ProChatFlowComponent
 
 interface ProRootComponent {
     val stack: Value<ChildStack<*, Child>>
@@ -13,7 +13,7 @@ interface ProRootComponent {
 
     sealed interface Child {
         class Auth(val component: ProAuthComponent) : Child
-        class ChatDetails(val component: ProChatDetailsComponent) : Child
+        class Chat(val component: ProChatFlowComponent) : Child
     }
 
     companion object Companion {

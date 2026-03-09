@@ -1,4 +1,4 @@
-package ru.kabanchik.pro.feature.chatDetails.internal
+package ru.kabanchik.pro.feature.chatDetails.internal.details
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.essenty.instancekeeper.retainedInstance
@@ -7,9 +7,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import ru.kabanchik.common.snackBar.api.SnackBarData
-import ru.kabanchik.pro.feature.chatDetails.api.ProChatDetailsComponent
-import ru.kabanchik.pro.feature.chatDetails.api.ProChatDetailsContract
-import ru.kabanchik.pro.feature.chatDetails.api.ProChatDetailsDependencies
+import ru.kabanchik.pro.feature.chatDetails.api.details.ProChatDetailsComponent
+import ru.kabanchik.pro.feature.chatDetails.api.details.ProChatDetailsContract
+import ru.kabanchik.pro.feature.chatDetails.api.details.ProChatDetailsDependencies
 
 class DefaultProChatDetailsComponent(
     componentContext: ComponentContext,

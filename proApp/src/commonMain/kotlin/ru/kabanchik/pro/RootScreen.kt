@@ -10,7 +10,7 @@ import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import ru.kabanchik.common.snackBar.api.CommonSnackBarHost
 import ru.kabanchik.pro.component.ProRootComponent
 import ru.kabanchik.pro.feature.auth.api.ProAuthScreen
-import ru.kabanchik.pro.feature.chatDetails.api.ProChatDetailsScreen
+import ru.kabanchik.pro.feature.chatDetails.api.flow.ProChatFlowScreen
 
 @Composable
 fun RootScreen(component: ProRootComponent) {
@@ -25,7 +25,7 @@ fun RootScreen(component: ProRootComponent) {
         ) {
             when (val child = it.instance) {
                 is ProRootComponent.Child.Auth -> ProAuthScreen(component = child.component)
-                is ProRootComponent.Child.ChatDetails -> ProChatDetailsScreen(component = child.component)
+                is ProRootComponent.Child.Chat -> ProChatFlowScreen(component = child.component)
             }
         }
     }

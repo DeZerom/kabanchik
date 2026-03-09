@@ -1,13 +1,13 @@
-package ru.kabanchik.pro.feature.chatDetails.api
+package ru.kabanchik.pro.feature.chatDetails.internal.details
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import ru.kabanchik.common.screenSize.PartFillingScreen
-import ru.kabanchik.pro.feature.chatDetails.internal.ProChatDetailsContent
+import ru.kabanchik.pro.feature.chatDetails.api.details.ProChatDetailsComponent
 
 @Composable
-fun ProChatDetailsScreen(component: ProChatDetailsComponent) {
+internal fun ProChatDetailsScreen(component: ProChatDetailsComponent) {
     val state by component.state.collectAsState()
 
     PartFillingScreen {

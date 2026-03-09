@@ -1,10 +1,10 @@
-package ru.kabanchik.pro.feature.chatDetails.api
+package ru.kabanchik.pro.feature.chatDetails.api.flow
 
 import ru.kabanchik.common.domain.user.logic.api.UserInteractor
 import ru.kabanchik.common.errorHandler.logic.api.ErrorHandler
 import ru.kabanchik.pro.domain.chatDetails.logic.api.ProChatDetailsInteractor
 
-interface ProChatDetailsDependencies {
+interface ProChatFlowDependencies {
     val chatDetailsInteractor: ProChatDetailsInteractor
     val userInteractor: UserInteractor
     val errorHandler: ErrorHandler
@@ -13,5 +13,5 @@ interface ProChatDetailsDependencies {
         override val chatDetailsInteractor: ProChatDetailsInteractor,
         override val userInteractor: UserInteractor,
         override val errorHandler: ErrorHandler
-    ) : ProChatDetailsDependencies
+    ) : ProChatFlowDependencies
 }

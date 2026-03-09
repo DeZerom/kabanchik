@@ -25,7 +25,7 @@ kotlin {
 
             implementation(projects.data.pro.chat.logic)
             implementation(projects.domain.pro.chat.logic)
-            implementation(projects.features.pro.chatDetails)
+            implementation(projects.features.pro.chat)
 
             implementation(projects.common.uiKit)
             implementation(projects.common.network)

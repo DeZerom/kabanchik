@@ -1,4 +1,4 @@
-package ru.kabanchik.pro.feature.chatDetails.api
+package ru.kabanchik.pro.feature.chatDetails.api.details
 
 import ru.kabanchik.common.tools.textResource.TextResource
 import kotlin.uuid.ExperimentalUuidApi

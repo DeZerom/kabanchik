@@ -1,15 +1,16 @@
-package ru.kabanchik.pro.feature.chatDetails.internal
+package ru.kabanchik.pro.feature.chatDetails.internal.details
 
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
+import ru.kabanchik.common.chat.model.CommonMessage
 import ru.kabanchik.common.domain.user.logic.api.UserInteractor
 import ru.kabanchik.common.errorHandler.logic.api.ErrorHandler
 import ru.kabanchik.common.store.BaseCoroutineStore
 import ru.kabanchik.pro.domain.chatDetails.logic.api.ProChatDetailsInteractor
-import ru.kabanchik.pro.feature.chatDetails.api.ProChatDetailsContract.Event
-import ru.kabanchik.pro.feature.chatDetails.api.ProChatDetailsContract.SideEffect
-import ru.kabanchik.pro.feature.chatDetails.api.ProChatDetailsContract.State
+import ru.kabanchik.pro.feature.chatDetails.api.details.ProChatDetailsContract.Event
+import ru.kabanchik.pro.feature.chatDetails.api.details.ProChatDetailsContract.SideEffect
+import ru.kabanchik.pro.feature.chatDetails.api.details.ProChatDetailsContract.State
 
 internal class ProChatDetailsStore(
     private val chatDetailsInteractor: ProChatDetailsInteractor,
@@ -50,13 +51,13 @@ internal class ProChatDetailsStore(
         if (chatState.currentMessage.isBlank()) return
 
         coroutineScope.launch(coroutineExceptionHandler) {
-            chatDetailsInteractor.sendMessage(
-                message = ProMessage(
-                    authorLogin = chatState.login,
-                    text = chatState.currentMessage
-                )
-            )
-            reduceChatState { copy(currentMessage = "") }
+//            chatDetailsInteractor.sendMessage(
+//                message = ProMessage(
+//                    authorLogin = chatState.login,
+//                    text = chatState.currentMessage
+//                )
+//            )
+//            reduceChatState { copy(currentMessage = "") }
         }
     }
 
@@ -76,7 +77,7 @@ internal class ProChatDetailsStore(
         reduceState { reducer(chatState) }
     }
 
-    private fun addMessage(message: ProMessage) {
+    private fun addMessage(message: CommonMessage) {
         reduceChatState {
             copy(messages = messages + message.toUiState(login))
         }

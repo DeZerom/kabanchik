@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.build.kmp)
+    alias(libs.plugins.build.koin)
 }
 
 kotlin {
@@ -16,9 +17,9 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(projects.data.common.chat.model)
+            implementation(projects.domain.common.chat.logic)
 
             implementation(libs.kotlinx.datetime)
-            implementation(projects.domain.common.chat.model)
         }
     }
 }

@@ -1,4 +1,4 @@
-package ru.kabanchik.common.domain.chatDetails.logic.api
+package ru.kabanchik.common.domain.chat.logic.api
 
 private const val MessageMaxLength = 4096
 

@@ -2,7 +2,7 @@ package ru.kabanchik.feature.client.chatDetails.internal.list
 
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
-import ru.kabanchik.client.domain.logic.chatDetails.api.ClientChatsListInteractor
+import ru.kabanchik.client.domain.logic.chat.api.ClientChatsListInteractor
 import ru.kabanchik.common.errorHandler.logic.api.ErrorHandler
 import ru.kabanchik.common.store.BaseCoroutineStore
 import ru.kabanchik.feature.client.chatDetails.api.list.ClientChatsListContract.Event
@@ -13,7 +13,7 @@ internal class ClientChatsListStore(
     private val listInteractor: ClientChatsListInteractor,
     private val errorHandler: ErrorHandler
 ) : BaseCoroutineStore<Event, State, SideEffect>() {
-    private val coroutineExceptionHandler = CoroutineExceptionHandler { context, throwable ->
+    private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
         errorHandler.handleError(throwable)
     }
 

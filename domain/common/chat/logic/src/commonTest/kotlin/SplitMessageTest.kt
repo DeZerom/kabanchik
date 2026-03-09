@@ -1,5 +1,5 @@
 import kotlinx.coroutines.runBlocking
-import ru.kabanchik.common.domain.chatDetails.logic.api.splitAndTrimMessage
+import ru.kabanchik.common.domain.chat.logic.api.splitAndTrimMessage
 import kotlin.test.Test
 import kotlin.test.assertContains
 import kotlin.test.assertEquals

@@ -9,7 +9,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "DomainCommonChatDetailsLogic"
+            baseName = "DomainCommonChatLogic"
             isStatic = true
         }
     }
@@ -25,6 +25,6 @@ kotlin {
 }
 
 android {
-    namespace = "ru.kabanchik.common.domain.chatDetails.logic"
+    namespace = "ru.kabanchik.common.domain.chat.logic"
 }
 

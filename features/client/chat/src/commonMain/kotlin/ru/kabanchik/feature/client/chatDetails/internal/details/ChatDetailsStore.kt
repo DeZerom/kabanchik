@@ -3,7 +3,7 @@ package ru.kabanchik.feature.client.chatDetails.internal.details
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
-import ru.kabanchik.client.domain.logic.chatDetails.api.ChatDetailsInteractor
+import ru.kabanchik.client.domain.logic.chat.api.ChatDetailsInteractor
 import ru.kabanchik.common.chat.model.CommonMessage
 import ru.kabanchik.common.domain.user.logic.api.UserInteractor
 import ru.kabanchik.common.errorHandler.logic.api.ErrorHandler

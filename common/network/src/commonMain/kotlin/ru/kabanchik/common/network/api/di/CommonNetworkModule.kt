@@ -8,6 +8,7 @@ import org.koin.dsl.binds
 import org.koin.dsl.module
 import ru.kabanchik.client.data.auth.logic.api.sources.AuthApi
 import ru.kabanchik.client.data.chat.logic.api.ClientMessagesStompSource
+import ru.kabanchik.common.data.chat.logic.api.CommonStompSource
 import ru.kabanchik.common.network.internal.api.DefaultAuthApi
 import ru.kabanchik.common.network.internal.api.DefaultProAuthApi
 import ru.kabanchik.common.network.internal.createClient
@@ -19,6 +20,7 @@ object CommonNetworkModule {
     val module = module {
         singleOf<HttpClient>(::createClient)
         singleOf(::DefaultMessagesStompSource) binds arrayOf(
+            CommonStompSource::class,
             ClientMessagesStompSource::class,
             ProMessagesStompSource::class
         )

@@ -1,7 +1,7 @@
 package ru.kabanchik.feature.client.chatDetails.api.flow
 
-import ru.kabanchik.client.domain.logic.chatDetails.api.ChatDetailsInteractor
-import ru.kabanchik.client.domain.logic.chatDetails.api.ClientChatsListInteractor
+import ru.kabanchik.client.domain.logic.chat.api.ChatDetailsInteractor
+import ru.kabanchik.client.domain.logic.chat.api.ClientChatsListInteractor
 import ru.kabanchik.common.domain.user.logic.api.UserInteractor
 import ru.kabanchik.common.errorHandler.logic.api.ErrorHandler
 

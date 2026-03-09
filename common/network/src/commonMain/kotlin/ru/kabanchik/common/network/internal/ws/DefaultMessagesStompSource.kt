@@ -10,6 +10,7 @@ import org.hildan.krossbow.stomp.conversions.kxserialization.subscribe
 import org.hildan.krossbow.stomp.sendEmptyMsg
 import org.hildan.krossbow.websocket.ktor.KtorWebSocketClient
 import ru.kabanchik.client.data.chat.logic.api.ClientMessagesStompSource
+import ru.kabanchik.common.data.chat.logic.api.CommonStompSource
 import ru.kabanchik.common.data.chatDetails.model.CommonApiMessage
 import ru.kabanchik.common.data.chatDetails.model.CommonApiSendMessage
 import ru.kabanchik.common.data.chatDetails.model.CommonApiSessionMessage
@@ -20,7 +21,7 @@ import ru.kabanchik.pro.data.chatDetails.model.ProApiIncoming
 
 internal class DefaultMessagesStompSource(
     private val httpClient: HttpClient
-) : ClientMessagesStompSource, ProMessagesStompSource {
+) : CommonStompSource, ClientMessagesStompSource, ProMessagesStompSource {
     var session: StompSessionWithKxSerialization? = null
 
     override suspend fun connect(token: String) {

@@ -51,7 +51,9 @@ kotlin {
             implementation(projects.domain.client.auth.logic)
             implementation(projects.features.client.auth)
 
+            implementation(projects.data.common.chat.logic)
             implementation(projects.data.client.chat.logic)
+            implementation(projects.domain.common.chat.logic)
             implementation(projects.domain.client.chat.logic)
             implementation(projects.features.client.chat)
 

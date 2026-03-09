@@ -1,4 +1,4 @@
-package ru.kabanchik.client.domain.logic.chatDetails.api
+package ru.kabanchik.client.domain.logic.chat.api
 
 import kotlinx.coroutines.flow.Flow
 import ru.kabanchik.common.chat.model.CommonMessage

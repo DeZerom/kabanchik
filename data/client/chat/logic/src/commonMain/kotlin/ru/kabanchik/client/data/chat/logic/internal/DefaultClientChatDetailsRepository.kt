@@ -3,7 +3,7 @@ package ru.kabanchik.client.data.chat.logic.internal
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import ru.kabanchik.client.data.chat.logic.api.ClientMessagesStompSource
-import ru.kabanchik.client.domain.logic.chatDetails.api.repository.ClientChatDetailsRepository
+import ru.kabanchik.client.domain.logic.chat.api.repository.ClientChatDetailsRepository
 import ru.kabanchik.common.chat.model.CommonMessage
 import ru.kabanchik.common.chat.model.CommonSessionMessage
 import ru.kabanchik.common.chat.model.CommonSystemMessage

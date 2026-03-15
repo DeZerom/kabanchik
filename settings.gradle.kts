@@ -54,10 +54,12 @@ include(":domain:common:token:model")
 include(":domain:common:user:logic")
 include(":data:common:user:logic")
 
-include("data:common:chat:logic")
-include("data:common:chat:model")
-include("domain:common:chat:logic")
-include("domain:common:chat:model")
+include(":data:common:chat:logic")
+include(":data:common:chat:model")
+include(":domain:common:chat:logic")
+include(":domain:common:chat:model")
+include(":features:common:chat:logic")
+include(":features:common:chat:model")
 
 // client
 include(":data:client:auth:logic")

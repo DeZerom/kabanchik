@@ -10,17 +10,15 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "FeatureChatDetails"
+            baseName = "FeatureCommonChatLogic"
             isStatic = true
         }
     }
 
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.domain.client.chat.logic)
-            implementation(projects.domain.common.user.logic)
+            api(projects.features.common.chat.model)
             implementation(projects.domain.common.chat.model)
-            implementation(projects.features.common.chat.logic)
 
             implementation(projects.common.uiKit)
             implementation(projects.common.store)
@@ -34,6 +32,6 @@ kotlin {
 }
 
 android {
-    namespace = "ru.kabanchik.client.feature.chatDetails"
+    namespace = "ru.kabanchik.common.features.chat.logic"
 }
 

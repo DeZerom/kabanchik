@@ -17,7 +17,7 @@ internal class DefaultClientChatDetailsComponent(
     private val showSnackBar: (SnackBarData) -> Unit,
 ) : ClientChatDetailsComponent, ComponentContext by componentContext {
     private val store = retainedInstance {
-        ChatDetailsStore(
+        ClientChatDetailsStore(
             chatDetailsInteractor = dependencies.chatDetailsInteractor,
             userInteractor = dependencies.userInteractor,
             errorHandler = dependencies.errorHandler

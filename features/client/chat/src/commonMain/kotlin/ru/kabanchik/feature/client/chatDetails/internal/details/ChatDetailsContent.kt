@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -20,12 +21,15 @@ import androidx.compose.ui.unit.dp
 import kabanchik.features.client.chat.generated.resources.Res
 import kabanchik.features.client.chat.generated.resources.chat_details_hint
 import org.jetbrains.compose.resources.stringResource
+import ru.kabanchik.common.feature.chat.model.CommonUiMessage
 import ru.kabanchik.common.modifier.sendMessageModifier
+import ru.kabanchik.common.tools.extensions.getValue
 import ru.kabanchik.common.uiKit.HSpacer
 import ru.kabanchik.common.uiKit.KabanchikIcons
 import ru.kabanchik.common.uiKit.VSpacer
 import ru.kabanchik.common.uiKit.theme.KabanchikTheme
 import ru.kabanchik.common.uiKit.theme.cardDefault
+import ru.kabanchik.common.uiKit.theme.extraSmallText
 import ru.kabanchik.common.uiKit.widgets.CommonCircleButton
 import ru.kabanchik.common.uiKit.widgets.CommonMessageCard
 import ru.kabanchik.common.uiKit.widgets.CommonScreenLoader
@@ -38,23 +42,20 @@ internal fun ChatDetailsContent(
     onMessageTextChanged: (String) -> Unit,
     onMessageSent: () -> Unit,
 ) {
-    when (state) {
-        ChatDetailsContract.State.Loading -> {
-            CommonScreenLoader()
-        }
-        is ChatDetailsContract.State.Chat -> {
-            Chat(
-                state = state,
-                onMessageTextChanged = onMessageTextChanged,
-                onMessageSent = onMessageSent
-            )
-        }
+    if (state.isLoading) {
+        CommonScreenLoader()
+    } else {
+        Chat(
+            state = state,
+            onMessageTextChanged = onMessageTextChanged,
+            onMessageSent = onMessageSent
+        )
     }
 }
 
 @Composable
 private fun Chat(
-    state: ChatDetailsContract.State.Chat,
+    state: ChatDetailsContract.State,
     onMessageTextChanged: (String) -> Unit,
     onMessageSent: () -> Unit
 ) {
@@ -91,12 +92,8 @@ private fun Chat(
                     key = { it.id }
                 ) { message ->
                     VSpacer(16.dp)
-                    CommonMessageCard(
-                        isUserAuthor = message.isUserAuthor,
-                        messageDate = message.date,
-                        messageTime = message.time,
-                        messageText = message.text,
-                        authorLogin = message.authorLogin
+                    Message(
+                        message = message
                     )
                 }
             }
@@ -126,6 +123,40 @@ private fun Chat(
                     )
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun Message(
+    message: CommonUiMessage,
+    modifier: Modifier = Modifier
+) {
+    when (message) {
+        is CommonUiMessage.Date -> {
+            Text(
+                text = message.date,
+                style = KabanchikTheme.typography.extraSmallText,
+                color = KabanchikTheme.colors.secondaryText,
+                modifier = modifier
+            )
+        }
+        is CommonUiMessage.Message -> {
+            CommonMessageCard(
+                isUserAuthor = message.isUserAuthor,
+                messageTime = message.time,
+                messageText = message.text,
+                authorLogin = message.authorLogin,
+                modifier = modifier
+            )
+        }
+        is CommonUiMessage.SystemMessage -> {
+            Text(
+                text = message.message.getValue(),
+                style = KabanchikTheme.typography.extraSmallText,
+                color = KabanchikTheme.colors.secondaryText,
+                modifier = modifier
+            )
         }
     }
 }

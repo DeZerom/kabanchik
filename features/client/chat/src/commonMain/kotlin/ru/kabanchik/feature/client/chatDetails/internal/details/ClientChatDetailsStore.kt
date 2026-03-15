@@ -3,17 +3,18 @@ package ru.kabanchik.feature.client.chatDetails.internal.details
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
-import ru.kabanchik.client.domain.logic.chat.api.ChatDetailsInteractor
-import ru.kabanchik.common.chat.model.CommonMessage
+import ru.kabanchik.client.domain.logic.chat.api.ClientChatDetailsInteractor
+import ru.kabanchik.common.chat.model.CommonChatMessage
 import ru.kabanchik.common.domain.user.logic.api.UserInteractor
 import ru.kabanchik.common.errorHandler.logic.api.ErrorHandler
+import ru.kabanchik.common.features.chat.logic.toState
 import ru.kabanchik.common.store.BaseCoroutineStore
 import ru.kabanchik.feature.client.chatDetails.api.details.ChatDetailsContract.Event
 import ru.kabanchik.feature.client.chatDetails.api.details.ChatDetailsContract.SideEffect
 import ru.kabanchik.feature.client.chatDetails.api.details.ChatDetailsContract.State
 
-internal class ChatDetailsStore(
-    private val chatDetailsInteractor: ChatDetailsInteractor,
+internal class ClientChatDetailsStore(
+    private val chatDetailsInteractor: ClientChatDetailsInteractor,
     private val userInteractor: UserInteractor,
     private val errorHandler: ErrorHandler
 ): BaseCoroutineStore<Event, State, SideEffect>() {
@@ -28,37 +29,31 @@ internal class ChatDetailsStore(
 
     override fun handleEvent(event: Event) {
         when (event) {
-            is Event.MessageTextChanged -> reduceChatState { copy(currentMessage = event.newText) }
+            is Event.MessageTextChanged -> reduceState { copy(currentMessage = event.newText) }
             Event.MessageSent -> sendMessage()
         }
     }
 
     override fun initState(): State {
-        return State.Loading
+        return State()
     }
 
     private fun initChat() {
         coroutineScope.launch(coroutineExceptionHandler) {
-            reduceState { State.Loading }
-            chatDetailsInteractor.initChat()
-            listenMessages()
+            reduceState { copy(isLoading = true) }
             val login = userInteractor.getUserLogin()
-            reduceState { State.Chat(login = login.orEmpty()) }
+            reduceState { copy(login = login.orEmpty()) }
+            listenMessages()
+            reduceState { copy(isLoading = false) }
         }
     }
 
     private fun sendMessage() {
-        val chatState = currentState as? State.Chat ?: return
-        if (chatState.currentMessage.isBlank()) return
+        if (currentState.currentMessage.isBlank()) return
 
         coroutineScope.launch(coroutineExceptionHandler) {
-//            val message = CommonMessage(
-//                authorLogin = chatState.login,
-//                text = chatState.currentMessage
-//            )
-//
-//            chatDetailsInteractor.sendMessage(message)
-//            reduceChatState { copy(currentMessage = "") }
+            chatDetailsInteractor.sendMessage(message = currentState.currentMessage)
+            reduceState { copy(currentMessage = "") }
         }
     }
 
@@ -73,14 +68,11 @@ internal class ChatDetailsStore(
         }
     }
 
-    private fun reduceChatState(reducer: State.Chat.() -> State) {
-        val chatState = currentState as? State.Chat ?: return
-        reduceState { reducer(chatState) }
-    }
+    private fun addMessage(message: CommonChatMessage) {
+        val uiMessage = message.toState(currentState.login)
 
-    private fun addMessage(message: CommonMessage) {
-        reduceChatState {
-            copy(messages = messages + message.toUiState(login))
+        reduceState {
+            copy(messages = messages + uiMessage)
         }
     }
 }

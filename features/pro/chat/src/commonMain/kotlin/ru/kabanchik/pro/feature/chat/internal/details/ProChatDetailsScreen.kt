@@ -10,7 +10,7 @@ internal fun ProChatDetailsScreen(component: ru.kabanchik.pro.feature.chat.api.d
     val state by component.state.collectAsState()
 
     PartFillingScreen {
-        _root_ide_package_.ru.kabanchik.pro.feature.chat.internal.details.ProChatDetailsContent(
+        ProChatDetailsContent(
             state = state,
             onMessageTextChanged = component::onMessageChanged,
             onMessageSent = component::onSendClicked

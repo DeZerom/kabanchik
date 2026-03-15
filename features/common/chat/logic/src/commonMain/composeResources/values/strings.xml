@@ -2,4 +2,5 @@
 <resources>
     <string name="chat_details_operator_found">Оператор найден</string>
     <string name="chat_details_session_end">Сессия завершена</string>
+    <string name="chat_details_hint">Введите сообщение</string>
 </resources>

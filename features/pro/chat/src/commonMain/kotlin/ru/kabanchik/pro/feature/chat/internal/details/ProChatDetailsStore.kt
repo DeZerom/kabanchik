@@ -3,9 +3,10 @@ package ru.kabanchik.pro.feature.chat.internal.details
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
-import ru.kabanchik.common.chat.model.CommonMessage
+import ru.kabanchik.common.chat.model.CommonChatMessage
 import ru.kabanchik.common.domain.user.logic.api.UserInteractor
 import ru.kabanchik.common.errorHandler.logic.api.ErrorHandler
+import ru.kabanchik.common.features.chat.logic.toState
 import ru.kabanchik.common.store.BaseCoroutineStore
 import ru.kabanchik.pro.domain.chat.logic.api.ProChatDetailsInteractor
 import ru.kabanchik.pro.feature.chat.api.details.ProChatDetailsContract.Event
@@ -22,13 +23,13 @@ internal class ProChatDetailsStore(
     }
 
     override fun initState(): State {
-        return State.Loading
+        return State()
     }
 
     override fun handleEvent(event: Event) {
         when (event) {
             Event.MessageSent -> sendMessage()
-            is Event.MessageTextChanged -> reduceChatState { copy(currentMessage = event.newText) }
+            is Event.MessageTextChanged -> reduceState { copy(currentMessage = event.newText) }
         }
     }
 
@@ -38,26 +39,19 @@ internal class ProChatDetailsStore(
 
     private fun initChat() {
         coroutineScope.launch(coroutineExceptionHandler) {
-            reduceState { State.Loading }
-            chatDetailsInteractor.initChat()
+            reduceState { State(isLoading = true) }
             listenMessages()
             val login = userInteractor.getUserLogin()
-            reduceState { State.Chat(login = login.orEmpty()) }
+            reduceState { copy(login = login.orEmpty(), isLoading = false) }
         }
     }
 
     private fun sendMessage() {
-        val chatState = currentState as? State.Chat ?: return
-        if (chatState.currentMessage.isBlank()) return
+        if (currentState.currentMessage.isBlank()) return
 
         coroutineScope.launch(coroutineExceptionHandler) {
-//            chatDetailsInteractor.sendMessage(
-//                message = ProMessage(
-//                    authorLogin = chatState.login,
-//                    text = chatState.currentMessage
-//                )
-//            )
-//            reduceChatState { copy(currentMessage = "") }
+            chatDetailsInteractor.sendMessage(currentState.currentMessage)
+            reduceState { copy(currentMessage = "") }
         }
     }
 
@@ -72,14 +66,9 @@ internal class ProChatDetailsStore(
         }
     }
 
-    private fun reduceChatState(reducer: State.Chat.() -> State) {
-        val chatState = currentState as? State.Chat ?: return
-        reduceState { reducer(chatState) }
-    }
-
-    private fun addMessage(message: CommonMessage) {
-        reduceChatState {
-            copy(messages = messages + message.toUiState(login))
+    private fun addMessage(message: CommonChatMessage) {
+        reduceState {
+            copy(messages = messages + message.toState(currentState.login))
         }
     }
 }

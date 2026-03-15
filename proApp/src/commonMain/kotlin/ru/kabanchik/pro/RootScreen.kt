@@ -1,6 +1,7 @@
 package ru.kabanchik.pro
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -18,10 +19,12 @@ fun RootScreen(component: ProRootComponent) {
 
     Scaffold(
         snackbarHost = { CommonSnackBarHost(component.snackBarComponent.hostState) }
-    ) {
+    ) { paddingValues ->
         Children(
             stack = stack,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
         ) {
             when (val child = it.instance) {
                 is ProRootComponent.Child.Auth -> ProAuthScreen(component = child.component)

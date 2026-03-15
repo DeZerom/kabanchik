@@ -1,6 +1,7 @@
 package ru.kabanchik.client
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -19,11 +20,13 @@ fun RootScreen(component: RootComponent) {
 
     Scaffold(
         snackbarHost = { CommonSnackBarHost(component.snackBarComponent.hostState) }
-    ) {
+    ) { paddingValues ->
         Children(
             stack = stack,
             animation = stackAnimation(),
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
         ) {
             when (val child = it.instance) {
                 is RootComponent.Child.Auth -> AuthFlowScreen(component = child.component)

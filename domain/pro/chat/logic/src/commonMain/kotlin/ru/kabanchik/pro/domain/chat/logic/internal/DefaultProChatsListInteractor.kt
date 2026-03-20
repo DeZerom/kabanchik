@@ -10,6 +10,8 @@ internal class DefaultProChatsListInteractor(
     private val listRepository: ProChatsListRepository
 ) : ProChatsListInteractor, CommonChatsListInteractor by commonInteractor {
     override suspend fun requestChat() {
+        listRepository.register()
+
         val incoming = listRepository.listenIncoming().first()
         listRepository.acceptChat(clientLogin = incoming.clientLogin)
         listRepository.listenSystem().first()

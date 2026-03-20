@@ -35,6 +35,10 @@ internal class DefaultMessagesStompSource(
         ).withJsonConversions()
     }
 
+    override suspend fun register() {
+        requireSession().sendEmptyMsg(destination = "/app/executor.register")
+    }
+
     override suspend fun startChat() {
         requireSession().sendEmptyMsg(destination = "/app/chat.request")
     }

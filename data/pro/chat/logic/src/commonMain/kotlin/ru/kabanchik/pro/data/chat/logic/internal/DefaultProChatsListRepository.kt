@@ -15,6 +15,10 @@ internal class DefaultProChatsListRepository(
     commonRepository: CommonChatsListRepository,
     private val stompSource: ProMessagesStompSource
 ) : ProChatsListRepository, CommonChatsListRepository by commonRepository {
+    override suspend fun register() {
+        stompSource.register()
+    }
+
     override suspend fun listenIncoming(): Flow<ProIncoming> {
         return stompSource.listenIncoming().map { it.toDomain() }
     }

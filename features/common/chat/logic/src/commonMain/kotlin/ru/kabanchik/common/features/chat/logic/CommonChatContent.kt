@@ -61,6 +61,7 @@ fun CommonChatContent(
         ) {
             LazyColumn(
                 contentPadding = PaddingValues(vertical = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Bottom,
                 state = listState,
                 modifier = Modifier.weight(1f)

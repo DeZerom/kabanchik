@@ -10,6 +10,7 @@ import ru.kabanchik.pro.data.chatDetails.model.ProApiIncoming
 
 interface ProMessagesStompSource {
     suspend fun connect(token: String)
+    suspend fun register()
     suspend fun acceptChat(message: ProApiAcceptChat)
     suspend fun endChat()
     suspend fun send(message: CommonApiSendMessage)

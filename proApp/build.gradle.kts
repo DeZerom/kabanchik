@@ -72,14 +72,7 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "ru.kabanchik.pro"
             packageVersion = "1.0.3"
-        }
-
-        buildTypes {
-            release {
-                proguard {
-                    isEnabled.set(false)
-                }
-            }
+            modules("jdk.unsupported")
         }
     }
 }

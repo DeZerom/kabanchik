@@ -9,6 +9,7 @@ import ru.kabanchik.common.domain.user.logic.api.UserInteractor
 import ru.kabanchik.common.errorHandler.logic.api.ErrorHandler
 import ru.kabanchik.common.features.chat.logic.toState
 import ru.kabanchik.common.store.BaseCoroutineStore
+import ru.kabanchik.common.tools.textResource.TextResource
 import ru.kabanchik.feature.client.chatDetails.api.details.ChatDetailsContract.Event
 import ru.kabanchik.feature.client.chatDetails.api.details.ChatDetailsContract.SideEffect
 import ru.kabanchik.feature.client.chatDetails.api.details.ChatDetailsContract.State
@@ -61,7 +62,8 @@ internal class ClientChatDetailsStore(
         coroutineScope.launch {
             chatDetailsInteractor.listenMessages()
                 .catch {
-                    pushSideEffect(SideEffect.Error(errorHandler.handleError(it).defaultMessage))
+//                    pushSideEffect(SideEffect.Error(errorHandler.handleError(it).defaultMessage))
+                    pushSideEffect(SideEffect.Error(TextResource.Raw(it.toString())))
                 }.collect {
                     addMessage(it)
                 }

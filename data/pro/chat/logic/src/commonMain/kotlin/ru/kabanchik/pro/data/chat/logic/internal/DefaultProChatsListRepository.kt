@@ -2,7 +2,7 @@ package ru.kabanchik.pro.data.chat.logic.internal
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import ru.kabanchik.common.chat.model.CommonSystemMessage
+import ru.kabanchik.common.chat.model.CommonSessionMessage
 import ru.kabanchik.common.data.chat.logic.api.toDomain
 import ru.kabanchik.common.domain.chat.logic.api.repository.CommonChatsListRepository
 import ru.kabanchik.pro.data.chat.logic.api.ProMessagesStompSource
@@ -29,7 +29,7 @@ internal class DefaultProChatsListRepository(
         )
     }
 
-    override suspend fun listenSystem(): Flow<CommonSystemMessage> {
-        return stompSource.listenSystem().map { it.toDomain() }
+    override suspend fun listenSession(): Flow<CommonSessionMessage> {
+        return stompSource.listenSession().map { it.toDomain() }
     }
 }

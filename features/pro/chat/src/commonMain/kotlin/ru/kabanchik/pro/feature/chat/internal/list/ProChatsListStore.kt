@@ -45,7 +45,9 @@ class ProChatsListStore(
             runCatching {
                 reduceState { copy(isWaitingForClient = true) }
                 proChatsListInteractor.requestChat()
+                pushSideEffect(SideEffect.NavigateDetails)
             }.onFailure {
+                reduceState { copy(isWaitingForClient = false) }
                 pushSideEffect(SideEffect.ShowError(errorHandler.handleError(it).defaultMessage))
             }
         }

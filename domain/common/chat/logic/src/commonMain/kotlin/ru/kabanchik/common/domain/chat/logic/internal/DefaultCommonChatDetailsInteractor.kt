@@ -1,7 +1,10 @@
 package ru.kabanchik.common.domain.chat.logic.internal
 
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.datetime.LocalDate
 import ru.kabanchik.common.chat.model.CommonChatMessage
 import ru.kabanchik.common.domain.chat.logic.api.CommonChatDetailsInteractor
@@ -24,22 +27,24 @@ class DefaultCommonChatDetailsInteractor(
         val messagesFlow = detailsRepository.listenMessages()
         val sessionEndFlow = detailsRepository.listenSessionEnd()
 
-        return flow {
-            sessionMessageFlow.collect {
-                emit(CommonChatMessage.OperatorFound)
-            }
-            sessionEndFlow.collect {
-                emit(CommonChatMessage.SessionEnd)
-            }
-            messagesFlow.collect { message ->
-                var prevDate: LocalDate? = null
+        return channelFlow {
+            coroutineScope {
+                sessionMessageFlow.onEach {
+                    send(CommonChatMessage.OperatorFound)
+                }.launchIn(this)
+                sessionEndFlow.onEach {
+                    send(CommonChatMessage.SessionEnd)
+                }.launchIn(this)
+                messagesFlow.onEach { message ->
+                    var prevDate: LocalDate? = null
 
-                if (prevDate != null && prevDate != message.time.date) {
-                    emit(CommonChatMessage.Date(date = message.time.date))
-                }
+                    if (prevDate != null && prevDate != message.time.date) {
+                        send(CommonChatMessage.Date(date = message.time.date))
+                    }
 
-                prevDate = message.time.date
-                emit(CommonChatMessage.Message(message = message))
+                    prevDate = message.time.date
+                    send(CommonChatMessage.Message(message = message))
+                }.launchIn(this)
             }
         }
     }

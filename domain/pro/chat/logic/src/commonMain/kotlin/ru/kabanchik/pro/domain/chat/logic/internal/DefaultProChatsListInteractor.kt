@@ -15,10 +15,12 @@ internal class DefaultProChatsListInteractor(
         listRepository.register()
 
         val incoming = listRepository.listenIncoming().first()
-        val systemFlow = listRepository.listenSystem()
-        val chatCreation = coroutineScope { async { systemFlow.first() } }
-        listRepository.acceptChat(clientLogin = incoming.clientLogin)
+        val sessionFlow = listRepository.listenSession()
+        coroutineScope {
+            val chatCreation = async { sessionFlow.first() }
+            listRepository.acceptChat(clientLogin = incoming.clientLogin)
 
-        chatCreation.await()
+            chatCreation.await()
+        }
     }
 }

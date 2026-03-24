@@ -1,5 +1,7 @@
 package ru.kabanchik.pro.domain.chat.logic.internal
 
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.first
 import ru.kabanchik.common.domain.chat.logic.api.CommonChatsListInteractor
 import ru.kabanchik.pro.domain.chat.logic.api.ProChatsListInteractor
@@ -13,7 +15,10 @@ internal class DefaultProChatsListInteractor(
         listRepository.register()
 
         val incoming = listRepository.listenIncoming().first()
+        val systemFlow = listRepository.listenSystem()
+        val chatCreation = coroutineScope { async { systemFlow.first() } }
         listRepository.acceptChat(clientLogin = incoming.clientLogin)
-        listRepository.listenSystem().first()
+
+        chatCreation.await()
     }
 }

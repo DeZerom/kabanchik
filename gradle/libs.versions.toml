@@ -25,6 +25,7 @@ datetime = "0.7.1"
 krossbow = "9.3.0"
 datastore = "1.2.0"
 material3WindowSizeClassAndroid = "1.4.0"
+logger = "1.2.0"
 
 [libraries]
 components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "composeMultiplatform" }
@@ -70,6 +71,7 @@ krossbow-serialization-json = { module = "org.hildan.krossbow:krossbow-stomp-kxs
 androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 material3-window-size = { module = "org.jetbrains.compose.material3:material3-window-size-class", version.ref = "material3" }
+shivathapaa-logger = { module = "io.github.shivathapaa:logger", version.ref = "logger" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

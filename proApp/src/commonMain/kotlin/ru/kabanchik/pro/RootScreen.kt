@@ -1,6 +1,7 @@
 package ru.kabanchik.pro
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -10,7 +11,7 @@ import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import ru.kabanchik.common.snackBar.api.CommonSnackBarHost
 import ru.kabanchik.pro.component.ProRootComponent
 import ru.kabanchik.pro.feature.auth.api.ProAuthScreen
-import ru.kabanchik.pro.feature.chatDetails.api.ProChatDetailsScreen
+import ru.kabanchik.pro.feature.chat.api.flow.ProChatFlowScreen
 
 @Composable
 fun RootScreen(component: ProRootComponent) {
@@ -18,14 +19,16 @@ fun RootScreen(component: ProRootComponent) {
 
     Scaffold(
         snackbarHost = { CommonSnackBarHost(component.snackBarComponent.hostState) }
-    ) {
+    ) { paddingValues ->
         Children(
             stack = stack,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
         ) {
             when (val child = it.instance) {
                 is ProRootComponent.Child.Auth -> ProAuthScreen(component = child.component)
-                is ProRootComponent.Child.ChatDetails -> ProChatDetailsScreen(component = child.component)
+                is ProRootComponent.Child.Chat -> ProChatFlowScreen(component = child.component)
             }
         }
     }

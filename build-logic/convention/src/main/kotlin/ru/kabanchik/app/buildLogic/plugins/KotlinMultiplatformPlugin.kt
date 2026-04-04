@@ -28,6 +28,7 @@ class KotlinMultiplatformPlugin: Plugin<Project> {
                 commonMain {
                     dependencies {
                         implementation(libs.findLibrary("kotlinx-coroutines-core").get())
+                        implementation(libs.findLibrary("shivathapaa-logger").get())
                     }
                 }
 

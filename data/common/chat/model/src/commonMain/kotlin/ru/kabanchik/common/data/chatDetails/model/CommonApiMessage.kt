@@ -1,0 +1,34 @@
+package ru.kabanchik.common.data.chatDetails.model
+
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class CommonApiMessage(
+    @SerialName("id")
+    val id: String,
+
+    @SerialName("sessionId")
+    val sessionId: String,
+
+    @SerialName("sender")
+    val sender: String,
+
+    @SerialName("content")
+    val content: String,
+
+    @SerialName("type")
+    val type: CommonApiMessageType,
+
+    @SerialName("timestamp")
+    val timestamp: String,
+)
+
+@Serializable
+enum class CommonApiMessageType {
+    @SerialName("TEXT")
+    Text,
+
+    @SerialName("SYSTEM")
+    System
+}

@@ -13,8 +13,8 @@ import org.koin.core.component.get
 import ru.kabanchik.client.feature.auth.api.flow.AuthFlowComponent
 import ru.kabanchik.client.feature.auth.api.flow.AuthFlowDependencies
 import ru.kabanchik.common.snackBar.api.SnackBarComponent
-import ru.kabanchik.feature.client.chatDetails.api.ChatDetailsComponent
-import ru.kabanchik.feature.client.chatDetails.api.ChatDetailsDependencies
+import ru.kabanchik.feature.client.chatDetails.api.flow.ClientChatFlowComponent
+import ru.kabanchik.feature.client.chatDetails.api.flow.ClientChatFlowDependencies
 
 class DefaultRootComponent(
     componentContext: ComponentContext
@@ -48,14 +48,15 @@ class DefaultRootComponent(
             }
             Config.Chat -> {
                 RootComponent.Child.Chat(
-                    component = ChatDetailsComponent.create(
+                    component = ClientChatFlowComponent.create(
                         componentContext = context,
-                        dependencies = ChatDetailsDependencies.Factory(
+                        showSnackBar = { snackBarComponent.setData(it) },
+                        dependencies = ClientChatFlowDependencies.Factory(
+                            listInteractor = get(),
                             chatDetailsInteractor = get(),
                             userInteractor = get(),
                             errorHandler = get()
-                        ),
-                        showSnackBar = { snackBarComponent.setData(it) }
+                        )
                     )
                 )
             }

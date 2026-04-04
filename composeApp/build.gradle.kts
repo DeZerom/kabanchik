@@ -1,3 +1,4 @@
+
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -51,9 +52,11 @@ kotlin {
             implementation(projects.domain.client.auth.logic)
             implementation(projects.features.client.auth)
 
-            implementation(projects.data.client.chatDetails.logic)
-            implementation(projects.domain.client.chatDetails.logic)
-            implementation(projects.features.client.chatDetails)
+            implementation(projects.data.common.chat.logic)
+            implementation(projects.data.client.chat.logic)
+            implementation(projects.domain.common.chat.logic)
+            implementation(projects.domain.client.chat.logic)
+            implementation(projects.features.client.chat)
 
             implementation(libs.runtime)
             implementation(libs.foundation)
@@ -92,8 +95,8 @@ android {
         applicationId = "ru.kabanchik.client"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 2
-        versionName = "0.0.6"
+        versionCode = 3
+        versionName = "0.0.7"
     }
     packaging {
         resources {
@@ -122,15 +125,8 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "ru.kabanchik.client"
-            packageVersion = "1.0.0"
-        }
-
-        buildTypes {
-            release {
-                proguard {
-                    isEnabled.set(false)
-                }
-            }
+            packageVersion = "1.0.7"
+            modules("jdk.unsupported")
         }
     }
 }

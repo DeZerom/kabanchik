@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="chat_list_create_chat">Создать чат</string>
+
+    <string name="chat_details_hint">Введите сообщение</string>
+</resources>

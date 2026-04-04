@@ -1,4 +1,4 @@
-package ru.kabanchik.client.di
+package ru.kabanchik.pro.di
 
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf

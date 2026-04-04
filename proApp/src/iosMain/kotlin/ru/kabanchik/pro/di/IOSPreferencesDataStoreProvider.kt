@@ -1,4 +1,4 @@
-package ru.kabanchik.client.di
+package ru.kabanchik.pro.di
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory

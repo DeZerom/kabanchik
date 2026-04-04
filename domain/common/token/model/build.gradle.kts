@@ -8,7 +8,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "DomainCommonAuthModel"
+            baseName = "DomainCommonTokenModel"
             isStatic = true
         }
     }
@@ -20,6 +20,6 @@ kotlin {
 }
 
 android {
-    namespace = "ru.kabanchik.client.common.auth.model"
+    namespace = "ru.kabanchik.common.token.model"
 }
 

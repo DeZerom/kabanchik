@@ -19,8 +19,7 @@ kotlin {
             implementation(projects.domain.common.token.logic)
             implementation(projects.domain.client.auth.logic)
             implementation(projects.domain.pro.auth.logic)
-            implementation(projects.domain.client.chatDetails.logic)
-            implementation(projects.domain.pro.chatDetails.logic)
+            implementation(projects.domain.common.chat.logic)
 
             implementation(projects.common.dataStore)
 

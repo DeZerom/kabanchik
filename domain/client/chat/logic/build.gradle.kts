@@ -1,0 +1,30 @@
+plugins {
+    alias(libs.plugins.build.kmp)
+    alias(libs.plugins.build.koin)
+}
+
+kotlin {
+    listOf(
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach { iosTarget ->
+        iosTarget.binaries.framework {
+            baseName = "ClientDomainChatLogic"
+            isStatic = true
+        }
+    }
+
+    sourceSets {
+        commonMain.dependencies {
+            api(projects.domain.client.chat.model)
+            implementation(projects.domain.common.chat.logic)
+        }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+        }
+    }
+}
+
+android {
+    namespace = "ru.kabanchik.client.domain.logic.chat"
+}

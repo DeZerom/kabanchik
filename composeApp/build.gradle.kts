@@ -1,3 +1,4 @@
+
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -51,9 +52,11 @@ kotlin {
             implementation(projects.domain.client.auth.logic)
             implementation(projects.features.client.auth)
 
-            implementation(projects.data.client.chatDetails.logic)
-            implementation(projects.domain.client.chatDetails.logic)
-            implementation(projects.features.client.chatDetails)
+            implementation(projects.data.common.chat.logic)
+            implementation(projects.data.client.chat.logic)
+            implementation(projects.domain.common.chat.logic)
+            implementation(projects.domain.client.chat.logic)
+            implementation(projects.features.client.chat)
 
             implementation(libs.runtime)
             implementation(libs.foundation)
@@ -123,14 +126,7 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "ru.kabanchik.client"
             packageVersion = "1.0.7"
-        }
-
-        buildTypes {
-            release {
-                proguard {
-                    isEnabled.set(false)
-                }
-            }
+            modules("jdk.unsupported")
         }
     }
 }

@@ -11,7 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kabanchik.common.ui_kit.generated.resources.Res
-import kabanchik.common.ui_kit.generated.resources.chat_details_date_time
 import kabanchik.common.ui_kit.generated.resources.chat_details_you
 import org.jetbrains.compose.resources.stringResource
 import ru.kabanchik.common.uiKit.VSpacer
@@ -23,7 +22,6 @@ import ru.kabanchik.common.uiKit.theme.regularText
 @Composable
 fun CommonMessageCard(
     isUserAuthor: Boolean,
-    messageDate: String,
     messageTime: String,
     messageText: String,
     authorLogin: String,
@@ -54,7 +52,7 @@ fun CommonMessageCard(
                     color = KabanchikTheme.colors.secondaryText,
                 )
                 Text(
-                    text = stringResource(Res.string.chat_details_date_time, messageDate, messageTime),
+                    text = messageTime,
                     style = KabanchikTheme.typography.extraSmallText,
                     color = KabanchikTheme.colors.secondaryText,
                 )

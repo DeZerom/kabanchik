@@ -5,6 +5,7 @@ import ru.kabanchik.client.data.token.logic.api.di.DataCommonTokenModule
 import ru.kabanchik.common.data.chat.logic.api.di.DataCommonChatModule
 import ru.kabanchik.common.data.user.logic.api.di.DataCommonUserModule
 import ru.kabanchik.common.datastore.api.di.CommonDataStoreModule
+import ru.kabanchik.common.domain.auth.logic.api.di.DomainCommonAuthModule
 import ru.kabanchik.common.domain.chat.logic.api.di.DomainCommonChatModule
 import ru.kabanchik.common.domain.user.logic.api.di.DomainCommonUserModule
 import ru.kabanchik.common.errorHandler.logic.api.di.CommonErrorHandlerModule
@@ -23,6 +24,7 @@ private val commonModules = listOf(
 )
 
 private val domainModules = listOf(
+    DomainCommonAuthModule.module,
     DomainProAuthDiModule.module,
     DomainCommonUserModule.module,
     DomainProChatDetailsModule.module,

@@ -4,18 +4,16 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.binds
 import org.koin.dsl.module
 import ru.kabanchik.client.data.token.logic.internal.DefaultTokenRepository
-import ru.kabanchik.client.domain.auth.logic.api.repository.AuthTokenRepository
 import ru.kabanchik.client.domain.token.logic.api.TokenRepository
+import ru.kabanchik.common.domain.auth.logic.api.repository.CommonAuthTokenRepository
 import ru.kabanchik.common.domain.chat.logic.api.repository.CommonChatTokenRepository
-import ru.kabanchik.pro.domain.auth.logic.api.repository.ProAuthTokenRepository
 
 object DataCommonTokenModule {
     val module = module {
         singleOf(::DefaultTokenRepository) binds arrayOf(
             TokenRepository::class,
-            AuthTokenRepository::class,
+            CommonAuthTokenRepository::class,
             CommonChatTokenRepository::class,
-            ProAuthTokenRepository::class,
         )
     }
 }

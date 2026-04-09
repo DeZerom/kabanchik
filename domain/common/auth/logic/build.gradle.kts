@@ -9,20 +9,21 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "DomainProAuthLogic"
+            baseName = "DomainCommonAuthLogic"
             isStatic = true
         }
     }
 
     sourceSets {
         commonMain.dependencies {
-            api(projects.domain.pro.auth.model)
-            implementation(projects.domain.common.auth.logic)
+        }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
         }
     }
 }
 
 android {
-    namespace = "ru.kabanchik.pro.domain.auth.logic"
+    namespace = "ru.kabanchik.common.domain.auth.logic"
 }
 

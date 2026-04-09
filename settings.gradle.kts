@@ -54,6 +54,8 @@ include(":domain:common:token:model")
 include(":domain:common:user:logic")
 include(":data:common:user:logic")
 
+include(":domain:common:auth:logic")
+
 include(":data:common:chat:logic")
 include(":data:common:chat:model")
 include(":domain:common:chat:logic")

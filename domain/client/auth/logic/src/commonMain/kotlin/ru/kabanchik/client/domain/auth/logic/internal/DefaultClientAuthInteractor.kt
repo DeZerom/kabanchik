@@ -2,18 +2,16 @@ package ru.kabanchik.client.domain.auth.logic.internal
 
 import ru.kabanchik.client.domain.auth.logic.api.AuthInteractor
 import ru.kabanchik.client.domain.auth.logic.api.repository.AuthRepository
-import ru.kabanchik.client.domain.auth.logic.api.repository.AuthTokenRepository
-import ru.kabanchik.client.domain.auth.logic.api.repository.AuthUserRepository
+import ru.kabanchik.common.domain.auth.logic.api.CommonAuthInteractor
 
-internal class DefaultAuthInteractor(
+internal class DefaultClientAuthInteractor(
+    commonInteractor: CommonAuthInteractor,
     private val authRepository: AuthRepository,
-    private val tokenRepository: AuthTokenRepository,
-    private val userRepository: AuthUserRepository
-) : AuthInteractor {
+) : AuthInteractor, CommonAuthInteractor by commonInteractor {
     override suspend fun authorize(login: String, password: String) {
         val result = authRepository.authorize(login, password)
-        userRepository.setUserLogin(login)
-        tokenRepository.saveToken(result.token)
+        saveUser(login)
+        saveToken(result.token)
     }
 
     override suspend fun register(login: String, password: String) {

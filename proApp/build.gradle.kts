@@ -38,6 +38,7 @@ kotlin {
             implementation(projects.data.common.user.logic)
 
             implementation(projects.data.pro.auth.logic)
+            implementation(projects.domain.common.auth.logic)
             implementation(projects.domain.pro.auth.logic)
             implementation(projects.features.pro.auth)
 

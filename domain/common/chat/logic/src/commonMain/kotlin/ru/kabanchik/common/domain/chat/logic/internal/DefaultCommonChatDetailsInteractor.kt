@@ -27,6 +27,8 @@ class DefaultCommonChatDetailsInteractor(
         val messagesFlow = detailsRepository.listenMessages()
         val sessionEndFlow = detailsRepository.listenSessionEnd()
 
+        var prevDate: LocalDate? = null
+
         return channelFlow {
             coroutineScope {
                 sessionMessageFlow.onEach {
@@ -36,13 +38,12 @@ class DefaultCommonChatDetailsInteractor(
                     send(CommonChatMessage.SessionEnd)
                 }.launchIn(this)
                 messagesFlow.onEach { message ->
-                    var prevDate: LocalDate? = null
 
-                    if (prevDate != null && prevDate != message.time.date) {
+                    if (prevDate != message.time.date) {
                         send(CommonChatMessage.Date(date = message.time.date))
+                        prevDate = message.time.date
                     }
 
-                    prevDate = message.time.date
                     send(CommonChatMessage.Message(message = message))
                 }.launchIn(this)
             }

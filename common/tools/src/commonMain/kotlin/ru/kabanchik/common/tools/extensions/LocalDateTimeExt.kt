@@ -3,6 +3,7 @@ package ru.kabanchik.common.tools.extensions
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.format.FormatStringsInDatetimeFormats
+import kotlinx.datetime.format.Padding
 import kotlinx.datetime.format.byUnicodePattern
 import kotlinx.datetime.format.char
 import ru.kabanchik.common.tools.tools.RussianMonthNames
@@ -27,7 +28,7 @@ fun LocalDateTime.toHoursMinutes(): String {
 
 fun LocalDate.toDayFullMonth(): String {
     val format = LocalDate.Format {
-        day
+        day(padding = Padding.NONE)
         char(' ')
         monthName(RussianMonthNames.names)
     }

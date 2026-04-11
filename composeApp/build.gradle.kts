@@ -48,6 +48,9 @@ kotlin {
             implementation(projects.data.common.user.logic)
             implementation(projects.domain.common.user.logic)
 
+            implementation(projects.domain.common.splash.logic)
+            implementation(projects.domain.client.splash.logic)
+
             implementation(projects.data.client.auth.logic)
             implementation(projects.domain.client.auth.logic)
             implementation(projects.domain.common.auth.logic)
@@ -96,8 +99,8 @@ android {
         applicationId = "ru.kabanchik.client"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 3
-        versionName = "0.0.7"
+        versionCode = 4
+        versionName = "0.0.8"
     }
     packaging {
         resources {
@@ -126,7 +129,7 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "ru.kabanchik.client"
-            packageVersion = "1.0.7"
+            packageVersion = "1.0.8"
             modules("jdk.unsupported")
         }
     }

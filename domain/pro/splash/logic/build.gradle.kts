@@ -9,26 +9,19 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "DataCommonTokenLogic"
+            baseName = "DomainProSplashLogic"
             isStatic = true
         }
     }
 
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.domain.common.token.logic)
             implementation(projects.domain.common.splash.logic)
-            implementation(projects.domain.common.auth.logic)
-            implementation(projects.domain.common.chat.logic)
-
-            implementation(projects.common.dataStore)
-
-            implementation(libs.kotlinx.serializationJson)
         }
     }
 }
 
 android {
-    namespace = "ru.kabanchik.common.data.token.logic"
+    namespace = "ru.kabanchik.pro.domain.splash.logic"
 }
 

@@ -39,6 +39,7 @@ kotlin {
 
             implementation(projects.domain.common.splash.logic)
             implementation(projects.domain.pro.splash.logic)
+            implementation(projects.features.pro.splash)
 
             implementation(projects.data.pro.auth.logic)
             implementation(projects.domain.common.auth.logic)

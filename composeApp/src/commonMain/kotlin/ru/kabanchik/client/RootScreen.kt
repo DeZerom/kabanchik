@@ -11,6 +11,7 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import ru.kabanchik.client.component.RootComponent
 import ru.kabanchik.client.feature.auth.api.flow.AuthFlowScreen
+import ru.kabanchik.client.feature.splash.api.ClientSplashScreen
 import ru.kabanchik.common.snackBar.api.CommonSnackBarHost
 import ru.kabanchik.feature.client.chatDetails.api.flow.ClientChatFlowScreen
 
@@ -29,6 +30,7 @@ fun RootScreen(component: RootComponent) {
                 .padding(paddingValues)
         ) {
             when (val child = it.instance) {
+                is RootComponent.Child.Splash -> ClientSplashScreen(component = child.component)
                 is RootComponent.Child.Auth -> AuthFlowScreen(component = child.component)
                 is RootComponent.Child.Chat -> ClientChatFlowScreen(component = child.component)
             }

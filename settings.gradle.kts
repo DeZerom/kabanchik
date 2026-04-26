@@ -54,6 +54,11 @@ include(":domain:common:token:model")
 include(":domain:common:user:logic")
 include(":data:common:user:logic")
 
+include(":domain:common:splash:logic")
+include(":features:common:splash:logic")
+
+include(":domain:common:auth:logic")
+
 include(":data:common:chat:logic")
 include(":data:common:chat:model")
 include(":domain:common:chat:logic")
@@ -62,6 +67,9 @@ include(":features:common:chat:logic")
 include(":features:common:chat:model")
 
 // client
+include(":domain:client:splash:logic")
+include(":features:client:splash")
+
 include(":data:client:auth:logic")
 include(":data:client:auth:model")
 include(":domain:client:auth:logic")
@@ -75,6 +83,9 @@ include(":domain:client:chat:model")
 include(":features:client:chat")
 
 // pro
+include(":domain:pro:splash:logic")
+include(":features:pro:splash")
+
 include(":data:pro:auth:logic")
 include(":data:pro:auth:model")
 include(":domain:pro:auth:logic")

@@ -1,18 +1,16 @@
 package ru.kabanchik.pro.domain.auth.logic.internal
 
+import ru.kabanchik.common.domain.auth.logic.api.CommonAuthInteractor
 import ru.kabanchik.pro.domain.auth.logic.api.ProAuthInteractor
 import ru.kabanchik.pro.domain.auth.logic.api.repository.ProAuthRepository
-import ru.kabanchik.pro.domain.auth.logic.api.repository.ProAuthTokenRepository
-import ru.kabanchik.pro.domain.auth.logic.api.repository.ProAuthUserRepository
 
 internal class DefaultProAuthInteractor(
+    commonInteractor: CommonAuthInteractor,
     private val authRepository: ProAuthRepository,
-    private val tokenRepository: ProAuthTokenRepository,
-    private val userRepository: ProAuthUserRepository
-) : ProAuthInteractor {
+) : ProAuthInteractor, CommonAuthInteractor by commonInteractor {
     override suspend fun authorize(login: String, password: String) {
         val result = authRepository.authorize(login, password)
-        userRepository.setUserLogin(login)
-        tokenRepository.saveToken(result.token)
+        saveUser(login)
+        saveToken(result.token)
     }
 }

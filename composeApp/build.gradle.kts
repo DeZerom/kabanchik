@@ -48,8 +48,13 @@ kotlin {
             implementation(projects.data.common.user.logic)
             implementation(projects.domain.common.user.logic)
 
+            implementation(projects.domain.common.splash.logic)
+            implementation(projects.domain.client.splash.logic)
+            implementation(projects.features.client.splash)
+
             implementation(projects.data.client.auth.logic)
             implementation(projects.domain.client.auth.logic)
+            implementation(projects.domain.common.auth.logic)
             implementation(projects.features.client.auth)
 
             implementation(projects.data.common.chat.logic)

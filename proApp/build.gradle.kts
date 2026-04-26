@@ -112,8 +112,8 @@ android {
         applicationId = "ru.kabanchik.pro"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 4
-        versionName = "0.0.4"
+        versionCode = 5
+        versionName = "0.0.5"
     }
     packaging {
         resources {

@@ -17,6 +17,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(projects.domain.client.auth.model)
+            implementation(projects.domain.common.auth.logic)
         }
     }
 }

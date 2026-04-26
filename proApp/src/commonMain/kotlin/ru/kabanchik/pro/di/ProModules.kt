@@ -5,7 +5,9 @@ import ru.kabanchik.client.data.token.logic.api.di.DataCommonTokenModule
 import ru.kabanchik.common.data.chat.logic.api.di.DataCommonChatModule
 import ru.kabanchik.common.data.user.logic.api.di.DataCommonUserModule
 import ru.kabanchik.common.datastore.api.di.CommonDataStoreModule
+import ru.kabanchik.common.domain.auth.logic.api.di.DomainCommonAuthModule
 import ru.kabanchik.common.domain.chat.logic.api.di.DomainCommonChatModule
+import ru.kabanchik.common.domain.splash.logic.api.di.DomainCommonSplashModule
 import ru.kabanchik.common.domain.user.logic.api.di.DomainCommonUserModule
 import ru.kabanchik.common.errorHandler.logic.api.di.CommonErrorHandlerModule
 import ru.kabanchik.common.network.api.di.CommonNetworkModule
@@ -13,6 +15,7 @@ import ru.kabanchik.pro.data.auth.logic.api.di.DataProAuthModule
 import ru.kabanchik.pro.data.chat.logic.api.di.DataProChatDetailsModule
 import ru.kabanchik.pro.domain.auth.logic.api.di.DomainProAuthDiModule
 import ru.kabanchik.pro.domain.chat.logic.api.di.DomainProChatDetailsModule
+import ru.kabanchik.pro.domain.splash.logic.api.di.DomainProSplashModule
 
 expect val platformModules: List<Module>
 
@@ -23,6 +26,9 @@ private val commonModules = listOf(
 )
 
 private val domainModules = listOf(
+    DomainCommonSplashModule.module,
+    DomainProSplashModule.module,
+    DomainCommonAuthModule.module,
     DomainProAuthDiModule.module,
     DomainCommonUserModule.module,
     DomainProChatDetailsModule.module,

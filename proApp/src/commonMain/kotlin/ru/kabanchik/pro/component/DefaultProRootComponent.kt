@@ -16,6 +16,8 @@ import ru.kabanchik.pro.feature.auth.api.ProAuthComponent
 import ru.kabanchik.pro.feature.auth.api.ProAuthDependencies.Factory
 import ru.kabanchik.pro.feature.chat.api.flow.ProChatFlowComponent
 import ru.kabanchik.pro.feature.chat.api.flow.ProChatFlowDependencies
+import ru.kabanchik.pro.feature.splash.api.ProSplashComponent
+import ru.kabanchik.pro.feature.splash.api.ProSplashDependencies
 
 class DefaultProRootComponent(
     componentContext: ComponentContext
@@ -24,7 +26,7 @@ class DefaultProRootComponent(
     override val stack: Value<ChildStack<*, ProRootComponent.Child>> = childStack(
         source = stackNavigation,
         serializer = Config.serializer(),
-        initialStack = { listOf(Config.Auth) },
+        initialStack = { listOf(Config.Splash) },
         childFactory = ::createChild
     )
 
@@ -34,6 +36,18 @@ class DefaultProRootComponent(
 
     private fun createChild(config: Config, componentContext: ComponentContext): ProRootComponent.Child {
         return when (config) {
+            Config.Splash -> {
+                ProRootComponent.Child.Splash(
+                    component = ProSplashComponent.create(
+                        componentContext = componentContext,
+                        dependencies = ProSplashDependencies.Factory(
+                            splashInteractor = get()
+                        ),
+                        navigateAuth = { stackNavigation.pushNew(Config.Auth) },
+                        navigateChatsList = { stackNavigation.pushNew(Config.Chat) }
+                    )
+                )
+            }
             Config.Auth -> {
                 ProRootComponent.Child.Auth(
                     component = ProAuthComponent.create(
@@ -42,12 +56,12 @@ class DefaultProRootComponent(
                             authInteractor = get(),
                             errorHandler = get()
                         ),
-                        onAuthorize = { stackNavigation.pushNew(Config.ChatDetails) },
+                        onAuthorize = { stackNavigation.pushNew(Config.Chat) },
                         onError = { snackBarComponent.setData(Error(it)) },
                     )
                 )
             }
-            Config.ChatDetails -> {
+            Config.Chat -> {
                 ProRootComponent.Child.Chat(
                     component = ProChatFlowComponent.create(
                         componentContext = componentContext,
@@ -67,9 +81,12 @@ class DefaultProRootComponent(
     @Serializable
     sealed class Config {
         @Serializable
+        data object Splash : Config()
+
+        @Serializable
         data object Auth : Config()
 
         @Serializable
-        data object ChatDetails : Config()
+        data object Chat : Config()
     }
 }

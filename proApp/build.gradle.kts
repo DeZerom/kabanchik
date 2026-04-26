@@ -37,7 +37,12 @@ kotlin {
             implementation(projects.domain.common.user.logic)
             implementation(projects.data.common.user.logic)
 
+            implementation(projects.domain.common.splash.logic)
+            implementation(projects.domain.pro.splash.logic)
+            implementation(projects.features.pro.splash)
+
             implementation(projects.data.pro.auth.logic)
+            implementation(projects.domain.common.auth.logic)
             implementation(projects.domain.pro.auth.logic)
             implementation(projects.features.pro.auth)
 
@@ -93,7 +98,7 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "ru.kabanchik.pro"
-            packageVersion = "1.0.3"
+            packageVersion = "1.0.4"
             modules("jdk.unsupported")
         }
     }
@@ -107,8 +112,8 @@ android {
         applicationId = "ru.kabanchik.pro"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 3
-        versionName = "0.0.3"
+        versionCode = 4
+        versionName = "0.0.4"
     }
     packaging {
         resources {

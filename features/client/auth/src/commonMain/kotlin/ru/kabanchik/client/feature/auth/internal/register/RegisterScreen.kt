@@ -33,10 +33,13 @@ import ru.kabanchik.common.uiKit.theme.KabanchikTheme
 import ru.kabanchik.common.uiKit.theme.bigTitle
 import ru.kabanchik.common.uiKit.widgets.CommonButton
 import ru.kabanchik.common.uiKit.widgets.CommonTextInput
+import ru.kabanchik.common.uiKit.widgets.toolbar.AffectScaffold
 
 @Composable
 internal fun RegisterScreen(component: RegisterComponent) {
     val state by component.state.collectAsState()
+
+    AffectScaffold()
 
     PartFillingScreen {
         Content(

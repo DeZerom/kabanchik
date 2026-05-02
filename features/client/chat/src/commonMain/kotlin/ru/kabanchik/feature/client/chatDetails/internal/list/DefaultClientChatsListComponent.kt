@@ -35,6 +35,8 @@ class DefaultClientChatsListComponent(
         store.handleEvent(ClientChatsListContract.Event.CreateChatClicked)
     }
 
+    override fun onChatClicked(id: String) = Unit
+
     private fun observeSideEffects() {
         store.sideEffect.onEach { effect ->
             when (effect) {

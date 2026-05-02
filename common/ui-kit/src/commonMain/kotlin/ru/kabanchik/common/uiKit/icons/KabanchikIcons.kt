@@ -1,4 +1,4 @@
-package ru.kabanchik.common.uiKit
+package ru.kabanchik.common.uiKit.icons
 
 import androidx.compose.runtime.Composable
 import kabanchik.common.ui_kit.generated.resources.Res

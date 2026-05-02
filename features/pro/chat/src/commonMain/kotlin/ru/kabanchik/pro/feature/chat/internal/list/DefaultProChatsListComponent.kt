@@ -36,6 +36,8 @@ internal class DefaultProChatsListComponent(
         store.handleEvent(ProChatsListContract.Event.RequestChat)
     }
 
+    override fun onChatClicked(id: String) = Unit
+
     private fun observeSideEffects() {
         store.sideEffect.onEach { effect ->
             when (effect) {

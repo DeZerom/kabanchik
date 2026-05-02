@@ -6,7 +6,7 @@ import kotlinx.coroutines.launch
 import ru.kabanchik.common.chat.model.CommonChatMessage
 import ru.kabanchik.common.domain.user.logic.api.UserInteractor
 import ru.kabanchik.common.errorHandler.logic.api.ErrorHandler
-import ru.kabanchik.common.features.chat.logic.toState
+import ru.kabanchik.common.features.chat.logic.details.toState
 import ru.kabanchik.common.store.BaseCoroutineStore
 import ru.kabanchik.pro.domain.chat.logic.api.ProChatDetailsInteractor
 import ru.kabanchik.pro.feature.chat.api.details.ProChatDetailsContract.Event

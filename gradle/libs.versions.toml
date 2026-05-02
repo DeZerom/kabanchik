@@ -44,6 +44,7 @@ material3 = { module = "org.jetbrains.compose.material3:material3", version.ref 
 runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "composeMultiplatform" }
 ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "composeMultiplatform" }
 ui-tooling-preview = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "composeMultiplatform" }
+ui-tooling = { module = "org.jetbrains.compose.ui:ui-tooling", version.ref = "composeMultiplatform" }
 decompose = { module = "com.arkivanov.decompose:decompose", version.ref = "decompose" }
 decompose-extensionsCompose = { module = "com.arkivanov.decompose:extensions-compose", version.ref = "decompose" }
 essenty = { module = "com.arkivanov.essenty:lifecycle", version.ref = "essenty" }

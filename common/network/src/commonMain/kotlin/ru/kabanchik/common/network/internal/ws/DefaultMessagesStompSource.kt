@@ -36,7 +36,7 @@ internal class DefaultMessagesStompSource(
                 httpClient = httpClient
             )
         ).connect(
-            url = "ws://185.102.139.25:8080/ws",
+            url = url,
             customStompConnectHeaders = createAuthHeader(token)
         ).withJsonConversions()
     }

@@ -1,6 +1,7 @@
 package ru.kabanchik.common.tools.extensions
 
 import androidx.compose.runtime.Composable
+import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 import ru.kabanchik.common.tools.textResource.TextResource
 
@@ -10,4 +11,8 @@ fun TextResource.getValue(): String {
         is TextResource.Id -> stringResource(value)
         is TextResource.Raw -> value
     }
+}
+
+fun StringResource.asTextResource(): TextResource {
+    return TextResource.Id(this)
 }

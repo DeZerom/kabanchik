@@ -7,6 +7,14 @@ import androidx.compose.ui.unit.sp
 
 object KabanchikTypography {
     val typography = Typography(
+        headlineLarge = TextStyle(
+            fontSize = 28.sp,
+            fontWeight = FontWeight.Bold
+        ),
+        headlineMedium = TextStyle(
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold
+        ),
         titleLarge = TextStyle(
             fontSize = 18.sp,
             fontWeight = FontWeight.Normal
@@ -33,6 +41,12 @@ object KabanchikTypography {
         )
     )
 }
+
+val KabanchikTypography.bigHeadline: TextStyle
+    get() = typography.headlineLarge
+
+val KabanchikTypography.regularHeadline: TextStyle
+    get() = typography.headlineMedium
 
 val KabanchikTypography.bigTitle: TextStyle
     get() = typography.titleLarge

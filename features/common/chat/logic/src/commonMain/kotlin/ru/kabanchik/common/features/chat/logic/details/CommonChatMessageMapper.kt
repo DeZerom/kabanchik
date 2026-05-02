@@ -1,4 +1,4 @@
-package ru.kabanchik.common.features.chat.logic
+package ru.kabanchik.common.features.chat.logic.details
 
 import kabanchik.features.common.chat.logic.generated.resources.Res
 import kabanchik.features.common.chat.logic.generated.resources.chat_details_operator_found

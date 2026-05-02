@@ -7,7 +7,7 @@ import ru.kabanchik.client.domain.logic.chat.api.ClientChatDetailsInteractor
 import ru.kabanchik.common.chat.model.CommonChatMessage
 import ru.kabanchik.common.domain.user.logic.api.UserInteractor
 import ru.kabanchik.common.errorHandler.logic.api.ErrorHandler
-import ru.kabanchik.common.features.chat.logic.toState
+import ru.kabanchik.common.features.chat.logic.details.toState
 import ru.kabanchik.common.store.BaseCoroutineStore
 import ru.kabanchik.feature.client.chatDetails.api.details.ChatDetailsContract.Event
 import ru.kabanchik.feature.client.chatDetails.api.details.ChatDetailsContract.SideEffect

@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import ru.kabanchik.common.tools.extensions.getValue
 import ru.kabanchik.common.tools.textResource.TextResource
 import ru.kabanchik.common.uiKit.theme.KabanchikTheme
-import ru.kabanchik.common.uiKit.theme.bigTitle
+import ru.kabanchik.common.uiKit.theme.bigHeadline
 
 @Composable
 fun CommonToolbar(
@@ -34,7 +34,8 @@ private fun TitleToolbar(
         title = { ToolbarTitle(model.title) },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = KabanchikTheme.colors.background
-        )
+        ),
+        modifier = modifier
     )
 }
 
@@ -42,7 +43,7 @@ private fun TitleToolbar(
 private fun ToolbarTitle(text: TextResource) {
     Text(
         text = text.getValue(),
-        style = KabanchikTheme.typography.bigTitle,
+        style = KabanchikTheme.typography.bigHeadline,
         color = KabanchikTheme.colors.mainText
     )
 }

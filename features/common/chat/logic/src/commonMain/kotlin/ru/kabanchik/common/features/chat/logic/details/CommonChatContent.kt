@@ -1,4 +1,4 @@
-package ru.kabanchik.common.features.chat.logic
+package ru.kabanchik.common.features.chat.logic.details
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,8 +23,8 @@ import org.jetbrains.compose.resources.stringResource
 import ru.kabanchik.common.feature.chat.model.CommonUiMessage
 import ru.kabanchik.common.modifier.sendMessageModifier
 import ru.kabanchik.common.uiKit.HSpacer
-import ru.kabanchik.common.uiKit.KabanchikIcons
 import ru.kabanchik.common.uiKit.VSpacer
+import ru.kabanchik.common.uiKit.icons.KabanchikIcons
 import ru.kabanchik.common.uiKit.theme.KabanchikTheme
 import ru.kabanchik.common.uiKit.theme.cardDefault
 import ru.kabanchik.common.uiKit.widgets.CommonCircleButton

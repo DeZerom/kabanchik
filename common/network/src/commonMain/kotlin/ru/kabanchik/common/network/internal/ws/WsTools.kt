@@ -1,7 +1,8 @@
 package ru.kabanchik.common.network.internal.ws
 
-internal fun createAuthHeader(token: String): Map<String, String> {
+internal fun createStompHeaders(token: String): Map<String, String> {
     return mapOf(
-        "Authorization" to "Bearer $token"
+        "Authorization" to "Bearer $token",
+        "Heart-beat" to "5000,5000"
     )
 }

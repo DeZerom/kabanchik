@@ -37,7 +37,7 @@ internal class DefaultMessagesStompSource(
             )
         ).connect(
             url = url,
-            customStompConnectHeaders = createAuthHeader(token)
+            customStompConnectHeaders = createStompHeaders(token)
         ).withJsonConversions()
     }
 

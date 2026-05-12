@@ -25,5 +25,10 @@ object ChatListMock {
         hasUnread = false
     )
 
-    val chatsList = listOf(chatWithUnread, chatLongFields, chatNoName)
+    val chatDate = chatNoName.copy(
+        id = "4",
+        lastUpdate = "21.04.2024 в 20.20"
+    )
+
+    val chatsList = listOf(chatWithUnread, chatLongFields, chatNoName, chatDate)
 }

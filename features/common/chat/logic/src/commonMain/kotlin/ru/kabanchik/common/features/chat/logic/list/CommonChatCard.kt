@@ -128,3 +128,14 @@ private fun CommonChatCardNoNamePreview() {
         )
     }
 }
+
+@Preview
+@Composable
+private fun CommonChatCardDatePreview() {
+    KabanchikTheme {
+        CommonChatCard(
+            item = ChatListMock.chatDate,
+            onClick = {}
+        )
+    }
+}

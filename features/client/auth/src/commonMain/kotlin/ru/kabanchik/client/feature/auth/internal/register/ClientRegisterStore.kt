@@ -12,7 +12,7 @@ import ru.kabanchik.common.errorHandler.logic.api.ErrorHandler
 import ru.kabanchik.common.store.BaseCoroutineStore
 import ru.kabanchik.common.tools.textResource.TextResource
 
-internal class RegisterStore(
+internal class ClientRegisterStore(
     private val authInteractor: AuthInteractor,
     private val errorHandler: ErrorHandler
 ) : BaseCoroutineStore<Event, State, SideEffect>() {

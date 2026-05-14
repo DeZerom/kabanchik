@@ -2,7 +2,7 @@ package ru.kabanchik.client.feature.auth.api.register
 
 import kotlinx.coroutines.flow.StateFlow
 
-interface RegisterComponent {
+interface ClientRegisterComponent {
     val state: StateFlow<RegisterContract.State>
 
     fun onLoginChanged(newLogin: String)

@@ -1,11 +1,10 @@
-package ru.kabanchik.client.feature.auth.internal.auth
+package ru.kabanchik.client.feature.auth.internal.register
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -19,15 +18,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import kabanchik.features.client.auth.generated.resources.Res
-import kabanchik.features.client.auth.generated.resources.auth_auth_create_account
-import kabanchik.features.client.auth.generated.resources.auth_auth_enter
-import kabanchik.features.client.auth.generated.resources.auth_auth_entrance
-import kabanchik.features.client.auth.generated.resources.auth_auth_login
-import kabanchik.features.client.auth.generated.resources.auth_auth_password
+import kabanchik.features.client.auth.generated.resources.auth_reg_create_account
+import kabanchik.features.client.auth.generated.resources.auth_reg_has_acc
+import kabanchik.features.client.auth.generated.resources.auth_reg_login
+import kabanchik.features.client.auth.generated.resources.auth_reg_password
+import kabanchik.features.client.auth.generated.resources.auth_reg_registration
 import org.jetbrains.compose.resources.stringResource
-import ru.kabanchik.client.feature.auth.api.auth.AuthComponent
-import ru.kabanchik.client.feature.auth.api.auth.AuthContract
+import ru.kabanchik.client.feature.auth.api.register.ClientRegisterComponent
+import ru.kabanchik.client.feature.auth.api.register.RegisterContract
+import ru.kabanchik.common.scaffold.toolbar.CommonToolbarModel
 import ru.kabanchik.common.screenSize.PartFillingScreen
+import ru.kabanchik.common.tools.textResource.TextResource
 import ru.kabanchik.common.uiKit.KabanchikImages
 import ru.kabanchik.common.uiKit.VSpacer
 import ru.kabanchik.common.uiKit.theme.KabanchikTheme
@@ -37,29 +38,34 @@ import ru.kabanchik.common.uiKit.widgets.CommonTextInput
 import ru.kabanchik.common.uiKit.widgets.toolbar.AffectScaffold
 
 @Composable
-internal fun AuthScreen(component: AuthComponent) {
+internal fun ClientRegisterScreen(component: ClientRegisterComponent) {
     val state by component.state.collectAsState()
 
-    AffectScaffold()
+    AffectScaffold(
+        toolbar = CommonToolbarModel.BackButtonTitle(
+            title = TextResource.Raw(""),
+            onBackClicked = component::onHaveAccountClicked
+        )
+    )
 
     PartFillingScreen {
         Content(
             state = state,
             onLoginChange = component::onLoginChanged,
             onPasswordChange = component::onPasswordChanged,
-            onAuthorizeClicked = component::onAuthorizeClicked,
-            onCreateAccountClicked = component::onCreateAccountClicked
+            onCreateAccount = component::onCreateAccountClicked,
+            onHaveAccount = component::onHaveAccountClicked
         )
     }
 }
 
 @Composable
 private fun Content(
-    state: AuthContract.State,
+    state: RegisterContract.State,
     onLoginChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
-    onAuthorizeClicked: () -> Unit,
-    onCreateAccountClicked: () -> Unit,
+    onCreateAccount: () -> Unit,
+    onHaveAccount: () -> Unit
 ) {
     Column(
         verticalArrangement = Arrangement.Center,
@@ -67,7 +73,6 @@ private fun Content(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp)
-            .imePadding()
             .verticalScroll(rememberScrollState())
     ) {
         Image(
@@ -76,14 +81,14 @@ private fun Content(
             modifier = Modifier.size(186.dp)
         )
         Text(
-            text = stringResource(Res.string.auth_auth_entrance),
+            text = stringResource(Res.string.auth_reg_registration),
             style = KabanchikTheme.typography.bigTitle,
             color = KabanchikTheme.colors.mainText
         )
         VSpacer(24.dp)
         CommonTextInput(
             value = state.login,
-            label = stringResource(Res.string.auth_auth_login),
+            label = stringResource(Res.string.auth_reg_login),
             onValueChange = onLoginChange,
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
@@ -91,7 +96,7 @@ private fun Content(
         VSpacer(16.dp)
         CommonTextInput(
             value = state.password,
-            label = stringResource(Res.string.auth_auth_password),
+            label = stringResource(Res.string.auth_reg_password),
             onValueChange = onPasswordChange,
             visualTransformation = PasswordVisualTransformation(),
             singleLine = true,
@@ -99,8 +104,8 @@ private fun Content(
         )
         VSpacer(24.dp)
         CommonButton(
-            onClick = onAuthorizeClicked,
-            text = stringResource(Res.string.auth_auth_enter),
+            onClick = onCreateAccount,
+            text = stringResource(Res.string.auth_reg_create_account),
             backgroundColor = KabanchikTheme.colors.accent,
             textColor = KabanchikTheme.colors.mainText,
             isLoading = state.isLoading,
@@ -108,8 +113,8 @@ private fun Content(
         )
         VSpacer(8.dp)
         CommonButton(
-            onClick = onCreateAccountClicked,
-            text = stringResource(Res.string.auth_auth_create_account),
+            onClick = onHaveAccount,
+            text = stringResource(Res.string.auth_reg_has_acc),
             backgroundColor = KabanchikTheme.colors.interactive,
             textColor = KabanchikTheme.colors.mainTextInverted,
             isEnabled = !state.isLoading,

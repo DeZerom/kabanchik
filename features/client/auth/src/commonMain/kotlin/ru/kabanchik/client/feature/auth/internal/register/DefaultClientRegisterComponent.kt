@@ -8,19 +8,19 @@ import kabanchik.features.client.auth.generated.resources.auth_reg_successful_re
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import ru.kabanchik.client.feature.auth.api.register.RegisterComponent
+import ru.kabanchik.client.feature.auth.api.register.ClientRegisterComponent
 import ru.kabanchik.client.feature.auth.api.register.RegisterContract
 import ru.kabanchik.common.snackBar.api.SnackBarData
 import ru.kabanchik.common.tools.textResource.TextResource
 
-internal class DefaultRegisterComponent(
+internal class DefaultClientRegisterComponent(
     componentContext: ComponentContext,
-    private val dependencies: RegisterDependencies,
+    private val dependencies: ClientRegisterDependencies,
     private val navigateBack: () -> Unit,
     private val showSnackBar: (SnackBarData) -> Unit
-) : RegisterComponent, ComponentContext by componentContext {
+) : ClientRegisterComponent, ComponentContext by componentContext {
     private val store = retainedInstance {
-        RegisterStore(
+        ClientRegisterStore(
             authInteractor = dependencies.authInteractor,
             errorHandler = dependencies.errorHandler
         )

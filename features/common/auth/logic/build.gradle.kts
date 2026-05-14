@@ -10,16 +10,13 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "FeatureAuth"
+            baseName = "FeatureCommonAuth"
             isStatic = true
         }
     }
 
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.domain.client.auth.logic)
-            implementation(projects.features.common.auth.logic)
-
             implementation(projects.common.uiKit)
             implementation(projects.common.store)
             implementation(projects.common.tools)
@@ -31,6 +28,6 @@ kotlin {
 }
 
 android {
-    namespace = "ru.kabanchik.client.feature.auth"
+    namespace = "ru.kabanchik.common.feature.auth"
 }
 

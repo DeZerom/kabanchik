@@ -1,4 +1,4 @@
-package ru.kabanchik.common.network.internal.api
+package ru.kabanchik.common.network.internal.api.auth
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -6,11 +6,11 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import ru.kabanchik.client.data.auht.model.ApiAuthResult
 import ru.kabanchik.client.data.auht.model.ApiCredentials
-import ru.kabanchik.client.data.auth.logic.api.sources.AuthApi
+import ru.kabanchik.client.data.auth.logic.api.sources.ClientAuthApi
 
-internal class DefaultAuthApi(
+internal class DefaultClientAuthApi(
     private val httpClient: HttpClient
-) : AuthApi {
+) : ClientAuthApi {
     override suspend fun authorize(credentials: ApiCredentials): ApiAuthResult {
         return httpClient.post(urlString = "/api/login-user") {
             setBody(credentials)

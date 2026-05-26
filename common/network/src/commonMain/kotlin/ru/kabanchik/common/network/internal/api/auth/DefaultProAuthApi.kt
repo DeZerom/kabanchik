@@ -1,4 +1,4 @@
-package ru.kabanchik.common.network.internal.api
+package ru.kabanchik.common.network.internal.api.auth
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body

@@ -16,6 +16,7 @@ import org.hildan.krossbow.websocket.ktor.KtorWebSocketClient
 import ru.kabanchik.client.data.chat.logic.api.ClientMessagesStompSource
 import ru.kabanchik.common.data.chat.logic.api.CommonStompSource
 import ru.kabanchik.common.data.chatDetails.model.CommonApiMessage
+import ru.kabanchik.common.data.chatDetails.model.CommonApiReconnectMessage
 import ru.kabanchik.common.data.chatDetails.model.CommonApiSendMessage
 import ru.kabanchik.common.data.chatDetails.model.CommonApiSessionMessage
 import ru.kabanchik.common.data.chatDetails.model.CommonApiSystemMessage
@@ -56,6 +57,14 @@ internal class DefaultMessagesStompSource(
         requireSession().sendEmptyMsg(destination = "/app/chat.end")
     }
 
+    override suspend fun reconnect(message: CommonApiReconnectMessage) {
+        loggerD("Reconnect chat: /app/chat.reconnect. Body: $message")
+        requireSession().convertAndSend(
+            destination = "/app/chat.reconnect",
+            body = message
+        )
+    }
+
     override suspend fun acceptChat(message: ProApiAcceptChat) {
         loggerD("Accept chat: /app/chat.accept. Body: $message")
         requireSession().convertAndSend(
@@ -81,6 +90,18 @@ internal class DefaultMessagesStompSource(
             loggerE("System listening error", it)
         }.onEach {
             loggerD("System listening message: $it")
+        }
+    }
+
+    override suspend fun listenErrors(): Flow<CommonApiSystemMessage> {
+        loggerD("Start listening errors: /user/queue/errors")
+        return requireSession().subscribe(
+            destination = "/user/queue/errors",
+            deserializer = CommonApiSystemMessage.serializer()
+        ).catch {
+            loggerE("Errors listening error", it)
+        }.onEach {
+            loggerD("Errors listening message: $it")
         }
     }
 

@@ -4,6 +4,7 @@ import kotlinx.datetime.LocalDateTime
 
 data class CommonMessage(
     val id: String,
+    val sessionId: String,
     val authorLogin: String,
     val text: String,
     val type: CommonMessageType,

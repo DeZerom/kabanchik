@@ -15,6 +15,7 @@ fun String.toApiSendMessage(): CommonApiSendMessage = CommonApiSendMessage(
 
 fun CommonApiMessage.toDomain(): CommonMessage = CommonMessage(
     id = id,
+    sessionId = sessionId,
     authorLogin = sender,
     text = content,
     type = type.toDomain(),

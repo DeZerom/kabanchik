@@ -34,6 +34,7 @@ internal class ClientChatsListStore(
     private fun initChats() {
         coroutineScope.launch(coroutineExceptionHandler) {
             reduceState { copy(isLoading = true) }
+
             listInteractor.connect()
             launch {
                 listInteractor.listenSystem().collect {
@@ -41,6 +42,7 @@ internal class ClientChatsListStore(
                     reduceState { copy(isChatCreating = false) }
                 }
             }
+
             reduceState { copy(isLoading = false) }
         }
     }

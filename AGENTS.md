@@ -42,6 +42,7 @@
 - Koin-модули обычно называются по шаблону `DomainClientAuthModule`, `DataCommonChatModule` и т.п.
 - Default-реализации обычно называются с префиксом `Default`, например `DefaultClientAuthInteractor`.
 - Feature contracts используют классы `Contract` с вложенными типами `State`, `Event` и `SideEffect`.
+- При использовании однострочных Kotlin-функций с expression body (`fun foo(): Bar = ...`) обязательно указывайте явный возвращаемый тип.
 
 ## UI И State
 

@@ -1,5 +1,6 @@
 package ru.kabanchik.common.domain.chat.logic.internal
 
+import ru.kabanchik.common.chat.model.CommonChatSummary
 import ru.kabanchik.common.domain.chat.logic.api.CommonChatsListInteractor
 import ru.kabanchik.common.domain.chat.logic.api.repository.CommonChatTokenRepository
 import ru.kabanchik.common.domain.chat.logic.api.repository.CommonChatsListRepository
@@ -12,4 +13,6 @@ internal class DefaultCommonChatsListInteractor(
         val token = tokenRepository.getToken().orEmpty()
         listRepository.connect(token)
     }
+
+    override suspend fun getChats(): List<CommonChatSummary> = listRepository.getChats()
 }

@@ -18,6 +18,7 @@ internal class DefaultCommonChatsListInteractor(
 
     override suspend fun getChats(): List<CommonChatSummary> {
         return listRepository.getChats()
+            .sortedByDescending { chat -> chat.lastMessageTimestamp }
     }
 
     override suspend fun listenMessages(): Flow<CommonMessage> {

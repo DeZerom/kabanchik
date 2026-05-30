@@ -3,13 +3,12 @@ package ru.kabanchik.common.features.chat.logic.list
 import ru.kabanchik.common.chat.model.CommonChatSummary
 import ru.kabanchik.common.chat.model.CommonMessage
 import ru.kabanchik.common.feature.chat.model.CommonUiChatItem
-import ru.kabanchik.common.tools.extensions.toHoursMinutes
 
 fun CommonChatSummary.toUiChatItem(): CommonUiChatItem {
     return CommonUiChatItem(
         id = sessionId,
         title = participantName,
-        lastUpdate = lastMessageTimestamp.toHoursMinutes(),
+        lastUpdate = lastMessageTimestamp.toChatListLastUpdateText(),
         lastMessage = lastMessageContent,
         hasUnread = false,
         otherPersonName = participantName
@@ -19,7 +18,7 @@ fun CommonChatSummary.toUiChatItem(): CommonUiChatItem {
 fun List<CommonUiChatItem>.updateWithMessage(message: CommonMessage): List<CommonUiChatItem> {
     val existingItem = firstOrNull { it.id == message.sessionId }
     val updatedItem = existingItem?.copy(
-        lastUpdate = message.time.toHoursMinutes(),
+        lastUpdate = message.time.toChatListLastUpdateText(),
         lastMessage = message.text,
         hasUnread = true
     ) ?: message.toUiChatItem()
@@ -31,7 +30,7 @@ private fun CommonMessage.toUiChatItem(): CommonUiChatItem {
     return CommonUiChatItem(
         id = sessionId,
         title = authorLogin,
-        lastUpdate = time.toHoursMinutes(),
+        lastUpdate = time.toChatListLastUpdateText(),
         lastMessage = text,
         hasUnread = true,
         otherPersonName = authorLogin

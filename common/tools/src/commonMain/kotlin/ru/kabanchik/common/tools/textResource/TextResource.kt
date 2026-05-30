@@ -5,4 +5,8 @@ import org.jetbrains.compose.resources.StringResource
 sealed interface TextResource {
     class Raw(val value: String) : TextResource
     class Id(val value: StringResource) : TextResource
+    class Formatted(
+        val value: StringResource,
+        val args: List<Any>
+    ) : TextResource
 }

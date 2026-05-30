@@ -26,6 +26,15 @@ fun LocalDateTime.toHoursMinutes(): String {
     return format.format(this)
 }
 
+@OptIn(FormatStringsInDatetimeFormats::class)
+fun LocalDateTime.toDayMonthYear(): String {
+    val format = LocalDateTime.Format {
+        byUnicodePattern("dd.MM.yyyy")
+    }
+
+    return format.format(this)
+}
+
 fun LocalDate.toDayFullMonth(): String {
     val format = LocalDate.Format {
         day(padding = Padding.NONE)

@@ -18,6 +18,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ru.kabanchik.common.feature.chat.model.CommonUiChatItem
+import ru.kabanchik.common.tools.extensions.getValue
 import ru.kabanchik.common.uiKit.HSpacer
 import ru.kabanchik.common.uiKit.VSpacer
 import ru.kabanchik.common.uiKit.theme.KabanchikTheme
@@ -57,7 +58,7 @@ internal fun CommonChatCard(
                 )
                 HSpacer(4.dp)
                 Text(
-                    text = item.lastUpdate,
+                    text = item.lastUpdate.getValue(),
                     style = KabanchikTheme.typography.smallText,
                     color = KabanchikTheme.colors.secondaryText,
                 )

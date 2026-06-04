@@ -33,7 +33,7 @@ internal class DefaultMessagesStompSource(
     var session: StompSessionWithKxSerialization? = null
 
     override suspend fun connect(token: String) {
-        val url = "ws://$DEFAULT_HOST/ws"
+        val url = "ws://$DEFAULT_HOST/chat/ws"
         loggerD("Connect: $url")
         session = StompClient(
             webSocketClient = KtorWebSocketClient(

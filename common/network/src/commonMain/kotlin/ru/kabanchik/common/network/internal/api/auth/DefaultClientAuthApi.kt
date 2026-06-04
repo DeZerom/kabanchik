@@ -12,13 +12,13 @@ internal class DefaultClientAuthApi(
     private val httpClient: HttpClient
 ) : ClientAuthApi {
     override suspend fun authorize(credentials: ApiCredentials): ApiAuthResult {
-        return httpClient.post(urlString = "/api/login-user") {
+        return httpClient.post(urlString = "/auth/api/login-user") {
             setBody(credentials)
         }.body()
     }
 
     override suspend fun register(credentials: ApiCredentials): Int {
-        return httpClient.post(urlString = "/api/register-user") {
+        return httpClient.post(urlString = "/auth/api/register-user") {
             setBody(credentials)
         }.status.value
     }

@@ -12,7 +12,7 @@ internal class DefaultProAuthApi(
     private val client: HttpClient
 ) : ProAuthApi {
     override suspend fun authorize(credentials: ApiProCredentials): ApiProAuthResult {
-        return client.post(urlString = "/api/login-executor") {
+        return client.post(urlString = "/auth/api/login-executor") {
             setBody(credentials)
         }.body()
     }

@@ -11,10 +11,10 @@ internal class DefaultCommonChatRestSource(
     private val httpClient: HttpClient
 ) : CommonChatRestSource {
     override suspend fun getChats(): List<CommonApiChatSummary> {
-        return httpClient.get(urlString = "/api/chats").body()
+        return httpClient.get(urlString = "/chat/api/chats").body()
     }
 
     override suspend fun getMessages(sessionId: String): List<CommonApiMessage> {
-        return httpClient.get(urlString = "/api/chats/$sessionId/messages").body()
+        return httpClient.get(urlString = "/chat/api/chats/$sessionId/messages").body()
     }
 }

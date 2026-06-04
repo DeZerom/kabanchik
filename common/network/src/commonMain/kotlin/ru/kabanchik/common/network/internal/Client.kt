@@ -14,17 +14,14 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import kotlin.time.Duration.Companion.seconds
 
-private const val DEFAULT_HOST = "185.102.139.25"
+internal const val DEFAULT_HOST = "185.102.139.25:8080"
 
-internal fun createRestClient(
-    port: Int,
-    host: String = DEFAULT_HOST
-): HttpClient {
+internal fun createRestClient(): HttpClient {
     return HttpClient(CIO) {
         expectSuccess = true
 
         defaultRequest {
-            url("http://$host:$port/")
+            url("http://$DEFAULT_HOST/")
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
         }

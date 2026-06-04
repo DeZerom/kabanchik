@@ -12,9 +12,10 @@ internal class DefaultProChatsListInteractor(
     private val listRepository: ProChatsListRepository
 ) : ProChatsListInteractor, CommonChatsListInteractor by commonInteractor {
     override suspend fun requestChat() {
+        val incomingFlow = listRepository.listenIncoming()
         listRepository.register()
 
-        val incoming = listRepository.listenIncoming().first()
+        val incoming = incomingFlow.first()
         val sessionFlow = listRepository.listenSession()
         coroutineScope {
             val chatCreation = async { sessionFlow.first() }

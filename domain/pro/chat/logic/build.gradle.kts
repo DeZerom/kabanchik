@@ -19,6 +19,9 @@ kotlin {
             api(projects.domain.pro.chat.model)
             implementation(projects.domain.common.chat.logic)
         }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+        }
     }
 }
 

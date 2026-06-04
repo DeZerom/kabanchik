@@ -11,6 +11,7 @@ import org.hildan.krossbow.stomp.conversions.kxserialization.StompSessionWithKxS
 import org.hildan.krossbow.stomp.conversions.kxserialization.convertAndSend
 import org.hildan.krossbow.stomp.conversions.kxserialization.json.withJsonConversions
 import org.hildan.krossbow.stomp.conversions.kxserialization.subscribe
+import org.hildan.krossbow.stomp.config.HeartBeat
 import org.hildan.krossbow.stomp.sendEmptyMsg
 import org.hildan.krossbow.websocket.ktor.KtorWebSocketClient
 import ru.kabanchik.client.data.chat.logic.api.ClientMessagesStompSource
@@ -24,6 +25,7 @@ import ru.kabanchik.common.network.internal.DEFAULT_HOST
 import ru.kabanchik.pro.data.chat.logic.api.ProMessagesStompSource
 import ru.kabanchik.pro.data.chatDetails.model.ProApiAcceptChat
 import ru.kabanchik.pro.data.chatDetails.model.ProApiIncoming
+import kotlin.time.Duration.Companion.seconds
 
 internal class DefaultMessagesStompSource(
     private val httpClient: HttpClient
@@ -36,7 +38,13 @@ internal class DefaultMessagesStompSource(
         session = StompClient(
             webSocketClient = KtorWebSocketClient(
                 httpClient = httpClient
-            )
+            ),
+            configure = {
+                heartBeat = HeartBeat(
+                    minSendPeriod = 5.seconds,
+                    expectedPeriod = 5.seconds
+                )
+            }
         ).connect(
             url = url,
             customStompConnectHeaders = createStompHeaders(token)

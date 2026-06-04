@@ -10,6 +10,18 @@ import kotlin.test.assertEquals
 
 class DefaultCommonChatDetailsInteractorTest {
     @Test
+    fun reconnectsToRequestedSession() {
+        runBlocking {
+            val repository = MockCommonChatDetailsRepository(messages = emptyList())
+            val interactor = DefaultCommonChatDetailsInteractor(detailsRepository = repository)
+
+            interactor.reconnect(sessionId = "session-id")
+
+            assertEquals("session-id", repository.reconnectedSessionId)
+        }
+    }
+
+    @Test
     fun checkOneDayMessagesDates() {
         runBlocking {
             val interactor = createInteractor(MockData.Messages.oneDayMessages)

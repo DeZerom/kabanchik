@@ -10,6 +10,12 @@ import ru.kabanchik.common.domain.chat.logic.api.repository.CommonChatDetailsRep
 class MockCommonChatDetailsRepository(
     private val messages: List<CommonMessage>
 ) : CommonChatDetailsRepository {
+    var reconnectedSessionId: String? = null
+
+    override suspend fun reconnect(sessionId: String) {
+        reconnectedSessionId = sessionId
+    }
+
     override suspend fun sendMessage(message: String) {
         TODO("Not yet implemented")
     }

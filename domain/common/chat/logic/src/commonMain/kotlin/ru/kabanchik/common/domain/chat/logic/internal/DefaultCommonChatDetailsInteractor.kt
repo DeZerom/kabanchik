@@ -14,6 +14,10 @@ import ru.kabanchik.common.domain.chat.logic.api.splitAndTrimMessage
 class DefaultCommonChatDetailsInteractor(
     private val detailsRepository: CommonChatDetailsRepository
 ) : CommonChatDetailsInteractor {
+    override suspend fun reconnect(sessionId: String) {
+        detailsRepository.reconnect(sessionId)
+    }
+
     override suspend fun sendMessage(message: String) {
         val messages = splitAndTrimMessage(message)
 

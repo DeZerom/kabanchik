@@ -16,7 +16,8 @@ import ru.kabanchik.feature.client.chatDetails.api.details.ChatDetailsContract.S
 internal class ClientChatDetailsStore(
     private val chatDetailsInteractor: ClientChatDetailsInteractor,
     private val userInteractor: UserInteractor,
-    private val errorHandler: ErrorHandler
+    private val errorHandler: ErrorHandler,
+    private val sessionId: String
 ): BaseCoroutineStore<Event, State, SideEffect>() {
 
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, error ->
@@ -43,8 +44,15 @@ internal class ClientChatDetailsStore(
             reduceState { copy(isLoading = true) }
             val login = userInteractor.getUserLogin()
             reduceState { copy(login = login.orEmpty()) }
+            reconnectIfNeeded()
             listenMessages()
             reduceState { copy(isLoading = false) }
+        }
+    }
+
+    private suspend fun reconnectIfNeeded() {
+        if (sessionId.isNotBlank()) {
+            chatDetailsInteractor.reconnect(sessionId = sessionId)
         }
     }
 
@@ -59,7 +67,7 @@ internal class ClientChatDetailsStore(
 
     private fun listenMessages() {
         coroutineScope.launch {
-            chatDetailsInteractor.listenMessages()
+            chatDetailsInteractor.listenMessages(sessionId = sessionId)
                 .catch {
                     pushSideEffect(SideEffect.Error(errorHandler.handleError(it).defaultMessage))
                 }.collect {

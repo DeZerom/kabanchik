@@ -15,12 +15,14 @@ internal class DefaultClientChatDetailsComponent(
     componentContext: ComponentContext,
     dependencies: ClientChatDetailsDependencies,
     private val showSnackBar: (SnackBarData) -> Unit,
+    private val sessionId: String
 ) : ClientChatDetailsComponent, ComponentContext by componentContext {
     private val store = retainedInstance {
         ClientChatDetailsStore(
             chatDetailsInteractor = dependencies.chatDetailsInteractor,
             userInteractor = dependencies.userInteractor,
-            errorHandler = dependencies.errorHandler
+            errorHandler = dependencies.errorHandler,
+            sessionId = sessionId
         )
     }
     override val state: StateFlow<ChatDetailsContract.State> = store.state

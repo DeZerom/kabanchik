@@ -35,14 +35,15 @@ class DefaultProChatFlowComponent(
                     componentContext = componentContext,
                     dependencies = ProChatsListDependencies.Factory(dependencies),
                     showSnackBar = showSnackBar,
-                    navigateDetails = { stackNavigation.pushNew(Config.Details) }
+                    navigateDetails = { sessionId -> stackNavigation.pushNew(Config.Details(sessionId)) }
                 )
             )
-            Config.Details -> ProChatFlowComponent.Child.Details(
+            is Config.Details -> ProChatFlowComponent.Child.Details(
                 component = DefaultProChatDetailsComponent(
                     componentContext = componentContext,
                     dependencies = ProChatDetailsDependencies.Factory(dependencies),
-                    showSnackBar = showSnackBar
+                    showSnackBar = showSnackBar,
+                    sessionId = config.sessionId
                 )
             )
         }
@@ -54,6 +55,6 @@ class DefaultProChatFlowComponent(
         object List : Config()
 
         @Serializable
-        object Details : Config()
+        data class Details(val sessionId: String) : Config()
     }
 }

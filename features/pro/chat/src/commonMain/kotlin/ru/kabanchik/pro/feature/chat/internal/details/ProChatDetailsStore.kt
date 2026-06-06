@@ -16,7 +16,8 @@ import ru.kabanchik.pro.feature.chat.api.details.ProChatDetailsContract.State
 internal class ProChatDetailsStore(
     private val chatDetailsInteractor: ProChatDetailsInteractor,
     private val userInteractor: UserInteractor,
-    private val errorHandler: ErrorHandler
+    private val errorHandler: ErrorHandler,
+    private val sessionId: String
 ) : BaseCoroutineStore<Event, State, SideEffect>() {
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
         pushSideEffect(SideEffect.Error(errorHandler.handleError(throwable).defaultMessage))
@@ -40,9 +41,16 @@ internal class ProChatDetailsStore(
     private fun initChat() {
         coroutineScope.launch(coroutineExceptionHandler) {
             reduceState { State(isLoading = true) }
+            reconnectIfNeeded()
             listenMessages()
             val login = userInteractor.getUserLogin()
             reduceState { copy(login = login.orEmpty(), isLoading = false) }
+        }
+    }
+
+    private suspend fun reconnectIfNeeded() {
+        if (sessionId.isNotBlank()) {
+            chatDetailsInteractor.reconnect(sessionId = sessionId)
         }
     }
 
@@ -57,7 +65,7 @@ internal class ProChatDetailsStore(
 
     private fun listenMessages() {
         coroutineScope.launch {
-            chatDetailsInteractor.listenMessages()
+            chatDetailsInteractor.listenMessages(sessionId = sessionId)
                 .catch {
                     pushSideEffect(SideEffect.Error(errorHandler.handleError(it).defaultMessage))
                 }.collect {

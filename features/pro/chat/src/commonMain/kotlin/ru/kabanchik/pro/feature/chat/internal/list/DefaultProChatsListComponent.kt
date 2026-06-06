@@ -16,7 +16,7 @@ internal class DefaultProChatsListComponent(
     componentContext: ComponentContext,
     dependencies: ProChatsListDependencies,
     private val showSnackBar: (SnackBarData) -> Unit,
-    private val navigateDetails: () -> Unit,
+    private val navigateDetails: (String) -> Unit,
 ) : ProChatsListComponent, ComponentContext by componentContext {
     private val store = retainedInstance {
         ProChatsListStore(
@@ -36,7 +36,9 @@ internal class DefaultProChatsListComponent(
         store.handleEvent(ProChatsListContract.Event.RequestChat)
     }
 
-    override fun onChatClicked(id: String) = Unit
+    override fun onChatClicked(id: String) {
+        navigateDetails(id)
+    }
 
     private fun observeSideEffects() {
         store.sideEffect.onEach { effect ->
@@ -45,7 +47,7 @@ internal class DefaultProChatsListComponent(
                     showSnackBar(Error(effect.message))
                 }
                 ProChatsListContract.SideEffect.NavigateDetails -> {
-                    navigateDetails()
+                    navigateDetails("")
                 }
             }
         }.launchIn(coroutineScope)

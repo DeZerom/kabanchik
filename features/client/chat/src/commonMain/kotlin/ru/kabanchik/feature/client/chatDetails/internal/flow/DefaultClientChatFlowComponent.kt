@@ -30,12 +30,13 @@ internal class DefaultClientChatFlowComponent(
     
     private fun createChild(config: Config, componentContext: ComponentContext): ClientChatFlowComponent.Child {
         return when (config) {
-            Config.Details -> {
+            is Config.Details -> {
                 ClientChatFlowComponent.Child.Details(
                     component = DefaultClientChatDetailsComponent(
                         componentContext = componentContext,
                         dependencies = ClientChatDetailsDependencies.Factory(dependencies),
-                        showSnackBar = showSnackBar
+                        showSnackBar = showSnackBar,
+                        sessionId = config.sessionId
                     )
                 )
             }
@@ -43,7 +44,7 @@ internal class DefaultClientChatFlowComponent(
                 ClientChatFlowComponent.Child.List(
                     component = DefaultClientChatsListComponent(
                         componentContext = componentContext,
-                        navigateChatDetails = { stack.pushNew(Config.Details) },
+                        navigateChatDetails = { sessionId -> stack.pushNew(Config.Details(sessionId)) },
                         dependencies = ClientChatsListDependencies.Factory(dependencies),
                         showSnackBar = showSnackBar
                     )
@@ -58,6 +59,6 @@ internal class DefaultClientChatFlowComponent(
         object List : Config()
         
         @Serializable
-        object Details : Config()
+        data class Details(val sessionId: String) : Config()
     }
 }

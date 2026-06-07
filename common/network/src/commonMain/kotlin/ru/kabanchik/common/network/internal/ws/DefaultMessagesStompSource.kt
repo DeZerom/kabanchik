@@ -3,9 +3,17 @@ package ru.kabanchik.common.network.internal.ws
 import dev.shivathapaa.logger.api.loggerD
 import dev.shivathapaa.logger.api.loggerE
 import io.ktor.client.HttpClient
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import org.hildan.krossbow.stomp.StompClient
 import org.hildan.krossbow.stomp.conversions.kxserialization.StompSessionWithKxSerialization
 import org.hildan.krossbow.stomp.conversions.kxserialization.convertAndSend
@@ -31,8 +39,17 @@ internal class DefaultMessagesStompSource(
     private val httpClient: HttpClient
 ) : CommonStompSource, ClientMessagesStompSource, ProMessagesStompSource {
     var session: StompSessionWithKxSerialization? = null
+    private val subscriptionsMutex = Mutex()
+    private var subscriptionsScope = createSubscriptionsScope()
+    private var systemMessagesFlow: Flow<CommonApiSystemMessage>? = null
+    private var errorMessagesFlow: Flow<CommonApiSystemMessage>? = null
+    private var sessionMessagesFlow: Flow<CommonApiSessionMessage>? = null
+    private var incomingMessagesFlow: Flow<ProApiIncoming>? = null
+    private var messagesFlow: Flow<CommonApiMessage>? = null
+    private var sessionEndMessagesFlow: Flow<CommonApiMessage>? = null
 
     override suspend fun connect(token: String) {
+        resetCachedSubscriptions()
         val url = "ws://$DEFAULT_HOST/chat/ws"
         loggerD("Connect: $url")
         session = StompClient(
@@ -91,75 +108,122 @@ internal class DefaultMessagesStompSource(
     }
 
     override suspend fun listenSystem(): Flow<CommonApiSystemMessage> {
-        loggerD("Start listening system: /user/queue/system")
-        return requireSession().subscribe(
-            destination = "/user/queue/system",
-            deserializer = CommonApiSystemMessage.serializer()
-        ).catch {
-            loggerE("System listening error", it)
-        }.onEach {
-            loggerD("System listening message: $it")
+        return subscriptionsMutex.withLock {
+            systemMessagesFlow ?: requireSession().subscribe(
+                destination = "/user/queue/system",
+                deserializer = CommonApiSystemMessage.serializer()
+            ).catch {
+                loggerE("System listening error", it)
+            }.onEach {
+                loggerD("System listening message: $it")
+            }.shareSubscription().also {
+                loggerD("Start listening system: /user/queue/system")
+                systemMessagesFlow = it
+            }
         }
     }
 
     override suspend fun listenErrors(): Flow<CommonApiSystemMessage> {
-        loggerD("Start listening errors: /user/queue/errors")
-        return requireSession().subscribe(
-            destination = "/user/queue/errors",
-            deserializer = CommonApiSystemMessage.serializer()
-        ).catch {
-            loggerE("Errors listening error", it)
-        }.onEach {
-            loggerD("Errors listening message: $it")
+        return subscriptionsMutex.withLock {
+            errorMessagesFlow ?: requireSession().subscribe(
+                destination = "/user/queue/errors",
+                deserializer = CommonApiSystemMessage.serializer()
+            ).catch {
+                loggerE("Errors listening error", it)
+            }.onEach {
+                loggerD("Errors listening message: $it")
+            }.shareSubscription().also {
+                loggerD("Start listening errors: /user/queue/errors")
+                errorMessagesFlow = it
+            }
         }
     }
 
     override suspend fun listenSession(): Flow<CommonApiSessionMessage> {
-        loggerD("Start listening session: /user/queue/session")
-        return requireSession().subscribe(
-            destination = "/user/queue/session",
-            deserializer = CommonApiSessionMessage.serializer()
-        ).catch {
-            loggerE("Session listening error", it)
-        }.onEach {
-            loggerD("Session listening message: $it")
+        return subscriptionsMutex.withLock {
+            sessionMessagesFlow ?: requireSession().subscribe(
+                destination = "/user/queue/session",
+                deserializer = CommonApiSessionMessage.serializer()
+            ).catch {
+                loggerE("Session listening error", it)
+            }.onEach {
+                loggerD("Session listening message: $it")
+            }.shareSubscription().also {
+                loggerD("Start listening session: /user/queue/session")
+                sessionMessagesFlow = it
+            }
         }
     }
 
     override suspend fun listenIncoming(): Flow<ProApiIncoming> {
-        loggerD("Start listening incoming: /user/queue/incoming")
-        return requireSession().subscribe(
-            destination = "/user/queue/incoming",
-            deserializer = ProApiIncoming.serializer()
-        ).catch {
-            loggerE("Incoming listening error", it)
-        }.onEach {
-            loggerD("Incoming listening message: $it")
+        return subscriptionsMutex.withLock {
+            incomingMessagesFlow ?: requireSession().subscribe(
+                destination = "/user/queue/incoming",
+                deserializer = ProApiIncoming.serializer()
+            ).catch {
+                loggerE("Incoming listening error", it)
+            }.onEach {
+                loggerD("Incoming listening message: $it")
+            }.shareSubscription().also {
+                loggerD("Start listening incoming: /user/queue/incoming")
+                incomingMessagesFlow = it
+            }
         }
     }
 
     override suspend fun listenMessages(): Flow<CommonApiMessage> {
-        loggerD("Start listening messages: /user/queue/messages")
-        return requireSession().subscribe(
-            destination = "/user/queue/messages",
-            deserializer = CommonApiMessage.serializer()
-        ).catch {
-            loggerE("Messages listening error", it)
-        }.onEach {
-            loggerD("Messages listening message: $it")
+        return subscriptionsMutex.withLock {
+            messagesFlow ?: requireSession().subscribe(
+                destination = "/user/queue/messages",
+                deserializer = CommonApiMessage.serializer()
+            ).catch {
+                loggerE("Messages listening error", it)
+            }.onEach {
+                loggerD("Messages listening message: $it")
+            }.shareSubscription().also {
+                loggerD("Start listening messages: /user/queue/messages")
+                messagesFlow = it
+            }
         }
     }
 
     override suspend fun listenSessionEnd(): Flow<CommonApiMessage> {
-        loggerD("Start listening session end: /user/queue/messages")
-        return requireSession().subscribe(
-            destination = "/user/queue/session-end",
-            deserializer = CommonApiMessage.serializer()
-        ).catch {
-            loggerE("SessionEnd listening error", it)
-        }.onEach {
-            loggerD("SessionEnd listening message: $it")
+        return subscriptionsMutex.withLock {
+            sessionEndMessagesFlow ?: requireSession().subscribe(
+                destination = "/user/queue/session-end",
+                deserializer = CommonApiMessage.serializer()
+            ).catch {
+                loggerE("SessionEnd listening error", it)
+            }.onEach {
+                loggerD("SessionEnd listening message: $it")
+            }.shareSubscription().also {
+                loggerD("Start listening session end: /user/queue/session-end")
+                sessionEndMessagesFlow = it
+            }
         }
+    }
+
+    private fun <T> Flow<T>.shareSubscription(): Flow<T> {
+        return shareIn(
+            scope = subscriptionsScope,
+            started = SharingStarted.WhileSubscribed(),
+            replay = 0
+        )
+    }
+
+    private fun resetCachedSubscriptions() {
+        subscriptionsScope.cancel()
+        subscriptionsScope = createSubscriptionsScope()
+        systemMessagesFlow = null
+        errorMessagesFlow = null
+        sessionMessagesFlow = null
+        incomingMessagesFlow = null
+        messagesFlow = null
+        sessionEndMessagesFlow = null
+    }
+
+    private fun createSubscriptionsScope(): CoroutineScope {
+        return CoroutineScope(SupervisorJob() + Dispatchers.Default)
     }
 
     private fun requireSession(): StompSessionWithKxSerialization {

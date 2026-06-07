@@ -19,7 +19,9 @@ import ru.kabanchik.pro.data.chat.logic.api.ProMessagesStompSource
 object CommonNetworkModule {
     val module = module {
         single<HttpClient> {
-            createRestClient()
+            createRestClient(
+                tokenRepository = get()
+            )
         }
 
         single {

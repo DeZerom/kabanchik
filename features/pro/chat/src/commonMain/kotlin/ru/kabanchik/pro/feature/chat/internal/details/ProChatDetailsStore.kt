@@ -17,7 +17,8 @@ internal class ProChatDetailsStore(
     private val chatDetailsInteractor: ProChatDetailsInteractor,
     private val userInteractor: UserInteractor,
     private val errorHandler: ErrorHandler,
-    private val sessionId: String
+    private val sessionId: String,
+    private val shouldReconnect: Boolean
 ) : BaseCoroutineStore<Event, State, SideEffect>() {
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
         pushSideEffect(SideEffect.Error(errorHandler.handleError(throwable).defaultMessage))
@@ -49,7 +50,7 @@ internal class ProChatDetailsStore(
     }
 
     private suspend fun reconnectIfNeeded() {
-        if (sessionId.isNotBlank()) {
+        if (shouldReconnect) {
             chatDetailsInteractor.reconnect(sessionId = sessionId)
         }
     }

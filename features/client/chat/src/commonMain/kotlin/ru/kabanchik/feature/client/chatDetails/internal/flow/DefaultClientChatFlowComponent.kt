@@ -36,7 +36,8 @@ internal class DefaultClientChatFlowComponent(
                         componentContext = componentContext,
                         dependencies = ClientChatDetailsDependencies.Factory(dependencies),
                         showSnackBar = showSnackBar,
-                        sessionId = config.sessionId
+                        sessionId = config.sessionId,
+                        shouldReconnect = config.shouldReconnect
                     )
                 )
             }
@@ -44,7 +45,9 @@ internal class DefaultClientChatFlowComponent(
                 ClientChatFlowComponent.Child.List(
                     component = DefaultClientChatsListComponent(
                         componentContext = componentContext,
-                        navigateChatDetails = { sessionId -> stack.pushNew(Config.Details(sessionId)) },
+                        navigateChatDetails = { sessionId, shouldReconnect ->
+                            stack.pushNew(Config.Details(sessionId, shouldReconnect))
+                        },
                         dependencies = ClientChatsListDependencies.Factory(dependencies),
                         showSnackBar = showSnackBar
                     )
@@ -59,6 +62,9 @@ internal class DefaultClientChatFlowComponent(
         object List : Config()
         
         @Serializable
-        data class Details(val sessionId: String) : Config()
+        data class Details(
+            val sessionId: String,
+            val shouldReconnect: Boolean
+        ) : Config()
     }
 }

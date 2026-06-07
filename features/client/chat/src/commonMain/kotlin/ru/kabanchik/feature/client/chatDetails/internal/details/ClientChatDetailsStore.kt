@@ -17,7 +17,8 @@ internal class ClientChatDetailsStore(
     private val chatDetailsInteractor: ClientChatDetailsInteractor,
     private val userInteractor: UserInteractor,
     private val errorHandler: ErrorHandler,
-    private val sessionId: String
+    private val sessionId: String,
+    private val shouldReconnect: Boolean
 ): BaseCoroutineStore<Event, State, SideEffect>() {
 
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, error ->
@@ -51,7 +52,7 @@ internal class ClientChatDetailsStore(
     }
 
     private suspend fun reconnectIfNeeded() {
-        if (sessionId.isNotBlank()) {
+        if (shouldReconnect) {
             chatDetailsInteractor.reconnect(sessionId = sessionId)
         }
     }

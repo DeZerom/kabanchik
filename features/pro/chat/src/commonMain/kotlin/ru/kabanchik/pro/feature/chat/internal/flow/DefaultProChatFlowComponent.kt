@@ -35,7 +35,9 @@ class DefaultProChatFlowComponent(
                     componentContext = componentContext,
                     dependencies = ProChatsListDependencies.Factory(dependencies),
                     showSnackBar = showSnackBar,
-                    navigateDetails = { sessionId -> stackNavigation.pushNew(Config.Details(sessionId)) }
+                    navigateDetails = { sessionId, shouldReconnect ->
+                        stackNavigation.pushNew(Config.Details(sessionId, shouldReconnect))
+                    }
                 )
             )
             is Config.Details -> ProChatFlowComponent.Child.Details(
@@ -43,7 +45,8 @@ class DefaultProChatFlowComponent(
                     componentContext = componentContext,
                     dependencies = ProChatDetailsDependencies.Factory(dependencies),
                     showSnackBar = showSnackBar,
-                    sessionId = config.sessionId
+                    sessionId = config.sessionId,
+                    shouldReconnect = config.shouldReconnect
                 )
             )
         }
@@ -55,6 +58,9 @@ class DefaultProChatFlowComponent(
         object List : Config()
 
         @Serializable
-        data class Details(val sessionId: String) : Config()
+        data class Details(
+            val sessionId: String,
+            val shouldReconnect: Boolean
+        ) : Config()
     }
 }

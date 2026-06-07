@@ -50,7 +50,7 @@ internal class DefaultMessagesStompSource(
 
     override suspend fun connect(token: String) {
         resetCachedSubscriptions()
-        val url = "ws://$DEFAULT_HOST/chat/ws"
+        val url = "ws://$DEFAULT_HOST/ws"
         loggerD("Connect: $url")
         session = StompClient(
             webSocketClient = KtorWebSocketClient(

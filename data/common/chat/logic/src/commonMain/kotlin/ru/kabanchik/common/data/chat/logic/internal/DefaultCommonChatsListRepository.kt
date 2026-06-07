@@ -13,8 +13,8 @@ internal class DefaultCommonChatsListRepository(
     private val stompSource: CommonStompSource,
     private val restSource: CommonChatRestSource,
 ) : CommonChatsListRepository {
-    override suspend fun connect(token: String) {
-        stompSource.connect(token)
+    override suspend fun connect() {
+        stompSource.connect()
     }
 
     override suspend fun getChats(): List<CommonChatSummary> {

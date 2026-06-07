@@ -48,7 +48,7 @@ internal class DefaultMessagesStompSource(
     private var messagesFlow: Flow<CommonApiMessage>? = null
     private var sessionEndMessagesFlow: Flow<CommonApiMessage>? = null
 
-    override suspend fun connect(token: String) {
+    override suspend fun connect() {
         resetCachedSubscriptions()
         val url = "ws://$DEFAULT_HOST/ws"
         loggerD("Connect: $url")
@@ -62,10 +62,7 @@ internal class DefaultMessagesStompSource(
                     expectedPeriod = 5.seconds
                 )
             }
-        ).connect(
-            url = url,
-            customStompConnectHeaders = createStompHeaders(token)
-        ).withJsonConversions()
+        ).connect(url = url).withJsonConversions()
     }
 
     override suspend fun register() {

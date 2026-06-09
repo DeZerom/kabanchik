@@ -25,7 +25,8 @@ internal class DefaultClientChatFlowComponent(
         source = stack,
         serializer = Config.serializer(),
         initialStack = { listOf(Config.List) },
-        childFactory = ::createChild
+        childFactory = ::createChild,
+        handleBackButton = true
     ) 
     
     private fun createChild(config: Config, componentContext: ComponentContext): ClientChatFlowComponent.Child {

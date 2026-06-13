@@ -4,6 +4,7 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.value.Value
 import kotlinx.serialization.Serializable
@@ -45,6 +46,7 @@ class DefaultProChatFlowComponent(
                     componentContext = componentContext,
                     dependencies = ProChatDetailsDependencies.Factory(dependencies),
                     showSnackBar = showSnackBar,
+                    navigateBack = { stackNavigation.pop() },
                     sessionId = config.sessionId,
                     shouldReconnect = config.shouldReconnect
                 )

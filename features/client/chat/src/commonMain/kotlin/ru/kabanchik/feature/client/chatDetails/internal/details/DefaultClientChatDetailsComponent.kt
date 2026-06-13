@@ -15,6 +15,7 @@ internal class DefaultClientChatDetailsComponent(
     componentContext: ComponentContext,
     dependencies: ClientChatDetailsDependencies,
     private val showSnackBar: (SnackBarData) -> Unit,
+    private val navigateBack: () -> Unit,
     private val sessionId: String,
     private val shouldReconnect: Boolean
 ) : ClientChatDetailsComponent, ComponentContext by componentContext {
@@ -41,6 +42,10 @@ internal class DefaultClientChatDetailsComponent(
 
     override fun messageSent() {
         store.handleEvent(ChatDetailsContract.Event.MessageSent)
+    }
+
+    override fun onBackClicked() {
+        navigateBack()
     }
 
     private fun observeSideEffects() {

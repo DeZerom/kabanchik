@@ -12,6 +12,7 @@ class DefaultProChatDetailsComponent(
     componentContext: ComponentContext,
     dependencies: ru.kabanchik.pro.feature.chat.api.details.ProChatDetailsDependencies,
     private val showSnackBar: (SnackBarData) -> Unit,
+    private val navigateBack: () -> Unit,
     private val sessionId: String,
     private val shouldReconnect: Boolean
 ) : ru.kabanchik.pro.feature.chat.api.details.ProChatDetailsComponent, ComponentContext by componentContext {
@@ -38,6 +39,10 @@ class DefaultProChatDetailsComponent(
 
     override fun onSendClicked() {
         store.handleEvent(_root_ide_package_.ru.kabanchik.pro.feature.chat.api.details.ProChatDetailsContract.Event.MessageSent)
+    }
+
+    override fun onBackClicked() {
+        navigateBack()
     }
 
     private fun observeSideEffects() {

@@ -7,4 +7,5 @@ interface ProChatDetailsComponent {
 
     fun onMessageChanged(newMessage: String)
     fun onSendClicked()
+    fun onBackClicked()
 }

@@ -42,10 +42,11 @@ internal class ProChatDetailsStore(
     private fun initChat() {
         coroutineScope.launch(coroutineExceptionHandler) {
             reduceState { State(isLoading = true) }
+            val login = userInteractor.getUserLogin()
+            reduceState { copy(login = login.orEmpty()) }
             reconnectIfNeeded()
             listenMessages()
-            val login = userInteractor.getUserLogin()
-            reduceState { copy(login = login.orEmpty(), isLoading = false) }
+            reduceState { copy(isLoading = false) }
         }
     }
 

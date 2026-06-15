@@ -13,8 +13,9 @@ internal fun ProChatDetailsScreen(component: ru.kabanchik.pro.feature.chat.api.d
     val state by component.state.collectAsState()
 
     AffectScaffold(
-        toolbar = CommonToolbarModel.BackButtonTitle(
-            title = TextResource.Raw(""),
+        toolbar = CommonToolbarModel.BackButtonTitleSubtitle(
+            title = TextResource.Raw(state.toolbarTitle),
+            subtitle = TextResource.Raw(state.toolbarSubtitle),
             onBackClicked = component::onBackClicked
         )
     )

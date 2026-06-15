@@ -15,11 +15,11 @@ import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.hildan.krossbow.stomp.StompClient
+import org.hildan.krossbow.stomp.config.HeartBeat
 import org.hildan.krossbow.stomp.conversions.kxserialization.StompSessionWithKxSerialization
 import org.hildan.krossbow.stomp.conversions.kxserialization.convertAndSend
 import org.hildan.krossbow.stomp.conversions.kxserialization.json.withJsonConversions
 import org.hildan.krossbow.stomp.conversions.kxserialization.subscribe
-import org.hildan.krossbow.stomp.config.HeartBeat
 import org.hildan.krossbow.stomp.sendEmptyMsg
 import org.hildan.krossbow.websocket.ktor.KtorWebSocketClient
 import ru.kabanchik.client.data.chat.logic.api.ClientMessagesStompSource
@@ -203,7 +203,7 @@ internal class DefaultMessagesStompSource(
     private fun <T> Flow<T>.shareSubscription(): Flow<T> {
         return shareIn(
             scope = subscriptionsScope,
-            started = SharingStarted.WhileSubscribed(),
+            started = SharingStarted.Eagerly,
             replay = 0
         )
     }

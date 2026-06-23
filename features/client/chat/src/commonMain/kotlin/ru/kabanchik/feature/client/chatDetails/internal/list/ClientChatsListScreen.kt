@@ -38,7 +38,9 @@ internal fun ClientChatsListScreen(
                 emptyListButtonText = stringResource(Res.string.chat_list_create_chat),
                 emptyListButtonLoading = state.isChatCreating,
                 onItemClick = component::onChatClicked,
-                onAddClick = component::onCreateChatClicked
+                onAddClick = component::onCreateChatClicked,
+                listFabContentDescription = stringResource(Res.string.chat_list_create_chat),
+                listFabLoading = state.isChatCreating
             )
         }
     }

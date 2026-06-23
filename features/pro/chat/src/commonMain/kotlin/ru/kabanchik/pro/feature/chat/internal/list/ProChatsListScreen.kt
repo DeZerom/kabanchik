@@ -20,7 +20,7 @@ import ru.kabanchik.pro.feature.chat.api.list.ProChatsListComponent
 internal fun ProChatsListScreen(
     component: ProChatsListComponent
 ) {
-   val state by component.state.collectAsState()
+    val state by component.state.collectAsState()
 
     AffectScaffold(
         toolbar = CommonToolbarModel.Title(Res.string.chat_list_title.asTextResource())
@@ -37,6 +37,8 @@ internal fun ProChatsListScreen(
                 emptyListButtonLoading = state.isWaitingForClient,
                 onItemClick = component::onChatClicked,
                 onAddClick = component::onRequestClientClicked,
+                listFabContentDescription = stringResource(Res.string.chat_list_request_client),
+                listFabLoading = state.isWaitingForClient
             )
         }
     }

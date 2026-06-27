@@ -26,7 +26,8 @@ class DefaultProChatFlowComponent(
         source = stackNavigation,
         serializer = Config.serializer(),
         initialStack = { listOf(Config.List) },
-        childFactory = ::createChild
+        childFactory = ::createChild,
+        handleBackButton = true
     )
 
     private fun createChild(config: Config, componentContext: ComponentContext): ProChatFlowComponent.Child {

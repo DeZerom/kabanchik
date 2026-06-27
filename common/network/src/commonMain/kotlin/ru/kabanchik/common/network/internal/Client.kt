@@ -2,6 +2,7 @@ package ru.kabanchik.common.network.internal
 
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
@@ -19,6 +20,7 @@ import ru.kabanchik.common.domain.auth.logic.api.repository.CommonAuthTokenRepos
 import kotlin.time.Duration.Companion.seconds
 
 internal const val DEFAULT_HOST = "185.102.139.25:8080"
+private val DefaultRequestTimeout = 30.seconds
 
 private val AuthPaths = setOf(
     "/auth/api/login-user",
@@ -36,6 +38,11 @@ internal fun createRestClient(
             url("http://$DEFAULT_HOST/")
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
+        }
+        install(HttpTimeout) {
+            requestTimeoutMillis = DefaultRequestTimeout.inWholeMilliseconds
+            connectTimeoutMillis = DefaultRequestTimeout.inWholeMilliseconds
+            socketTimeoutMillis = DefaultRequestTimeout.inWholeMilliseconds
         }
         install(ContentNegotiation) {
             json(

@@ -14,6 +14,8 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -23,7 +25,6 @@ import org.jetbrains.compose.resources.stringResource
 import ru.kabanchik.common.feature.chat.model.CommonUiMessage
 import ru.kabanchik.common.modifier.sendMessageModifier
 import ru.kabanchik.common.uiKit.HSpacer
-import ru.kabanchik.common.uiKit.VSpacer
 import ru.kabanchik.common.uiKit.icons.KabanchikIcons
 import ru.kabanchik.common.uiKit.theme.KabanchikTheme
 import ru.kabanchik.common.uiKit.theme.cardDefault
@@ -39,15 +40,29 @@ fun CommonChatContent(
     modifier: Modifier = Modifier
 ) {
     val listState = rememberLazyListState()
+    val initialScrollDone = remember { mutableStateOf(false) }
+
     LaunchedEffect(messages.size) {
+        if (messages.isEmpty()) {
+            initialScrollDone.value = false
+            return@LaunchedEffect
+        }
+
+        val lastMessageIndex = messages.lastIndex
+
+        if (!initialScrollDone.value) {
+            listState.scrollToItem(lastMessageIndex)
+            initialScrollDone.value = true
+            return@LaunchedEffect
+        }
+
         val layoutInfo = listState.layoutInfo
         val lastVisibleItem = layoutInfo.visibleItemsInfo.lastOrNull()
-
         val wasAtBottom = lastVisibleItem == null ||
                 lastVisibleItem.index >= layoutInfo.totalItemsCount - 2
 
-        if (wasAtBottom && messages.isNotEmpty()) {
-            listState.animateScrollToItem(messages.size - 1)
+        if (wasAtBottom) {
+            listState.animateScrollToItem(lastMessageIndex)
         }
     }
 
@@ -63,7 +78,7 @@ fun CommonChatContent(
             LazyColumn(
                 contentPadding = PaddingValues(vertical = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Bottom,
+                verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Bottom),
                 state = listState,
                 modifier = Modifier
                     .weight(1f)
@@ -73,7 +88,6 @@ fun CommonChatContent(
                     items = messages,
                     key = { it.id }
                 ) { message ->
-                    VSpacer(16.dp)
                     CommonChatUiMessage(message)
                 }
             }

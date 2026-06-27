@@ -98,7 +98,7 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "ru.kabanchik.pro"
-            packageVersion = "1.0.4"
+            packageVersion = "1.0.5"
             modules("jdk.unsupported")
         }
     }
@@ -112,7 +112,7 @@ android {
         applicationId = "ru.kabanchik.pro"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 5
+        versionCode = 6
         versionName = "0.0.5"
     }
     packaging {

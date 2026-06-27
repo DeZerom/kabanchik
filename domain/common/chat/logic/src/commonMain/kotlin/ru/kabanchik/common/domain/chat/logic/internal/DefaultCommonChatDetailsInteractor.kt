@@ -20,6 +20,11 @@ class DefaultCommonChatDetailsInteractor(
         detailsRepository.reconnect(sessionId)
     }
 
+    override suspend fun getMessages(sessionId: String): List<CommonChatMessage> {
+        return detailsRepository.getMessages(sessionId)
+            .toChatMessages()
+    }
+
     override suspend fun sendMessage(message: String) {
         val messages = splitAndTrimMessage(message)
 
@@ -64,5 +69,21 @@ class DefaultCommonChatDetailsInteractor(
         sessionId: String
     ): Flow<CommonMessage> {
         return filter { it.sessionId == sessionId }
+    }
+
+    private fun List<CommonMessage>.toChatMessages(): List<CommonChatMessage> {
+        var prevDate: LocalDate? = null
+
+        return flatMap { message ->
+            if (prevDate != message.time.date) {
+                prevDate = message.time.date
+                listOf(
+                    CommonChatMessage.Date(date = message.time.date),
+                    CommonChatMessage.Message(message = message)
+                )
+            } else {
+                listOf(CommonChatMessage.Message(message = message))
+            }
+        }
     }
 }

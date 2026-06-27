@@ -86,6 +86,7 @@
 ./gradlew :composeApp:run
 ./gradlew :proApp:run
 ./gradlew :domain:common:chat:logic:allTests
+./gradlew jvmTest
 ```
 
 Для широкой проверки:
@@ -94,7 +95,7 @@
 ./gradlew build
 ```
 
-Если меняется только один модуль, сначала предпочитайте релевантную задачу этого модуля: `compileKotlin...`, `assemble` или `allTests`. Полную сборку запускайте при необходимости.
+Тесты запускайте через `./gradlew jvmTest`. Если меняется только один модуль, сначала предпочитайте релевантную задачу этого модуля: `compileKotlin...`, `assemble` или `allTests`. Полную сборку запускайте при необходимости.
 
 ## Source Set Guidance
 

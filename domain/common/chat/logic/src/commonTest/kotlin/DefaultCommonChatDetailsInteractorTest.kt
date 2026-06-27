@@ -22,6 +22,24 @@ class DefaultCommonChatDetailsInteractorTest {
     }
 
     @Test
+    fun getsMessagesForRequestedSession() {
+        runBlocking {
+            val repository = MockCommonChatDetailsRepository(
+                messages = MockData.Messages.allMessages
+            )
+            val interactor = DefaultCommonChatDetailsInteractor(detailsRepository = repository)
+
+            val data = interactor.getMessages(sessionId = "session")
+
+            val messages = data.filterIsInstance<CommonChatMessage.Message>()
+            val dates = data.filterIsInstance<CommonChatMessage.Date>()
+            assertEquals("session", repository.requestedMessagesSessionId)
+            assertEquals(MockData.Messages.allMessages, messages.map { it.message })
+            assertEquals(listOf(MockData.Messages.message1.time.date, MockData.Messages.message3.time.date), dates.map { it.date })
+        }
+    }
+
+    @Test
     fun checkOneDayMessagesDates() {
         runBlocking {
             val interactor = createInteractor(MockData.Messages.oneDayMessages)

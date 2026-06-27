@@ -45,9 +45,19 @@ internal class ClientChatDetailsStore(
             reduceState { copy(isLoading = true) }
             val login = userInteractor.getUserLogin()
             reduceState { copy(login = login.orEmpty()) }
+            loadMessages()
             reconnectIfNeeded()
             listenMessages()
             reduceState { copy(isLoading = false) }
+        }
+    }
+
+    private suspend fun loadMessages() {
+        if (sessionId.isBlank()) return
+
+        val messages = chatDetailsInteractor.getMessages(sessionId = sessionId)
+        reduceState {
+            copy(messages = messages.map { it.toState(currentState.login) })
         }
     }
 

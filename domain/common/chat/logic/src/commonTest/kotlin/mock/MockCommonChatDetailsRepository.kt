@@ -11,9 +11,15 @@ class MockCommonChatDetailsRepository(
     private val messages: List<CommonMessage>
 ) : CommonChatDetailsRepository {
     var reconnectedSessionId: String? = null
+    var requestedMessagesSessionId: String? = null
 
     override suspend fun reconnect(sessionId: String) {
         reconnectedSessionId = sessionId
+    }
+
+    override suspend fun getMessages(sessionId: String): List<CommonMessage> {
+        requestedMessagesSessionId = sessionId
+        return messages
     }
 
     override suspend fun sendMessage(message: String) {

@@ -26,6 +26,7 @@ import kabanchik.features.client.auth.generated.resources.auth_reg_registration
 import org.jetbrains.compose.resources.stringResource
 import ru.kabanchik.client.feature.auth.api.register.ClientRegisterComponent
 import ru.kabanchik.client.feature.auth.api.register.RegisterContract
+import ru.kabanchik.common.modifier.keyboardInsetsPadding
 import ru.kabanchik.common.scaffold.toolbar.CommonToolbarModel
 import ru.kabanchik.common.screenSize.PartFillingScreen
 import ru.kabanchik.common.tools.textResource.TextResource
@@ -73,6 +74,7 @@ private fun Content(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp)
+            .keyboardInsetsPadding()
             .verticalScroll(rememberScrollState())
     ) {
         Image(

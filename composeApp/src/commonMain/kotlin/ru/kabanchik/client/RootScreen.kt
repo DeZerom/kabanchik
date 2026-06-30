@@ -1,5 +1,6 @@
 package ru.kabanchik.client
 
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -25,6 +26,7 @@ fun RootScreen(component: RootComponent) {
     val toolbar by ScaffoldState.toolbar.collectAsState()
 
     Scaffold(
+        contentWindowInsets = WindowInsets(0),
         snackbarHost = { CommonSnackBarHost(component.snackBarComponent.hostState) },
         topBar = { CommonToolbar(toolbar) }
     ) { paddingValues ->

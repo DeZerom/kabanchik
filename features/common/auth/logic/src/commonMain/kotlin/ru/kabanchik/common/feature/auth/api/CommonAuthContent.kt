@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -25,6 +24,7 @@ import kabanchik.features.common.auth.logic.generated.resources.auth_auth_entran
 import kabanchik.features.common.auth.logic.generated.resources.auth_auth_login
 import kabanchik.features.common.auth.logic.generated.resources.auth_auth_password
 import org.jetbrains.compose.resources.stringResource
+import ru.kabanchik.common.modifier.keyboardInsetsPadding
 import ru.kabanchik.common.uiKit.KabanchikImages
 import ru.kabanchik.common.uiKit.VSpacer
 import ru.kabanchik.common.uiKit.theme.KabanchikTheme
@@ -50,7 +50,7 @@ fun CommonAuthContent(
         modifier = modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp)
-            .imePadding()
+            .keyboardInsetsPadding()
             .verticalScroll(rememberScrollState())
     ) {
         Image(

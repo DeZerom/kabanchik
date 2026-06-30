@@ -23,6 +23,7 @@ import kabanchik.features.common.chat.logic.generated.resources.Res
 import kabanchik.features.common.chat.logic.generated.resources.chat_details_hint
 import org.jetbrains.compose.resources.stringResource
 import ru.kabanchik.common.feature.chat.model.CommonUiMessage
+import ru.kabanchik.common.modifier.keyboardInsetsPadding
 import ru.kabanchik.common.modifier.sendMessageModifier
 import ru.kabanchik.common.uiKit.HSpacer
 import ru.kabanchik.common.uiKit.icons.KabanchikIcons
@@ -73,6 +74,7 @@ fun CommonChatContent(
         Column(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
+                .keyboardInsetsPadding()
                 .padding(bottom = 16.dp)
         ) {
             LazyColumn(

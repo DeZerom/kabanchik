@@ -17,7 +17,7 @@ import ru.kabanchik.common.tools.textResource.TextResource
 import ru.kabanchik.common.uiKit.icons.KabanchikIcons
 import ru.kabanchik.common.uiKit.icons.extensions.ArrowBack24
 import ru.kabanchik.common.uiKit.theme.KabanchikTheme
-import ru.kabanchik.common.uiKit.theme.bigHeadline
+import ru.kabanchik.common.uiKit.theme.h1
 import ru.kabanchik.common.uiKit.theme.regularText
 import ru.kabanchik.common.uiKit.theme.smallTitle
 
@@ -105,7 +105,7 @@ private fun BackButtonTitleSubtitleToolbar(
 private fun ToolbarTitle(text: TextResource) {
     Text(
         text = text.getValue(),
-        style = KabanchikTheme.typography.bigHeadline,
+        style = KabanchikTheme.typography.h1,
         color = KabanchikTheme.colors.mainText,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis

@@ -48,6 +48,10 @@ internal class DefaultAuthComponent(
         store.handleEvent(AuthContract.Event.RegisterClicked)
     }
 
+    override fun onChangePasswordVisibility() {
+        store.handleEvent(AuthContract.Event.ChangePasswordVisibility)
+    }
+
     private fun observeSideEffects() {
         store.sideEffect.onEach { effect ->
             when (effect) {

@@ -49,6 +49,10 @@ internal class DefaultClientRegisterComponent(
         navigateBack()
     }
 
+    override fun onChangePasswordVisibility() {
+        store.handleEvent(RegisterContract.Event.ChangePasswordVisibility)
+    }
+
     private fun observeSideEffects() {
         store.sideEffect.onEach { effect ->
             when (effect) {

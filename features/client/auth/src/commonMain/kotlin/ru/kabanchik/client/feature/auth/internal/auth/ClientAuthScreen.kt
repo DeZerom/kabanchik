@@ -23,7 +23,9 @@ internal fun ClientAuthScreen(component: AuthComponent) {
             login = state.login,
             password = state.password,
             isLoading = state.isLoading,
-            hasRegisterButton = true
+            isAuthorizing = true,
+            isPasswordVisible = state.isPasswordVisible,
+            onChangePasswordVisibility = component::onChangePasswordVisibility
         )
     }
 }

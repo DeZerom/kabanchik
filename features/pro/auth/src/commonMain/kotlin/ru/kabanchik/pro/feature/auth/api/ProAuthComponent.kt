@@ -11,6 +11,7 @@ interface ProAuthComponent {
     fun onAuthorizeClicked()
     fun onLoginChanged(newLogin: String)
     fun onPasswordChanged(newPassword: String)
+    fun onChangePasswordVisibility()
 
     companion object Companion {
         fun create(

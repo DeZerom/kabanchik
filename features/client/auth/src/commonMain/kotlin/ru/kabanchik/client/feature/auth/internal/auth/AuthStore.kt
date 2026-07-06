@@ -30,6 +30,7 @@ class AuthStore(
             is Event.PasswordChanged -> reduceState { copy(password = event.newPassword) }
             Event.AuthorizeClicked -> authorize()
             Event.RegisterClicked -> onRegisterClicked()
+            Event.ChangePasswordVisibility -> reduceState { copy(isPasswordVisible = !isPasswordVisible) }
         }
     }
 

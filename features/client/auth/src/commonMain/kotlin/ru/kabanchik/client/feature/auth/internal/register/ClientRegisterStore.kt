@@ -29,6 +29,7 @@ internal class ClientRegisterStore(
             is Event.LoginChanged -> reduceState { copy(login = event.newLogin) }
             is Event.PasswordChanged -> reduceState { copy(password = event.newPassword) }
             Event.CreateAccountClicked -> createAccount()
+            Event.ChangePasswordVisibility -> reduceState { copy(isPasswordVisible = !isPasswordVisible) }
         }
     }
 

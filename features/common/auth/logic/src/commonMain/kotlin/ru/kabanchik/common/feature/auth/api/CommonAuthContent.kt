@@ -1,20 +1,25 @@
 package ru.kabanchik.common.feature.auth.api
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kabanchik.features.common.auth.logic.generated.resources.Res
@@ -22,13 +27,20 @@ import kabanchik.features.common.auth.logic.generated.resources.auth_auth_create
 import kabanchik.features.common.auth.logic.generated.resources.auth_auth_enter
 import kabanchik.features.common.auth.logic.generated.resources.auth_auth_entrance
 import kabanchik.features.common.auth.logic.generated.resources.auth_auth_login
+import kabanchik.features.common.auth.logic.generated.resources.auth_auth_no_acc
 import kabanchik.features.common.auth.logic.generated.resources.auth_auth_password
+import kabanchik.features.common.auth.logic.generated.resources.auth_reg_registration
 import org.jetbrains.compose.resources.stringResource
 import ru.kabanchik.common.modifier.keyboardInsetsPadding
+import ru.kabanchik.common.uiKit.HSpacer
 import ru.kabanchik.common.uiKit.KabanchikImages
 import ru.kabanchik.common.uiKit.VSpacer
+import ru.kabanchik.common.uiKit.icons.KabanchikIcons
+import ru.kabanchik.common.uiKit.icons.extensions.Eye16
+import ru.kabanchik.common.uiKit.icons.extensions.EyeOff16
 import ru.kabanchik.common.uiKit.theme.KabanchikTheme
-import ru.kabanchik.common.uiKit.theme.bigTitle
+import ru.kabanchik.common.uiKit.theme.bodyS
+import ru.kabanchik.common.uiKit.theme.h1
 import ru.kabanchik.common.uiKit.widgets.CommonButton
 import ru.kabanchik.common.uiKit.widgets.CommonTextInput
 
@@ -37,16 +49,17 @@ fun CommonAuthContent(
     login: String,
     password: String,
     isLoading: Boolean,
-    hasRegisterButton: Boolean,
+    isAuthorizing: Boolean,
+    isPasswordVisible: Boolean,
     onAuthorizeClicked: () -> Unit,
     onLoginChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     onCreateAccountClicked: () -> Unit = {},
+    onChangePasswordVisibility: () -> Unit = {},
 ) {
     Column(
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp)
@@ -56,11 +69,13 @@ fun CommonAuthContent(
         Image(
             painter = KabanchikImages.AppImage,
             contentDescription = null,
-            modifier = Modifier.size(186.dp)
+            modifier = Modifier
+                .size(186.dp)
+                .align(Alignment.CenterHorizontally)
         )
         Text(
-            text = stringResource(Res.string.auth_auth_entrance),
-            style = KabanchikTheme.typography.bigTitle,
+            text = if (isAuthorizing) stringResource(Res.string.auth_auth_entrance) else stringResource(Res.string.auth_reg_registration),
+            style = KabanchikTheme.typography.h1,
             color = KabanchikTheme.colors.mainText
         )
         VSpacer(24.dp)
@@ -76,8 +91,19 @@ fun CommonAuthContent(
             value = password,
             label = stringResource(Res.string.auth_auth_password),
             onValueChange = onPasswordChange,
-            visualTransformation = PasswordVisualTransformation(),
+            visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             singleLine = true,
+            trailingIcon = {
+                IconButton(
+                    onClick = onChangePasswordVisibility,
+                ) {
+                    Icon(
+                        imageVector = if (isPasswordVisible) KabanchikIcons.EyeOff16 else KabanchikIcons.Eye16,
+                        contentDescription = null,
+                        tint = KabanchikTheme.colors.secondaryText
+                    )
+                }
+            },
             modifier = Modifier.fillMaxWidth()
         )
         VSpacer(24.dp)
@@ -89,16 +115,24 @@ fun CommonAuthContent(
             isLoading = isLoading,
             modifier = Modifier.fillMaxWidth()
         )
-        if (hasRegisterButton) {
-            VSpacer(8.dp)
-            CommonButton(
-                onClick = onCreateAccountClicked,
-                text = stringResource(Res.string.auth_auth_create_account),
-                backgroundColor = KabanchikTheme.colors.interactive,
-                textColor = KabanchikTheme.colors.mainTextInverted,
-                isEnabled = !isLoading,
-                modifier = Modifier.fillMaxWidth()
-            )
+        if (isAuthorizing) {
+            VSpacer(16.dp)
+            Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                Text(
+                    text = stringResource(Res.string.auth_auth_no_acc),
+                    style = KabanchikTheme.typography.bodyS,
+                    color = KabanchikTheme.colors.secondaryText
+                )
+                HSpacer(4.dp)
+                Text(
+                    text = stringResource(Res.string.auth_auth_create_account),
+                    style = KabanchikTheme.typography.bodyS,
+                    color = KabanchikTheme.colors.accent,
+                    modifier = Modifier.clickable {
+                        if (!isLoading) onCreateAccountClicked()
+                    }
+                )
+            }
         }
     }
 }
@@ -112,10 +146,11 @@ private fun AuthPreview() {
                 login = "",
                 password = "",
                 isLoading = false,
-                hasRegisterButton = true,
+                isAuthorizing = true,
+                isPasswordVisible = false,
                 onAuthorizeClicked = {},
                 onLoginChange = {},
-                onPasswordChange = {}
+                onPasswordChange = {},
             )
         }
     }
@@ -130,7 +165,8 @@ private fun AuthOneButtonPreview() {
                 login = "",
                 password = "",
                 isLoading = false,
-                hasRegisterButton = false,
+                isAuthorizing = false,
+                isPasswordVisible = true,
                 onAuthorizeClicked = {},
                 onLoginChange = {},
                 onPasswordChange = {}
@@ -148,7 +184,8 @@ private fun AuthFullPreview() {
                 login = "qwe",
                 password = "qwe",
                 isLoading = false,
-                hasRegisterButton = true,
+                isAuthorizing = true,
+                isPasswordVisible = false,
                 onAuthorizeClicked = {},
                 onLoginChange = {},
                 onPasswordChange = {}
@@ -166,7 +203,8 @@ private fun AuthLoadingPreview() {
                 login = "qwe",
                 password = "qwe",
                 isLoading = true,
-                hasRegisterButton = true,
+                isAuthorizing = true,
+                isPasswordVisible = true,
                 onAuthorizeClicked = {},
                 onLoginChange = {},
                 onPasswordChange = {}

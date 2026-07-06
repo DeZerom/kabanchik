@@ -18,10 +18,12 @@ fun ProAuthScreen(component: ProAuthComponent) {
             login = state.login,
             password = state.password,
             isLoading = state.isLoading,
-            hasRegisterButton = false,
+            isAuthorizing = false,
             onAuthorizeClicked = component::onAuthorizeClicked,
             onLoginChange = component::onLoginChanged,
             onPasswordChange = component::onPasswordChanged,
+            isPasswordVisible = state.isPasswordVisible,
+            onChangePasswordVisibility = component::onChangePasswordVisibility,
         )
     }
 }

@@ -9,4 +9,5 @@ interface ClientRegisterComponent {
     fun onPasswordChanged(newPassword: String)
     fun onCreateAccountClicked()
     fun onHaveAccountClicked()
+    fun onChangePasswordVisibility()
 }

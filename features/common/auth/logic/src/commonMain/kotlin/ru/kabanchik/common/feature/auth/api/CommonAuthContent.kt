@@ -40,7 +40,7 @@ import ru.kabanchik.common.uiKit.icons.extensions.Eye16
 import ru.kabanchik.common.uiKit.icons.extensions.EyeOff16
 import ru.kabanchik.common.uiKit.theme.KabanchikTheme
 import ru.kabanchik.common.uiKit.theme.bodyS
-import ru.kabanchik.common.uiKit.theme.h1
+import ru.kabanchik.common.uiKit.theme.headlineLarge
 import ru.kabanchik.common.uiKit.widgets.CommonButton
 import ru.kabanchik.common.uiKit.widgets.CommonTextInput
 
@@ -75,7 +75,7 @@ fun CommonAuthContent(
         )
         Text(
             text = if (isAuthorizing) stringResource(Res.string.auth_auth_entrance) else stringResource(Res.string.auth_reg_registration),
-            style = KabanchikTheme.typography.h1,
+            style = KabanchikTheme.typography.headlineLarge,
             color = KabanchikTheme.colors.mainText
         )
         VSpacer(24.dp)

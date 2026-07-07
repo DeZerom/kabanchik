@@ -21,8 +21,8 @@ import ru.kabanchik.common.uiKit.VSpacer
 import ru.kabanchik.common.uiKit.icons.KabanchikIcons
 import ru.kabanchik.common.uiKit.icons.extensions.Forum96
 import ru.kabanchik.common.uiKit.theme.KabanchikTheme
-import ru.kabanchik.common.uiKit.theme.regularHeadline
-import ru.kabanchik.common.uiKit.theme.regularText
+import ru.kabanchik.common.uiKit.theme.bodyMedium
+import ru.kabanchik.common.uiKit.theme.headlineSmall
 import ru.kabanchik.common.uiKit.widgets.CommonButton
 
 @Composable
@@ -48,13 +48,13 @@ internal fun CommonChatListEmptyStub(
         VSpacer(24.dp)
         Text(
             text = stringResource(Res.string.chat_list_no_chats),
-            style = KabanchikTheme.typography.regularHeadline,
+            style = KabanchikTheme.typography.headlineSmall,
             color = KabanchikTheme.colors.mainText
         )
         VSpacer(16.dp)
         Text(
             text = message,
-            style = KabanchikTheme.typography.regularText,
+            style = KabanchikTheme.typography.bodyMedium,
             color = KabanchikTheme.colors.secondaryText,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth()
@@ -64,7 +64,7 @@ internal fun CommonChatListEmptyStub(
             text = buttonText,
             isLoading = isLoading,
             onClick = onButtonClick,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
         )
     }
 }

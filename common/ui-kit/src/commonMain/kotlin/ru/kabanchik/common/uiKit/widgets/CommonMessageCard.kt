@@ -15,9 +15,9 @@ import kabanchik.common.ui_kit.generated.resources.chat_details_you
 import org.jetbrains.compose.resources.stringResource
 import ru.kabanchik.common.uiKit.VSpacer
 import ru.kabanchik.common.uiKit.theme.KabanchikTheme
+import ru.kabanchik.common.uiKit.theme.bodyMedium
 import ru.kabanchik.common.uiKit.theme.cardDefault
 import ru.kabanchik.common.uiKit.theme.extraSmallText
-import ru.kabanchik.common.uiKit.theme.regularText
 
 @Composable
 fun CommonMessageCard(
@@ -60,7 +60,7 @@ fun CommonMessageCard(
             VSpacer(8.dp)
             Text(
                 text = messageText,
-                style = KabanchikTheme.typography.regularText,
+                style = KabanchikTheme.typography.bodyMedium,
                 color = KabanchikTheme.colors.mainText
             )
         }

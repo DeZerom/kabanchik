@@ -11,8 +11,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import ru.kabanchik.common.uiKit.theme.KabanchikTheme
+import ru.kabanchik.common.uiKit.theme.bodyMedium
 import ru.kabanchik.common.uiKit.theme.cardDefault
-import ru.kabanchik.common.uiKit.theme.regularText
 
 @Composable
 fun CommonButton(
@@ -40,7 +40,7 @@ fun CommonButton(
             } else {
                 Text(
                     text = text,
-                    style = KabanchikTheme.typography.regularText,
+                    style = KabanchikTheme.typography.bodyMedium,
                     color = textColor
                 )
             }

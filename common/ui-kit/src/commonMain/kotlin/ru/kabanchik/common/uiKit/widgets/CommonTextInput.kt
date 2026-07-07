@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 import ru.kabanchik.common.uiKit.icons.KabanchikIcons
 import ru.kabanchik.common.uiKit.icons.extensions.EyeOff16
 import ru.kabanchik.common.uiKit.theme.KabanchikTheme
-import ru.kabanchik.common.uiKit.theme.regularText
+import ru.kabanchik.common.uiKit.theme.bodyMedium
 
 @Composable
 fun CommonTextInput(
@@ -28,7 +28,7 @@ fun CommonTextInput(
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
-        textStyle = KabanchikTheme.typography.regularText,
+        textStyle = KabanchikTheme.typography.bodyMedium,
         shape = RoundedCornerShape(12.dp),
         label = {
             if (label != null) {

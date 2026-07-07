@@ -22,9 +22,9 @@ import ru.kabanchik.common.tools.extensions.getValue
 import ru.kabanchik.common.uiKit.HSpacer
 import ru.kabanchik.common.uiKit.VSpacer
 import ru.kabanchik.common.uiKit.theme.KabanchikTheme
+import ru.kabanchik.common.uiKit.theme.bodyMedium
 import ru.kabanchik.common.uiKit.theme.bodyS
 import ru.kabanchik.common.uiKit.theme.cardDefault
-import ru.kabanchik.common.uiKit.theme.regularText
 import ru.kabanchik.common.uiKit.theme.smallTitle
 
 @Composable
@@ -67,7 +67,7 @@ internal fun CommonChatCard(
                 VSpacer(4.dp)
                 Text(
                     text = item.otherPersonName.orEmpty(),
-                    style = KabanchikTheme.typography.regularText,
+                    style = KabanchikTheme.typography.bodyMedium,
                     color = KabanchikTheme.colors.secondaryText
                 )
             }
@@ -77,7 +77,7 @@ internal fun CommonChatCard(
             ) {
                 Text(
                     text = item.lastMessage,
-                    style = KabanchikTheme.typography.regularText,
+                    style = KabanchikTheme.typography.bodyMedium,
                     color = KabanchikTheme.colors.secondaryText,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,

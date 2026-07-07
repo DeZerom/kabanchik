@@ -5,10 +5,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.unit.dp
 import kabanchik.common.ui_kit.generated.resources.Res
 import kabanchik.common.ui_kit.generated.resources.chat_details_you
@@ -29,7 +31,7 @@ fun CommonMessageCard(
 ) {
     Surface(
         color = if (isUserAuthor) KabanchikTheme.colors.accent else KabanchikTheme.colors.card,
-        shape = KabanchikTheme.shapes.cardDefault,
+        shape = RoundedCornerShape(20.dp),
         modifier = modifier.fillMaxWidth()
     ) {
         Column(

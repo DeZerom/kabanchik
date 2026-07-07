@@ -11,6 +11,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -18,15 +21,20 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kabanchik.features.common.chat.logic.generated.resources.Res
 import kabanchik.features.common.chat.logic.generated.resources.chat_details_hint
+import kabanchik.features.common.chat.logic.generated.resources.chat_details_operator_found
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import ru.kabanchik.common.feature.chat.model.CommonUiMessage
 import ru.kabanchik.common.modifier.keyboardInsetsPadding
 import ru.kabanchik.common.modifier.sendMessageModifier
+import ru.kabanchik.common.tools.textResource.TextResource
 import ru.kabanchik.common.uiKit.HSpacer
 import ru.kabanchik.common.uiKit.icons.KabanchikIcons
+import ru.kabanchik.common.uiKit.icons.extensions.Send24
 import ru.kabanchik.common.uiKit.theme.KabanchikTheme
 import ru.kabanchik.common.uiKit.theme.cardDefault
 import ru.kabanchik.common.uiKit.widgets.CommonCircleButton
@@ -71,53 +79,197 @@ fun CommonChatContent(
         contentAlignment = Alignment.BottomCenter,
         modifier = modifier.fillMaxSize()
     ) {
-        Column(
+        Box(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
                 .keyboardInsetsPadding()
-                .padding(bottom = 16.dp)
         ) {
             LazyColumn(
-                contentPadding = PaddingValues(vertical = 16.dp),
+                contentPadding = PaddingValues(top = 16.dp, bottom = 88.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Bottom),
                 state = listState,
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth()
+                modifier = Modifier.fillMaxSize()
             ) {
                 items(
                     items = messages,
                     key = { it.id }
                 ) { message ->
-                    CommonChatUiMessage(message)
+                    Box(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        CommonChatUiMessage(
+                            message = message,
+                            modifier = Modifier
+                                .align(message.horizontalAlignment)
+                                .then(
+                                    if (message is CommonUiMessage.Message) {
+                                        Modifier.fillMaxWidth(0.8f)
+                                    } else {
+                                        Modifier
+                                    }
+                                )
+                        )
+                    }
                 }
             }
-            Surface(
-                color = KabanchikTheme.colors.card,
-                shape = KabanchikTheme.shapes.cardDefault,
-            ) {
-                Row(
-                    verticalAlignment = Alignment.Bottom,
-                    modifier = Modifier.padding(all = 16.dp)
-                ) {
-                    CommonTextInput(
-                        value = currentMessageText,
-                        onValueChange = onMessageTextChanged,
-                        label = stringResource(Res.string.chat_details_hint),
-                        modifier = Modifier
-                            .weight(1f)
-                            .sendMessageModifier(onMessageSent)
+            CommonTextInput(
+                value = currentMessageText,
+                onValueChange = onMessageTextChanged,
+                shape = RoundedCornerShape(70.dp),
+                trailingIcon = {
+                    Icon(
+                        imageVector = KabanchikIcons.Send24,
+                        contentDescription = null,
+                        tint = KabanchikTheme.colors.accent
                     )
-                    HSpacer(12.dp)
-                    CommonCircleButton(
-                        onClick = onMessageSent,
-                        color = KabanchikTheme.colors.accent,
-                        painter = KabanchikIcons.Send24,
-                        modifier = Modifier.padding(bottom = 4.dp)
-                    )
-                }
-            }
+                },
+                modifier = Modifier
+                    .sendMessageModifier(onMessageSent)
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 16.dp)
+            )
         }
     }
+}
+
+private val CommonUiMessage.horizontalAlignment: Alignment
+    get() = when (this) {
+        is CommonUiMessage.Date, is CommonUiMessage.SystemMessage -> Alignment.Center
+        is CommonUiMessage.Message -> {
+            if (isUserAuthor) Alignment.CenterEnd else Alignment.CenterStart
+        }
+    }
+
+@Preview
+@Composable
+private fun CommonChatContentEmptyPreview() {
+    KabanchikTheme {
+        Scaffold {
+            CommonChatContent(
+                messages = emptyList(),
+                currentMessageText = "",
+                onMessageTextChanged = {},
+                onMessageSent = {}
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun CommonChatContentWithMessagesPreview() {
+    KabanchikTheme {
+        Scaffold {
+            CommonChatContent(
+                messages = ChatDetailsMock.messages,
+                currentMessageText = "Спасибо, подойдет",
+                onMessageTextChanged = {},
+                onMessageSent = {}
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun CommonChatContentDifferentDatesPreview() {
+    KabanchikTheme {
+        Scaffold {
+            CommonChatContent(
+                messages = ChatDetailsMock.messagesFromDifferentDates,
+                currentMessageText = "",
+                onMessageTextChanged = {},
+                onMessageSent = {}
+            )
+        }
+    }
+}
+
+private object ChatDetailsMock {
+    private val operatorFound = CommonUiMessage.SystemMessage(
+        id = "operator-found",
+        message = TextResource.Id(Res.string.chat_details_operator_found)
+    )
+
+    val messages = listOf(
+        CommonUiMessage.Date(
+            id = "date-today",
+            date = "7 июля"
+        ),
+        operatorFound,
+        CommonUiMessage.Message(
+            id = "message-1",
+            authorLogin = "operator",
+            isUserAuthor = false,
+            time = "14:08",
+            text = "Здравствуйте! Я подключился к чату и помогу с заказом."
+        ),
+        CommonUiMessage.Message(
+            id = "message-2",
+            authorLogin = "client",
+            isUserAuthor = true,
+            time = "14:10",
+            text = "Добрый день. Нужно уточнить детали по бронированию ресторана."
+        ),
+        CommonUiMessage.Message(
+            id = "message-3",
+            authorLogin = "operator",
+            isUserAuthor = false,
+            time = "14:12",
+            text = "Конечно. На какую дату и сколько гостей планируете?"
+        )
+    )
+
+    val messagesFromDifferentDates = listOf(
+        CommonUiMessage.Date(
+            id = "date-july-5",
+            date = "5 июля"
+        ),
+        CommonUiMessage.Message(
+            id = "message-4",
+            authorLogin = "client",
+            isUserAuthor = true,
+            time = "18:42",
+            text = "Хочу забронировать стол на выходные."
+        ),
+        CommonUiMessage.Message(
+            id = "message-5",
+            authorLogin = "operator",
+            isUserAuthor = false,
+            time = "18:44",
+            text = "Подскажите, пожалуйста, город и желаемое время."
+        ),
+        CommonUiMessage.Date(
+            id = "date-july-6",
+            date = "6 июля"
+        ),
+        operatorFound.copy(id = "operator-found-second-day"),
+        CommonUiMessage.Message(
+            id = "message-6",
+            authorLogin = "operator",
+            isUserAuthor = false,
+            time = "09:15",
+            text = "Нашел несколько вариантов рядом с центром."
+        ),
+        CommonUiMessage.Message(
+            id = "message-7",
+            authorLogin = "client",
+            isUserAuthor = true,
+            time = "09:17",
+            text = "Отлично, пришлите вариант с тихим залом."
+        ),
+        CommonUiMessage.Date(
+            id = "date-july-7",
+            date = "7 июля"
+        ),
+        CommonUiMessage.Message(
+            id = "message-8",
+            authorLogin = "operator",
+            isUserAuthor = false,
+            time = "11:03",
+            text = "Бронь подтверждена на 17:00, гостей будут ждать у входа."
+        )
+    )
 }

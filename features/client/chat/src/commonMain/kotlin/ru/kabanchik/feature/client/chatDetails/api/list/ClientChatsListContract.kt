@@ -16,6 +16,6 @@ class ClientChatsListContract {
 
     sealed interface SideEffect {
         class ShowError(val message: TextResource) : SideEffect
-        object NavigateChatDetails : SideEffect
+        class NavigateChatDetails(val sessionId: String) : SideEffect
     }
 }

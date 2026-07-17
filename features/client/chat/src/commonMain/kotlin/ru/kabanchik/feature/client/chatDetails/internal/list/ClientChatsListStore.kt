@@ -50,13 +50,6 @@ internal class ClientChatsListStore(
                 }
             }
 
-            launch {
-                listInteractor.listenSystem().collect {
-                    pushSideEffect(SideEffect.NavigateChatDetails)
-                    reduceState { copy(isChatCreating = false) }
-                }
-            }
-
             reduceState { copy(isLoading = false) }
         }
     }
@@ -64,7 +57,12 @@ internal class ClientChatsListStore(
     private fun createChat() {
         coroutineScope.launch(coroutineExceptionHandler) {
             reduceState { copy(isChatCreating = true) }
-            listInteractor.createChat()
+            try {
+                val session = listInteractor.createChat()
+                pushSideEffect(SideEffect.NavigateChatDetails(session.sessionId))
+            } finally {
+                reduceState { copy(isChatCreating = false) }
+            }
         }
     }
 }

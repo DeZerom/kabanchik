@@ -46,8 +46,8 @@ class DefaultClientChatsListComponent(
                     showSnackBar(SnackBarData.Error(effect.message))
                 }
 
-                ClientChatsListContract.SideEffect.NavigateChatDetails -> {
-                    navigateChatDetails("", false)
+                is ClientChatsListContract.SideEffect.NavigateChatDetails -> {
+                    navigateChatDetails(effect.sessionId, false)
                 }
             }
         }.launchIn(coroutineScope)

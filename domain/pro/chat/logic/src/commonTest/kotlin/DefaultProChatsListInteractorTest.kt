@@ -7,6 +7,7 @@ import kotlinx.coroutines.runBlocking
 import ru.kabanchik.common.chat.model.CommonChatSummary
 import ru.kabanchik.common.chat.model.CommonMessage
 import ru.kabanchik.common.chat.model.CommonSessionMessage
+import ru.kabanchik.common.chat.model.CommonSessionStatus
 import ru.kabanchik.common.domain.chat.logic.api.CommonChatsListInteractor
 import ru.kabanchik.pro.domain.chat.logic.api.repository.ProChatsListRepository
 import ru.kabanchik.pro.domain.chatDetails.model.ProIncoming
@@ -23,7 +24,9 @@ class DefaultProChatsListInteractorTest {
                 listRepository = repository
             )
 
-            interactor.requestChat()
+            val session = interactor.requestChat()
+
+            assertEquals(expected = "session-id", actual = session.sessionId)
 
             assertEquals(
                 expected = listOf(
@@ -59,6 +62,7 @@ private class RecordingProChatsListRepository : ProChatsListRepository {
         return flowOf(
             CommonSessionMessage(
                 sessionId = "session-id",
+                status = CommonSessionStatus.Open,
                 participantLogin = "user_77",
                 participantName = "user_77",
                 participantRole = "USER"

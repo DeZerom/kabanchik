@@ -46,8 +46,8 @@ internal class DefaultProChatsListComponent(
                 is ProChatsListContract.SideEffect.ShowError -> {
                     showSnackBar(Error(effect.message))
                 }
-                ProChatsListContract.SideEffect.NavigateDetails -> {
-                    navigateDetails("", false)
+                is ProChatsListContract.SideEffect.NavigateDetails -> {
+                    navigateDetails(effect.sessionId, false)
                 }
             }
         }.launchIn(coroutineScope)

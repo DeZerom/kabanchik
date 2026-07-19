@@ -46,8 +46,8 @@ internal class ClientChatDetailsStore(
             val login = userInteractor.getUserLogin()
             reduceState { copy(login = login.orEmpty()) }
             loadMessages()
-            reconnectIfNeeded()
             listenMessages()
+            reconnectIfNeeded()
             reduceState { copy(isLoading = false) }
         }
     }

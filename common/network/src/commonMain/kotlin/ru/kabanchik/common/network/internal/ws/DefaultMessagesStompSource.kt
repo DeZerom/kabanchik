@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.serialization.json.Json
 import org.hildan.krossbow.stomp.StompClient
 import org.hildan.krossbow.stomp.config.HeartBeat
 import org.hildan.krossbow.stomp.conversions.kxserialization.StompSessionWithKxSerialization
@@ -62,7 +63,12 @@ internal class DefaultMessagesStompSource(
                     expectedPeriod = 5.seconds
                 )
             }
-        ).connect(url = url).withJsonConversions()
+        ).connect(url = url).withJsonConversions(
+            json = Json {
+                ignoreUnknownKeys = true
+            }
+        )
+        startCommonSubscriptions()
     }
 
     override suspend fun register() {
@@ -206,6 +212,13 @@ internal class DefaultMessagesStompSource(
             started = SharingStarted.Eagerly,
             replay = 0
         )
+    }
+
+    private suspend fun startCommonSubscriptions() {
+        listenErrors()
+        listenSession()
+        listenMessages()
+        listenSessionEnd()
     }
 
     private fun resetCachedSubscriptions() {

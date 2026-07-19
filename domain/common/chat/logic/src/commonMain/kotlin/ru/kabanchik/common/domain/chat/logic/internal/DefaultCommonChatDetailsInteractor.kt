@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.datetime.LocalDate
 import ru.kabanchik.common.chat.model.CommonChatMessage
 import ru.kabanchik.common.chat.model.CommonMessage
+import ru.kabanchik.common.chat.model.CommonSessionStatus
 import ru.kabanchik.common.domain.chat.logic.api.CommonChatDetailsInteractor
 import ru.kabanchik.common.domain.chat.logic.api.repository.CommonChatDetailsRepository
 import ru.kabanchik.common.domain.chat.logic.api.splitAndTrimMessage
@@ -42,9 +43,11 @@ class DefaultCommonChatDetailsInteractor(
 
         return channelFlow {
             coroutineScope {
-                sessionMessageFlow.onEach {
-                    send(CommonChatMessage.OperatorFound)
-                }.launchIn(this)
+                sessionMessageFlow
+                    .filter { it.sessionId == sessionId && it.status == CommonSessionStatus.Open }
+                    .onEach {
+                        send(CommonChatMessage.OperatorFound)
+                    }.launchIn(this)
                 sessionEndFlow.onEach {
                     send(CommonChatMessage.SessionEnd)
                 }.launchIn(this)

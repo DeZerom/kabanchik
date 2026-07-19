@@ -57,8 +57,8 @@ class ProChatsListStore(
         coroutineScope.launch {
             runCatching {
                 reduceState { copy(isWaitingForClient = true) }
-                proChatsListInteractor.requestChat()
-                pushSideEffect(SideEffect.NavigateDetails)
+                val session = proChatsListInteractor.requestChat()
+                pushSideEffect(SideEffect.NavigateDetails(session.sessionId))
             }.onFailure {
                 reduceState { copy(isWaitingForClient = false) }
                 pushSideEffect(SideEffect.ShowError(errorHandler.handleError(it).defaultMessage))

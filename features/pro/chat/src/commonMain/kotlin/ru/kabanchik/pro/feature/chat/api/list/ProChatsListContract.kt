@@ -16,6 +16,6 @@ class ProChatsListContract {
 
     sealed interface SideEffect {
         class ShowError(val message: TextResource) : SideEffect
-        object NavigateDetails : SideEffect
+        class NavigateDetails(val sessionId: String) : SideEffect
     }
 }

@@ -22,7 +22,7 @@ class MockCommonChatDetailsRepository(
         return messages
     }
 
-    override suspend fun sendMessage(message: String) {
+    override suspend fun sendMessage(sessionId: String, message: String) {
         TODO("Not yet implemented")
     }
 
@@ -36,7 +36,7 @@ class MockCommonChatDetailsRepository(
         }
     }
 
-    override suspend fun endChat() {
+    override suspend fun endChat(sessionId: String) {
         TODO("Not yet implemented")
     }
 

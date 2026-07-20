@@ -24,7 +24,10 @@ import org.hildan.krossbow.stomp.conversions.kxserialization.subscribe
 import org.hildan.krossbow.stomp.sendEmptyMsg
 import org.hildan.krossbow.websocket.ktor.KtorWebSocketClient
 import ru.kabanchik.client.data.chat.logic.api.ClientMessagesStompSource
+import ru.kabanchik.client.data.chatDetails.model.ClientApiChatRequest
 import ru.kabanchik.common.data.chat.logic.api.CommonStompSource
+import ru.kabanchik.common.data.chatDetails.model.CommonApiEndChat
+import ru.kabanchik.common.data.chatDetails.model.CommonApiErrorMessage
 import ru.kabanchik.common.data.chatDetails.model.CommonApiMessage
 import ru.kabanchik.common.data.chatDetails.model.CommonApiReconnectMessage
 import ru.kabanchik.common.data.chatDetails.model.CommonApiSendMessage
@@ -43,7 +46,7 @@ internal class DefaultMessagesStompSource(
     private val subscriptionsMutex = Mutex()
     private var subscriptionsScope = createSubscriptionsScope()
     private var systemMessagesFlow: Flow<CommonApiSystemMessage>? = null
-    private var errorMessagesFlow: Flow<CommonApiSystemMessage>? = null
+    private var errorMessagesFlow: Flow<CommonApiErrorMessage>? = null
     private var sessionMessagesFlow: Flow<CommonApiSessionMessage>? = null
     private var incomingMessagesFlow: Flow<ProApiIncoming>? = null
     private var messagesFlow: Flow<CommonApiMessage>? = null
@@ -54,9 +57,7 @@ internal class DefaultMessagesStompSource(
         val url = "ws://$DEFAULT_HOST/ws"
         loggerD("Connect: $url")
         session = StompClient(
-            webSocketClient = KtorWebSocketClient(
-                httpClient = httpClient
-            ),
+            webSocketClient = KtorWebSocketClient(httpClient),
             configure = {
                 heartBeat = HeartBeat(
                     minSendPeriod = 5.seconds,
@@ -76,14 +77,21 @@ internal class DefaultMessagesStompSource(
         requireSession().sendEmptyMsg(destination = "/app/executor.register")
     }
 
-    override suspend fun startChat() {
-        loggerD("Start chat: /app/chat.request")
-        requireSession().sendEmptyMsg(destination = "/app/chat.request")
+    override suspend fun startChat(message: ClientApiChatRequest) {
+        loggerD("Start chat: /app/chat.request. Body: $message")
+        requireSession().convertAndSend(
+            destination = "/app/chat.request",
+            body = message
+        )
     }
 
-    override suspend fun endChat() {
-        loggerD("End chat: /app/chat.end")
-        requireSession().sendEmptyMsg(destination = "/app/chat.end")
+    override suspend fun endChat(sessionId: String) {
+        val message = CommonApiEndChat(sessionId)
+        loggerD("End chat: /app/chat.end. Body: $message")
+        requireSession().convertAndSend(
+            destination = "/app/chat.end",
+            body = message
+        )
     }
 
     override suspend fun reconnect(message: CommonApiReconnectMessage) {
@@ -126,11 +134,11 @@ internal class DefaultMessagesStompSource(
         }
     }
 
-    override suspend fun listenErrors(): Flow<CommonApiSystemMessage> {
+    override suspend fun listenErrors(): Flow<CommonApiErrorMessage> {
         return subscriptionsMutex.withLock {
             errorMessagesFlow ?: requireSession().subscribe(
                 destination = "/user/queue/errors",
-                deserializer = CommonApiSystemMessage.serializer()
+                deserializer = CommonApiErrorMessage.serializer()
             ).catch {
                 loggerE("Errors listening error", it)
             }.onEach {

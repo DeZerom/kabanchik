@@ -6,6 +6,7 @@ data class CommonSessionMessage(
     val participantLogin: String? = null,
     val participantName: String? = null,
     val participantRole: String? = null,
+    val clientRequestId: String? = null,
 )
 
 enum class CommonSessionStatus {

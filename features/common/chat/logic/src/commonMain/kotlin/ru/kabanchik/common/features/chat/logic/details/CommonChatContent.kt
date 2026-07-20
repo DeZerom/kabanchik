@@ -2,9 +2,7 @@ package ru.kabanchik.common.features.chat.logic.details
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,8 +11,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -24,20 +22,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kabanchik.features.common.chat.logic.generated.resources.Res
-import kabanchik.features.common.chat.logic.generated.resources.chat_details_hint
 import kabanchik.features.common.chat.logic.generated.resources.chat_details_operator_found
-import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.resources.stringResource
 import ru.kabanchik.common.feature.chat.model.CommonUiMessage
 import ru.kabanchik.common.modifier.keyboardInsetsPadding
 import ru.kabanchik.common.modifier.sendMessageModifier
 import ru.kabanchik.common.tools.textResource.TextResource
-import ru.kabanchik.common.uiKit.HSpacer
 import ru.kabanchik.common.uiKit.icons.KabanchikIcons
 import ru.kabanchik.common.uiKit.icons.extensions.Send24
 import ru.kabanchik.common.uiKit.theme.KabanchikTheme
-import ru.kabanchik.common.uiKit.theme.cardDefault
-import ru.kabanchik.common.uiKit.widgets.CommonCircleButton
 import ru.kabanchik.common.uiKit.widgets.CommonTextInput
 
 @Composable
@@ -118,11 +110,13 @@ fun CommonChatContent(
                 onValueChange = onMessageTextChanged,
                 shape = RoundedCornerShape(70.dp),
                 trailingIcon = {
-                    Icon(
-                        imageVector = KabanchikIcons.Send24,
-                        contentDescription = null,
-                        tint = KabanchikTheme.colors.accent
-                    )
+                    IconButton(onClick = onMessageSent) {
+                        Icon(
+                            imageVector = KabanchikIcons.Send24,
+                            contentDescription = null,
+                            tint = KabanchikTheme.colors.accent
+                        )
+                    }
                 },
                 modifier = Modifier
                     .sendMessageModifier(onMessageSent)

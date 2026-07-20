@@ -37,10 +37,9 @@ class ProChatsListStore(
         coroutineScope.launch(coroutineExceptionHandler) {
             reduceState { copy(isLoading = true) }
 
+            proChatsListInteractor.connect()
             val loadedChats = proChatsListInteractor.getChats().map { it.toUiChatItem() }
             reduceState { copy(chats = loadedChats) }
-
-            proChatsListInteractor.connect()
             launch {
                 proChatsListInteractor.listenMessages().collect { message ->
                     reduceState {

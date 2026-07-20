@@ -11,6 +11,7 @@ fun CommonApiSessionMessage.toDomain(): CommonSessionMessage = CommonSessionMess
     participantLogin = participant?.login,
     participantName = participant?.displayName,
     participantRole = participant?.role,
+    clientRequestId = clientRequestId,
 )
 
 private fun CommonApiSessionStatus.toDomain(): CommonSessionStatus = when (this) {

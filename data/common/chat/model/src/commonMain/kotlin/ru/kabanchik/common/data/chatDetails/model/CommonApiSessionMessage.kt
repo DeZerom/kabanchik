@@ -13,6 +13,9 @@ data class CommonApiSessionMessage(
 
     @SerialName("status")
     val status: CommonApiSessionStatus,
+
+    @SerialName("clientRequestId")
+    val clientRequestId: String? = null,
 )
 
 @Serializable

@@ -5,6 +5,6 @@ import ru.kabanchik.common.chat.model.CommonSessionMessage
 
 interface ClientChatsListRepository {
     suspend fun connect()
-    suspend fun createChat()
+    suspend fun createChat(clientRequestId: String)
     suspend fun listenSession(): Flow<CommonSessionMessage>
 }

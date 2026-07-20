@@ -23,9 +23,9 @@ internal class DefaultCommonChatDetailsRepository(
         return commonRestSource.getMessages(sessionId).map { it.toDomain() }
     }
 
-    override suspend fun sendMessage(message: String) {
+    override suspend fun sendMessage(sessionId: String, message: String) {
         commonStompSource.send(
-            CommonApiSendMessage(content = message)
+            CommonApiSendMessage(sessionId = sessionId, content = message)
         )
     }
 
@@ -37,8 +37,8 @@ internal class DefaultCommonChatDetailsRepository(
         return commonStompSource.listenMessages().map { it.toDomain() }
     }
 
-    override suspend fun endChat() {
-        commonStompSource.endChat()
+    override suspend fun endChat(sessionId: String) {
+        commonStompSource.endChat(sessionId)
     }
 
     override suspend fun listenSessionEnd(): Flow<CommonMessage> {

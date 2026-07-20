@@ -23,9 +23,9 @@ internal class DefaultProChatsListRepository(
         return stompSource.listenIncoming().map { it.toDomain() }
     }
 
-    override suspend fun acceptChat(clientLogin: String) {
+    override suspend fun acceptChat(sessionId: String) {
         stompSource.acceptChat(
-            message = ProApiAcceptChat(clientLogin)
+            message = ProApiAcceptChat(sessionId)
         )
     }
 

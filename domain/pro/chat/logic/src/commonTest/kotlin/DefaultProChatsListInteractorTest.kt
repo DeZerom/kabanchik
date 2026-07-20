@@ -33,7 +33,7 @@ class DefaultProChatsListInteractorTest {
                     "listenIncoming",
                     "register",
                     "listenSession",
-                    "acceptChat:user_77"
+                    "acceptChat:session-id"
                 ),
                 actual = repository.calls
             )
@@ -50,11 +50,11 @@ private class RecordingProChatsListRepository : ProChatsListRepository {
 
     override suspend fun listenIncoming(): Flow<ProIncoming> {
         calls += "listenIncoming"
-        return flowOf(ProIncoming(clientLogin = "user_77"))
+        return flowOf(ProIncoming(sessionId = "session-id", clientLogin = "user_77"))
     }
 
-    override suspend fun acceptChat(clientLogin: String) {
-        calls += "acceptChat:$clientLogin"
+    override suspend fun acceptChat(sessionId: String) {
+        calls += "acceptChat:$sessionId"
     }
 
     override suspend fun listenSession(): Flow<CommonSessionMessage> {

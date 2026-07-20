@@ -37,10 +37,9 @@ internal class ClientChatsListStore(
         coroutineScope.launch(coroutineExceptionHandler) {
             reduceState { copy(isLoading = true) }
 
+            listInteractor.connect()
             val loadedChats = listInteractor.getChats().map { it.toUiChatItem() }
             reduceState { copy(chats = loadedChats) }
-
-            listInteractor.connect()
 
             launch {
                 listInteractor.listenMessages().collect { message ->

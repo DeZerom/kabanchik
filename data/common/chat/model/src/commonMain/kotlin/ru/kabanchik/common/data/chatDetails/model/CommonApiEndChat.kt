@@ -4,10 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class CommonApiSendMessage(
+data class CommonApiEndChat(
     @SerialName("sessionId")
     val sessionId: String,
-
-    @SerialName("content")
-    val content: String
 )

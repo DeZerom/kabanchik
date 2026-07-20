@@ -26,11 +26,11 @@ class DefaultCommonChatDetailsInteractor(
             .toChatMessages()
     }
 
-    override suspend fun sendMessage(message: String) {
+    override suspend fun sendMessage(sessionId: String, message: String) {
         val messages = splitAndTrimMessage(message)
 
         messages.forEach {
-            detailsRepository.sendMessage(it)
+            detailsRepository.sendMessage(sessionId, it)
         }
     }
 
@@ -64,8 +64,8 @@ class DefaultCommonChatDetailsInteractor(
         }
     }
 
-    override suspend fun endChat() {
-        detailsRepository.endChat()
+    override suspend fun endChat(sessionId: String) {
+        detailsRepository.endChat(sessionId)
     }
 
     private fun Flow<CommonMessage>.filterBySessionId(

@@ -6,12 +6,7 @@ import ru.kabanchik.common.chat.model.CommonMessage
 import ru.kabanchik.common.chat.model.CommonMessageType
 import ru.kabanchik.common.data.chatDetails.model.CommonApiMessage
 import ru.kabanchik.common.data.chatDetails.model.CommonApiMessageType
-import ru.kabanchik.common.data.chatDetails.model.CommonApiSendMessage
 import kotlin.time.Instant
-
-fun String.toApiSendMessage(): CommonApiSendMessage = CommonApiSendMessage(
-    content = this
-)
 
 fun CommonApiMessage.toDomain(): CommonMessage = CommonMessage(
     id = id,

@@ -8,4 +8,5 @@
     <string name="auth_auth_create_account">Зарегистрироваться</string>
 
     <string name="auth_reg_registration">Регистрация</string>
+    <string name="auth_reg_has_acc">Есть аккаунт?</string>
 </resources>

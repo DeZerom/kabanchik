@@ -31,6 +31,7 @@ internal fun ClientRegisterScreen(component: ClientRegisterComponent) {
             onLoginChange = component::onLoginChanged,
             onPasswordChange = component::onPasswordChanged,
             isPasswordVisible = state.isPasswordVisible,
+            onHaveAccountClicked = component::onHaveAccountClicked,
             onChangePasswordVisibility = component::onChangePasswordVisibility,
         )
     }

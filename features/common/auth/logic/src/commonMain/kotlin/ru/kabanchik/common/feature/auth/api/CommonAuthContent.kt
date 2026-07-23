@@ -29,6 +29,7 @@ import kabanchik.features.common.auth.logic.generated.resources.auth_auth_entran
 import kabanchik.features.common.auth.logic.generated.resources.auth_auth_login
 import kabanchik.features.common.auth.logic.generated.resources.auth_auth_no_acc
 import kabanchik.features.common.auth.logic.generated.resources.auth_auth_password
+import kabanchik.features.common.auth.logic.generated.resources.auth_reg_has_acc
 import kabanchik.features.common.auth.logic.generated.resources.auth_reg_registration
 import org.jetbrains.compose.resources.stringResource
 import ru.kabanchik.common.modifier.keyboardInsetsPadding
@@ -56,10 +57,11 @@ fun CommonAuthContent(
     onPasswordChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     onCreateAccountClicked: () -> Unit = {},
+    onHaveAccountClicked: () -> Unit = {},
     onChangePasswordVisibility: () -> Unit = {},
 ) {
     Column(
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.Top,
         modifier = modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp)
@@ -70,7 +72,7 @@ fun CommonAuthContent(
             painter = KabanchikImages.AppImage,
             contentDescription = null,
             modifier = Modifier
-                .size(186.dp)
+                .size(160.dp)
                 .align(Alignment.CenterHorizontally)
         )
         Text(
@@ -115,25 +117,30 @@ fun CommonAuthContent(
             isLoading = isLoading,
             modifier = Modifier.fillMaxWidth()
         )
-        if (isAuthorizing) {
-            VSpacer(16.dp)
-            Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
-                Text(
-                    text = stringResource(Res.string.auth_auth_no_acc),
-                    style = KabanchikTheme.typography.bodyS,
-                    color = KabanchikTheme.colors.secondaryText
-                )
-                HSpacer(4.dp)
-                Text(
-                    text = stringResource(Res.string.auth_auth_create_account),
-                    style = KabanchikTheme.typography.bodyS,
-                    color = KabanchikTheme.colors.accent,
-                    modifier = Modifier.clickable {
-                        if (!isLoading) onCreateAccountClicked()
+        VSpacer(16.dp)
+        Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
+            Text(
+                text = stringResource(
+                    if (isAuthorizing) Res.string.auth_auth_no_acc else Res.string.auth_reg_has_acc
+                ),
+                style = KabanchikTheme.typography.bodyS,
+                color = KabanchikTheme.colors.secondaryText
+            )
+            HSpacer(4.dp)
+            Text(
+                text = stringResource(
+                    if (isAuthorizing) Res.string.auth_auth_create_account else Res.string.auth_auth_enter
+                ),
+                style = KabanchikTheme.typography.bodyS,
+                color = KabanchikTheme.colors.accent,
+                modifier = Modifier.clickable {
+                    if (!isLoading) {
+                        if (isAuthorizing) onCreateAccountClicked() else onHaveAccountClicked()
                     }
-                )
-            }
+                }
+            )
         }
+        VSpacer(16.dp)
     }
 }
 

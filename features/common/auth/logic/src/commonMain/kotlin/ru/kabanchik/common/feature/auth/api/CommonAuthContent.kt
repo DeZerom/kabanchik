@@ -56,6 +56,7 @@ fun CommonAuthContent(
     onLoginChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     modifier: Modifier = Modifier,
+    isRegistrationAvailable: Boolean = true,
     onCreateAccountClicked: () -> Unit = {},
     onHaveAccountClicked: () -> Unit = {},
     onChangePasswordVisibility: () -> Unit = {},
@@ -118,27 +119,29 @@ fun CommonAuthContent(
             modifier = Modifier.fillMaxWidth()
         )
         VSpacer(16.dp)
-        Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
-            Text(
-                text = stringResource(
-                    if (isAuthorizing) Res.string.auth_auth_no_acc else Res.string.auth_reg_has_acc
-                ),
-                style = KabanchikTheme.typography.bodyS,
-                color = KabanchikTheme.colors.secondaryText
-            )
-            HSpacer(4.dp)
-            Text(
-                text = stringResource(
-                    if (isAuthorizing) Res.string.auth_auth_create_account else Res.string.auth_auth_enter
-                ),
-                style = KabanchikTheme.typography.bodyS,
-                color = KabanchikTheme.colors.accent,
-                modifier = Modifier.clickable {
-                    if (!isLoading) {
-                        if (isAuthorizing) onCreateAccountClicked() else onHaveAccountClicked()
+        if (isRegistrationAvailable) {
+            Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                Text(
+                    text = stringResource(
+                        if (isAuthorizing) Res.string.auth_auth_no_acc else Res.string.auth_reg_has_acc
+                    ),
+                    style = KabanchikTheme.typography.bodyS,
+                    color = KabanchikTheme.colors.secondaryText
+                )
+                HSpacer(4.dp)
+                Text(
+                    text = stringResource(
+                        if (isAuthorizing) Res.string.auth_auth_create_account else Res.string.auth_auth_enter
+                    ),
+                    style = KabanchikTheme.typography.bodyS,
+                    color = KabanchikTheme.colors.accent,
+                    modifier = Modifier.clickable {
+                        if (!isLoading) {
+                            if (isAuthorizing) onCreateAccountClicked() else onHaveAccountClicked()
+                        }
                     }
-                }
-            )
+                )
+            }
         }
         VSpacer(16.dp)
     }

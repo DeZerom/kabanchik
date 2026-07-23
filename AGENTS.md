@@ -114,6 +114,26 @@
 6. Добавьте зависимость на feature-модуль в `composeApp` или `proApp`.
 7. Добавьте сфокусированные тесты для бизнес-логики или нетривиального поведения store.
 
+## Очистка Кеша JVM-Приложений
+
+Если пользователь просит «очисти кеш клиента» или «очисти кеш работяги», имеется в виду удаление соответствующего JVM DataStore-файла `datastore.preferences_pb`:
+
+- клиент (`composeApp`, `Kabanchik`):
+  - macOS: `~/Library/Application Support/Kabanchik/datastore.preferences_pb`
+  - Windows: `%AppData%\Kabanchik\datastore.preferences_pb`
+  - Linux/Unix: `~/.local/share/Kabanchik/datastore.preferences_pb`
+- работяга / исполнитель (`proApp`, `KabanchikPro`):
+  - macOS: `~/Library/Application Support/KabanchikPro/datastore.preferences_pb`
+  - Windows: `%AppData%\KabanchikPro\datastore.preferences_pb`
+  - Linux/Unix: `~/.local/share/KabanchikPro/datastore.preferences_pb`
+
+Пути задаются в:
+
+- `composeApp/src/jvmMain/kotlin/ru/kabanchik/client/di/JvmPreferencesDataStoreProvider.kt`
+- `proApp/src/jvmMain/kotlin/ru/kabanchik/pro/di/JvmPreferencesDataStoreProvider.kt`
+
+Перед удалением определите текущую ОС, проверьте актуальный путь в соответствующем provider и убедитесь, что удаляете файл нужного приложения. Удаляйте только `datastore.preferences_pb`, не весь каталог приложения и не кеш другого приложения. После удаления проверьте, что файл отсутствует. При следующем запуске приложение создаст чистый DataStore.
+
 ## Правила Безопасности Для Агентов
 
 - Перед редактированием проверяйте `git status --short` и не откатывайте изменения пользователя.

@@ -8,15 +8,18 @@ data class CommonApiChatSummary(
     @SerialName("sessionId")
     val sessionId: String,
 
+    @SerialName("status")
+    val status: CommonApiSessionStatus,
+
     @SerialName("participantName")
-    val participantName: String,
+    val participantName: String?,
 
     @SerialName("lastMessageContent")
-    val lastMessageContent: String,
+    val lastMessageContent: String?,
 
     @SerialName("lastMessageTimestamp")
-    val lastMessageTimestamp: String,
+    val lastMessageTimestamp: String?,
 
     @SerialName("lastMessageSender")
-    val lastMessageSender: String,
+    val lastMessageSender: String?,
 )

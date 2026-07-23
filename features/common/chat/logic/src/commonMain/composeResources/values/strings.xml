@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="chat_list_no_chats">Пока нет чатов</string>
+    <string name="chat_list_new_chat">Новый чат</string>
     <string name="chat_list_time_today">%1$s</string>
     <string name="chat_list_time_yesterday">вчера в %1$s</string>
     <string name="chat_list_time_date">%1$s в %2$s</string>

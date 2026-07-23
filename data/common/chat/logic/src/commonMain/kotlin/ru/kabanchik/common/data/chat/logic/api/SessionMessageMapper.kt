@@ -14,7 +14,7 @@ fun CommonApiSessionMessage.toDomain(): CommonSessionMessage = CommonSessionMess
     clientRequestId = clientRequestId,
 )
 
-private fun CommonApiSessionStatus.toDomain(): CommonSessionStatus = when (this) {
+internal fun CommonApiSessionStatus.toDomain(): CommonSessionStatus = when (this) {
     CommonApiSessionStatus.Waiting -> CommonSessionStatus.Waiting
     CommonApiSessionStatus.Open -> CommonSessionStatus.Open
     CommonApiSessionStatus.Closed -> CommonSessionStatus.Closed

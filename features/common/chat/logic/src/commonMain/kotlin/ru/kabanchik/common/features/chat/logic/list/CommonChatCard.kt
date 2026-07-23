@@ -17,6 +17,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kabanchik.features.common.chat.logic.generated.resources.Res
+import kabanchik.features.common.chat.logic.generated.resources.chat_list_new_chat
+import org.jetbrains.compose.resources.stringResource
 import ru.kabanchik.common.feature.chat.model.CommonUiChatItem
 import ru.kabanchik.common.tools.extensions.getValue
 import ru.kabanchik.common.uiKit.HSpacer
@@ -49,7 +52,7 @@ internal fun CommonChatCard(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = item.title,
+                    text = item.title.ifEmpty { stringResource(Res.string.chat_list_new_chat) },
                     style = KabanchikTheme.typography.smallTitle,
                     color = KabanchikTheme.colors.mainText,
                     maxLines = 1,

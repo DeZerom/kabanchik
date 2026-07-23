@@ -8,8 +8,12 @@ import kotlin.time.Instant
 
 fun CommonApiChatSummary.toDomain(): CommonChatSummary = CommonChatSummary(
     sessionId = sessionId,
+    status = status.toDomain(),
     participantName = participantName,
+    firstMessageContent = null,
     lastMessageContent = lastMessageContent,
-    lastMessageTimestamp = Instant.parse(lastMessageTimestamp).toLocalDateTime(TimeZone.currentSystemDefault()),
+    lastMessageTimestamp = lastMessageTimestamp
+        ?.let(Instant::parse)
+        ?.toLocalDateTime(TimeZone.currentSystemDefault()),
     lastMessageSender = lastMessageSender,
 )

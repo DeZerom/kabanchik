@@ -131,7 +131,7 @@ fun CommonChatContent(
             CommonTextInput(
                 value = currentMessageText,
                 onValueChange = onMessageTextChanged,
-                shape = RoundedCornerShape(70.dp),
+                shape = RoundedCornerShape(20.dp),
                 trailingIcon = {
                     IconButton(onClick = onMessageSent) {
                         Icon(

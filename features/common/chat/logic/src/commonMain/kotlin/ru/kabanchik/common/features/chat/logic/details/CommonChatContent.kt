@@ -3,10 +3,13 @@ package ru.kabanchik.common.features.chat.logic.details
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,6 +22,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kabanchik.features.common.chat.logic.generated.resources.Res
@@ -42,6 +47,24 @@ fun CommonChatContent(
 ) {
     val listState = rememberLazyListState()
     val initialScrollDone = remember { mutableStateOf(false) }
+    val density = LocalDensity.current
+    val imeBottom = WindowInsets.ime.getBottom(density)
+    val previousImeBottom = remember { mutableStateOf(imeBottom) }
+    val shouldScrollOnImeOpen = remember { mutableStateOf(false) }
+
+    LaunchedEffect(imeBottom) {
+        val isImeOpening = imeBottom > previousImeBottom.value
+
+        if (isImeOpening && shouldScrollOnImeOpen.value && messages.isNotEmpty()) {
+            listState.scrollToItem(messages.lastIndex)
+        }
+
+        if (imeBottom == 0) {
+            shouldScrollOnImeOpen.value = false
+        }
+
+        previousImeBottom.value = imeBottom
+    }
 
     LaunchedEffect(messages.size) {
         if (messages.isEmpty()) {
@@ -120,12 +143,22 @@ fun CommonChatContent(
                 },
                 modifier = Modifier
                     .sendMessageModifier(onMessageSent)
+                    .onFocusChanged { focusState ->
+                        if (focusState.isFocused && imeBottom == 0) {
+                            shouldScrollOnImeOpen.value =
+                                listState.isItemVisible(messages.lastIndex)
+                        }
+                    }
                     .fillMaxWidth()
                     .align(Alignment.BottomCenter)
                     .padding(bottom = 16.dp)
             )
         }
     }
+}
+
+private fun LazyListState.isItemVisible(index: Int): Boolean {
+    return index >= 0 && layoutInfo.visibleItemsInfo.any { it.index == index }
 }
 
 private val CommonUiMessage.horizontalAlignment: Alignment

@@ -132,6 +132,16 @@ compose.desktop {
             packageName = "ru.kabanchik.client"
             packageVersion = "1.0.9"
             modules("jdk.unsupported")
+
+            macOS {
+                iconFile.set(project.file("src/jvmMain/resources/app-icon.icns"))
+            }
+            windows {
+                iconFile.set(project.file("src/jvmMain/resources/app-icon.ico"))
+            }
+            linux {
+                iconFile.set(project.file("src/jvmMain/resources/app-icon.png"))
+            }
         }
     }
 }

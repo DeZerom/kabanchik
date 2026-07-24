@@ -3,6 +3,7 @@
 .gradle
 **/build/
 composeApp/release/
+proApp/release/
 xcuserdata
 !src/**/build/
 local.properties

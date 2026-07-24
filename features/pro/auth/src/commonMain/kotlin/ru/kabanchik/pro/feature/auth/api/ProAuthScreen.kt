@@ -4,14 +4,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import ru.kabanchik.common.feature.auth.api.CommonAuthContent
+import ru.kabanchik.common.scaffold.toolbar.CommonToolbarModel
 import ru.kabanchik.common.screenSize.PartFillingScreen
+import ru.kabanchik.common.tools.textResource.TextResource
 import ru.kabanchik.common.uiKit.widgets.toolbar.AffectScaffold
 
 @Composable
 fun ProAuthScreen(component: ProAuthComponent) {
     val state by component.uiState.collectAsState()
 
-    AffectScaffold()
+    AffectScaffold(toolbar = CommonToolbarModel.Title(TextResource.Raw("")))
 
     PartFillingScreen {
         CommonAuthContent(

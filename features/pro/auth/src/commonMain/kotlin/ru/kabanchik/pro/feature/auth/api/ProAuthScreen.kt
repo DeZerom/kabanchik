@@ -3,19 +3,30 @@ package ru.kabanchik.pro.feature.auth.api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import ru.kabanchik.common.feature.auth.api.CommonAuthContent
+import ru.kabanchik.common.scaffold.toolbar.CommonToolbarModel
 import ru.kabanchik.common.screenSize.PartFillingScreen
-import ru.kabanchik.pro.feature.auth.internal.ProAuthContent
+import ru.kabanchik.common.tools.textResource.TextResource
+import ru.kabanchik.common.uiKit.widgets.toolbar.AffectScaffold
 
 @Composable
 fun ProAuthScreen(component: ProAuthComponent) {
     val state by component.uiState.collectAsState()
 
+    AffectScaffold(toolbar = CommonToolbarModel.Title(TextResource.Raw("")))
+
     PartFillingScreen {
-        ProAuthContent(
-            state = state,
+        CommonAuthContent(
+            login = state.login,
+            password = state.password,
+            isLoading = state.isLoading,
+            isAuthorizing = true,
+            isRegistrationAvailable = false,
             onAuthorizeClicked = component::onAuthorizeClicked,
-            onLoginChanged = component::onLoginChanged,
-            onPasswordChanged = component::onPasswordChanged
+            onLoginChange = component::onLoginChanged,
+            onPasswordChange = component::onPasswordChanged,
+            isPasswordVisible = state.isPasswordVisible,
+            onChangePasswordVisibility = component::onChangePasswordVisibility,
         )
     }
 }

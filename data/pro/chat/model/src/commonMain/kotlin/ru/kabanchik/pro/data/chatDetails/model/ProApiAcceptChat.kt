@@ -5,6 +5,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ProApiAcceptChat(
-    @SerialName("content")
-    val clientLogin: String
+    @SerialName("sessionId")
+    val sessionId: String
 )

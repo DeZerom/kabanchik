@@ -1,10 +1,13 @@
 package ru.kabanchik.client.domain.logic.chat.api
 
 import kotlinx.coroutines.flow.Flow
-import ru.kabanchik.common.chat.model.CommonSystemMessage
+import ru.kabanchik.common.chat.model.CommonChatSummary
+import ru.kabanchik.common.chat.model.CommonMessage
+import ru.kabanchik.common.chat.model.CommonSessionMessage
 
 interface ClientChatsListInteractor {
     suspend fun connect()
-    suspend fun createChat()
-    suspend fun listenSystem(): Flow<CommonSystemMessage>
+    suspend fun getChats(): List<CommonChatSummary>
+    suspend fun listenMessages(): Flow<CommonMessage>
+    suspend fun createChat(): CommonSessionMessage
 }

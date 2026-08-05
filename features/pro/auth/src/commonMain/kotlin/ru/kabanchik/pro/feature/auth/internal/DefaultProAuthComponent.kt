@@ -44,6 +44,10 @@ internal class DefaultProAuthComponent(
         store.handleEvent(ProAuthContract.Event.PasswordChanged(newPassword))
     }
 
+    override fun onChangePasswordVisibility() {
+        store.handleEvent(ProAuthContract.Event.ChangePasswordVisibility)
+    }
+
     private fun observeSideEffects() {
         store.sideEffect.onEach { effect ->
             when (effect) {

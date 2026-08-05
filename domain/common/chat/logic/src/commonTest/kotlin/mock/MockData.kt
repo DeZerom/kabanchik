@@ -8,6 +8,7 @@ object MockData {
     object Messages {
         val message1 = CommonMessage(
             id = "q",
+            sessionId = "session",
             authorLogin = "qwe",
             text = "qwewqe",
             type = CommonMessageType.Text,
@@ -16,6 +17,7 @@ object MockData {
 
         val message2 = CommonMessage(
             id = "w",
+            sessionId = "session",
             authorLogin = "qwe",
             text = "qwewqe",
             type = CommonMessageType.Text,
@@ -24,6 +26,7 @@ object MockData {
 
         val message3 = CommonMessage(
             id = "e",
+            sessionId = "session",
             authorLogin = "qwe",
             text = "qwewqe",
             type = CommonMessageType.Text,

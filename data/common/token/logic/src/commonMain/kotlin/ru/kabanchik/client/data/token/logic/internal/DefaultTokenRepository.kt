@@ -3,14 +3,13 @@ package ru.kabanchik.client.data.token.logic.internal
 import ru.kabanchik.client.domain.token.logic.api.TokenRepository
 import ru.kabanchik.common.datastore.api.DataStoreSource
 import ru.kabanchik.common.domain.auth.logic.api.repository.CommonAuthTokenRepository
-import ru.kabanchik.common.domain.chat.logic.api.repository.CommonChatTokenRepository
 import ru.kabanchik.common.domain.splash.logic.api.repository.CommonSplashTokenRepository
 
 private const val TokenKey = "auth_token"
 
 class DefaultTokenRepository(
     private val dataStoreSource: DataStoreSource
-) : TokenRepository, CommonAuthTokenRepository, CommonChatTokenRepository, CommonSplashTokenRepository {
+) : TokenRepository, CommonAuthTokenRepository, CommonSplashTokenRepository {
     override suspend fun saveToken(token: String) {
         dataStoreSource.setString(TokenKey, token)
     }

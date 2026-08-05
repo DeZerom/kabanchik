@@ -6,7 +6,8 @@ class AuthContract {
     data class State(
         val login: String = "",
         val password: String = "",
-        val isLoading: Boolean = false
+        val isLoading: Boolean = false,
+        val isPasswordVisible: Boolean = false
     )
 
     sealed interface Event {
@@ -14,6 +15,7 @@ class AuthContract {
         class PasswordChanged(val newPassword: String) : Event
         object AuthorizeClicked : Event
         object RegisterClicked : Event
+        object ChangePasswordVisibility : Event
     }
 
     sealed interface SideEffect {

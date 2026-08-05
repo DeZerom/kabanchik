@@ -14,7 +14,7 @@ import ru.kabanchik.feature.client.chatDetails.api.list.ClientChatsListDependenc
 class DefaultClientChatsListComponent(
     componentContext: ComponentContext,
     dependencies: ClientChatsListDependencies,
-    private val navigateChatDetails: () -> Unit,
+    private val navigateChatDetails: (String, Boolean) -> Unit,
     private val showSnackBar: (SnackBarData) -> Unit,
 ) : ClientChatsListComponent, ComponentContext by componentContext {
     private val coroutineScope = coroutineScope()
@@ -35,6 +35,10 @@ class DefaultClientChatsListComponent(
         store.handleEvent(ClientChatsListContract.Event.CreateChatClicked)
     }
 
+    override fun onChatClicked(id: String) {
+        navigateChatDetails(id, true)
+    }
+
     private fun observeSideEffects() {
         store.sideEffect.onEach { effect ->
             when (effect) {
@@ -42,8 +46,8 @@ class DefaultClientChatsListComponent(
                     showSnackBar(SnackBarData.Error(effect.message))
                 }
 
-                ClientChatsListContract.SideEffect.NavigateChatDetails -> {
-                    navigateChatDetails()
+                is ClientChatsListContract.SideEffect.NavigateChatDetails -> {
+                    navigateChatDetails(effect.sessionId, false)
                 }
             }
         }.launchIn(coroutineScope)

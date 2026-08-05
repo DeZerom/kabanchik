@@ -29,6 +29,7 @@ class ProAuthStore(
             Event.AuthorizeClicked -> authorizeClicked()
             is Event.LoginChanged -> reduceState { copy(login = event.newLogin) }
             is Event.PasswordChanged -> reduceState { copy(password = event.newPassword) }
+            Event.ChangePasswordVisibility -> reduceState { copy(isPasswordVisible = !isPasswordVisible) }
         }
     }
 

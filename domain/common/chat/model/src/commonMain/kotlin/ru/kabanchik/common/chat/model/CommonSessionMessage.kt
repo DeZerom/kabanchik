@@ -2,7 +2,15 @@ package ru.kabanchik.common.chat.model
 
 data class CommonSessionMessage(
     val sessionId: String,
-    val participantLogin: String,
-    val participantName: String,
-    val participantRole: String
+    val status: CommonSessionStatus,
+    val participantLogin: String? = null,
+    val participantName: String? = null,
+    val participantRole: String? = null,
+    val clientRequestId: String? = null,
 )
+
+enum class CommonSessionStatus {
+    Waiting,
+    Open,
+    Closed,
+}

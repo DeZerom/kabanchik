@@ -15,10 +15,10 @@ import ru.kabanchik.common.snackBar.api.CommonVisuals
 import ru.kabanchik.common.snackBar.api.CommonVisualsType
 import ru.kabanchik.common.tools.extensions.getValue
 import ru.kabanchik.common.uiKit.HSpacer
-import ru.kabanchik.common.uiKit.KabanchikIcons
+import ru.kabanchik.common.uiKit.icons.KabanchikIcons
 import ru.kabanchik.common.uiKit.theme.KabanchikTheme
+import ru.kabanchik.common.uiKit.theme.bodyS
 import ru.kabanchik.common.uiKit.theme.cardDefault
-import ru.kabanchik.common.uiKit.theme.smallText
 
 @Composable
 fun CommonSnackBar(
@@ -52,7 +52,7 @@ fun CommonSnackBar(
             HSpacer(8.dp)
             Text(
                 text = commonVisuals.textResource.getValue(),
-                style = KabanchikTheme.typography.smallText,
+                style = KabanchikTheme.typography.bodyS,
                 color = KabanchikTheme.colors.mainTextInverted
             )
         }

@@ -100,8 +100,8 @@ android {
         applicationId = "ru.kabanchik.client"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 4
-        versionName = "0.0.8"
+        versionCode = 6
+        versionName = "0.0.9"
     }
     packaging {
         resources {
@@ -130,8 +130,18 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "ru.kabanchik.client"
-            packageVersion = "1.0.8"
+            packageVersion = "1.0.9"
             modules("jdk.unsupported")
+
+            macOS {
+                iconFile.set(project.file("src/jvmMain/resources/app-icon.icns"))
+            }
+            windows {
+                iconFile.set(project.file("src/jvmMain/resources/app-icon.ico"))
+            }
+            linux {
+                iconFile.set(project.file("src/jvmMain/resources/app-icon.png"))
+            }
         }
     }
 }

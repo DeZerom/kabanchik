@@ -1,0 +1,19 @@
+package ru.kabanchik.common.uiKit.icons
+
+import androidx.compose.runtime.Composable
+import kabanchik.common.ui_kit.generated.resources.Res
+import kabanchik.common.ui_kit.generated.resources.check_24px
+import kabanchik.common.ui_kit.generated.resources.close_24px
+import kabanchik.common.ui_kit.generated.resources.plus_24px
+import org.jetbrains.compose.resources.painterResource
+
+object KabanchikIcons {
+    val Close24
+        @Composable get() = painterResource(Res.drawable.close_24px)
+
+    val Check24
+        @Composable get() = painterResource(Res.drawable.check_24px)
+
+    val Plus24
+        @Composable get() = painterResource(Res.drawable.plus_24px)
+}

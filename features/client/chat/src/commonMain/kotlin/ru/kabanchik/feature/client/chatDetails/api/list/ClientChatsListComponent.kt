@@ -5,4 +5,5 @@ import kotlinx.coroutines.flow.StateFlow
 interface ClientChatsListComponent {
     val state: StateFlow<ClientChatsListContract.State>
     fun onCreateChatClicked()
+    fun onChatClicked(id: String)
 }

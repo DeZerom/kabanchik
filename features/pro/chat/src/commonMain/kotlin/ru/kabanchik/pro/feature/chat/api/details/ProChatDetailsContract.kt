@@ -9,7 +9,19 @@ class ProChatDetailsContract {
         val currentMessage: String = "",
         val messages: List<CommonUiMessage> = emptyList(),
         val isLoading: Boolean = false
-    )
+    ) {
+        val toolbarTitle = messages
+            .filterIsInstance<CommonUiMessage.Message>()
+            .firstOrNull()
+            ?.text
+            .orEmpty()
+
+        val toolbarSubtitle = messages
+            .filterIsInstance<CommonUiMessage.Message>()
+            .firstOrNull { !it.isUserAuthor }
+            ?.authorLogin
+            .orEmpty()
+    }
 
     sealed interface Event {
         class MessageTextChanged(val newText: String) : Event

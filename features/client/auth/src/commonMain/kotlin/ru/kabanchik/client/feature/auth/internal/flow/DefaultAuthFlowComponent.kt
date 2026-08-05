@@ -12,8 +12,8 @@ import ru.kabanchik.client.feature.auth.api.flow.AuthFlowComponent
 import ru.kabanchik.client.feature.auth.api.flow.AuthFlowDependencies
 import ru.kabanchik.client.feature.auth.internal.auth.AuthDependencies
 import ru.kabanchik.client.feature.auth.internal.auth.DefaultAuthComponent
-import ru.kabanchik.client.feature.auth.internal.register.DefaultRegisterComponent
-import ru.kabanchik.client.feature.auth.internal.register.RegisterDependencies
+import ru.kabanchik.client.feature.auth.internal.register.ClientRegisterDependencies
+import ru.kabanchik.client.feature.auth.internal.register.DefaultClientRegisterComponent
 import ru.kabanchik.common.snackBar.api.SnackBarData
 
 internal class DefaultAuthFlowComponent(
@@ -45,9 +45,9 @@ internal class DefaultAuthFlowComponent(
             }
             Config.Register -> {
                 AuthFlowComponent.Child.Register(
-                    component = DefaultRegisterComponent(
+                    component = DefaultClientRegisterComponent(
                         componentContext = componentContext,
-                        dependencies = RegisterDependencies.Factory(dependencies = dependencies),
+                        dependencies = ClientRegisterDependencies.Factory(dependencies = dependencies),
                         navigateBack = { stackNavigation.pop() },
                         showSnackBar = showSnackBar
                     )

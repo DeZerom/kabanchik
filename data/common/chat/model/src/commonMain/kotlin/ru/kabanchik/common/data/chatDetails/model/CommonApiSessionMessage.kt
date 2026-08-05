@@ -9,8 +9,26 @@ data class CommonApiSessionMessage(
     val sessionId: String,
 
     @SerialName("participant")
-    val participant: CommonApiParticipant,
+    val participant: CommonApiParticipant? = null,
+
+    @SerialName("status")
+    val status: CommonApiSessionStatus,
+
+    @SerialName("clientRequestId")
+    val clientRequestId: String? = null,
 )
+
+@Serializable
+enum class CommonApiSessionStatus {
+    @SerialName("WAITING")
+    Waiting,
+
+    @SerialName("OPEN")
+    Open,
+
+    @SerialName("CLOSED")
+    Closed,
+}
 
 @Serializable
 data class CommonApiParticipant(

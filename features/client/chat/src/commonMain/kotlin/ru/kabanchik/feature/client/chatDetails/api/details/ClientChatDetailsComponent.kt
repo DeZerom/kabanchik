@@ -7,4 +7,5 @@ interface ClientChatDetailsComponent {
 
     fun messageTextChanged(newText: String)
     fun messageSent()
+    fun onBackClicked()
 }

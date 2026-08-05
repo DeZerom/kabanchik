@@ -98,8 +98,18 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "ru.kabanchik.pro"
-            packageVersion = "1.0.4"
+            packageVersion = "1.0.5"
             modules("jdk.unsupported")
+
+            macOS {
+                iconFile.set(project.file("src/jvmMain/resources/app-icon.icns"))
+            }
+            windows {
+                iconFile.set(project.file("src/jvmMain/resources/app-icon.ico"))
+            }
+            linux {
+                iconFile.set(project.file("src/jvmMain/resources/app-icon.png"))
+            }
         }
     }
 }
@@ -112,8 +122,8 @@ android {
         applicationId = "ru.kabanchik.pro"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 4
-        versionName = "0.0.4"
+        versionCode = 6
+        versionName = "0.0.5"
     }
     packaging {
         resources {

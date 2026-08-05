@@ -10,7 +10,19 @@ import ru.kabanchik.common.domain.chat.logic.api.repository.CommonChatDetailsRep
 class MockCommonChatDetailsRepository(
     private val messages: List<CommonMessage>
 ) : CommonChatDetailsRepository {
-    override suspend fun sendMessage(message: String) {
+    var reconnectedSessionId: String? = null
+    var requestedMessagesSessionId: String? = null
+
+    override suspend fun reconnect(sessionId: String) {
+        reconnectedSessionId = sessionId
+    }
+
+    override suspend fun getMessages(sessionId: String): List<CommonMessage> {
+        requestedMessagesSessionId = sessionId
+        return messages
+    }
+
+    override suspend fun sendMessage(sessionId: String, message: String) {
         TODO("Not yet implemented")
     }
 
@@ -24,7 +36,7 @@ class MockCommonChatDetailsRepository(
         }
     }
 
-    override suspend fun endChat() {
+    override suspend fun endChat(sessionId: String) {
         TODO("Not yet implemented")
     }
 

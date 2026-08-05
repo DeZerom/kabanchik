@@ -6,13 +6,15 @@ class ProAuthContract {
     data class State(
         val login: String = "",
         val password: String = "",
-        val isLoading: Boolean = false
+        val isLoading: Boolean = false,
+        val isPasswordVisible: Boolean = false
     )
 
     sealed interface Event {
         class LoginChanged(val newLogin: String) : Event
         class PasswordChanged(val newPassword: String) : Event
         object AuthorizeClicked : Event
+        object ChangePasswordVisibility : Event
     }
 
     sealed interface SideEffect {

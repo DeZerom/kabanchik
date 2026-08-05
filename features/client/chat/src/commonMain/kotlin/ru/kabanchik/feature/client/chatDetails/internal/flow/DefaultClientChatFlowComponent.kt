@@ -4,6 +4,7 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.value.Value
 import kotlinx.serialization.Serializable
@@ -25,17 +26,21 @@ internal class DefaultClientChatFlowComponent(
         source = stack,
         serializer = Config.serializer(),
         initialStack = { listOf(Config.List) },
-        childFactory = ::createChild
+        childFactory = ::createChild,
+        handleBackButton = true
     ) 
     
     private fun createChild(config: Config, componentContext: ComponentContext): ClientChatFlowComponent.Child {
         return when (config) {
-            Config.Details -> {
+            is Config.Details -> {
                 ClientChatFlowComponent.Child.Details(
                     component = DefaultClientChatDetailsComponent(
                         componentContext = componentContext,
                         dependencies = ClientChatDetailsDependencies.Factory(dependencies),
-                        showSnackBar = showSnackBar
+                        showSnackBar = showSnackBar,
+                        navigateBack = { stack.pop() },
+                        sessionId = config.sessionId,
+                        shouldReconnect = config.shouldReconnect
                     )
                 )
             }
@@ -43,7 +48,9 @@ internal class DefaultClientChatFlowComponent(
                 ClientChatFlowComponent.Child.List(
                     component = DefaultClientChatsListComponent(
                         componentContext = componentContext,
-                        navigateChatDetails = { stack.pushNew(Config.Details) },
+                        navigateChatDetails = { sessionId, shouldReconnect ->
+                            stack.pushNew(Config.Details(sessionId, shouldReconnect))
+                        },
                         dependencies = ClientChatsListDependencies.Factory(dependencies),
                         showSnackBar = showSnackBar
                     )
@@ -58,6 +65,9 @@ internal class DefaultClientChatFlowComponent(
         object List : Config()
         
         @Serializable
-        object Details : Config()
+        data class Details(
+            val sessionId: String,
+            val shouldReconnect: Boolean
+        ) : Config()
     }
 }

@@ -28,6 +28,8 @@ kotlin {
             implementation(libs.krossbow.ktor)
             implementation(libs.krossbow.serialization.json)
 
+            implementation(projects.domain.common.auth.logic)
+
             implementation(projects.data.client.auth.logic)
             implementation(projects.data.pro.auth.logic)
 
@@ -44,4 +46,3 @@ kotlin {
 android {
     namespace = "ru.kabanchik.common.network"
 }
-

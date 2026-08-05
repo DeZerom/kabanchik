@@ -4,8 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import com.arkivanov.decompose.extensions.compose.stack.Children
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
-import ru.kabanchik.client.feature.auth.internal.auth.AuthScreen
-import ru.kabanchik.client.feature.auth.internal.register.RegisterScreen
+import ru.kabanchik.client.feature.auth.internal.auth.ClientAuthScreen
+import ru.kabanchik.client.feature.auth.internal.register.ClientRegisterScreen
 
 @Composable
 fun AuthFlowScreen(component: AuthFlowComponent) {
@@ -16,10 +16,10 @@ fun AuthFlowScreen(component: AuthFlowComponent) {
     ) {
         when (val child = it.instance) {
             is AuthFlowComponent.Child.Auth -> {
-                AuthScreen(child.component)
+                ClientAuthScreen(child.component)
             }
             is AuthFlowComponent.Child.Register -> {
-                RegisterScreen(child.component)
+                ClientRegisterScreen(child.component)
             }
         }
     }

@@ -58,6 +58,7 @@ include(":domain:common:splash:logic")
 include(":features:common:splash:logic")
 
 include(":domain:common:auth:logic")
+include(":features:common:auth:logic")
 
 include(":data:common:chat:logic")
 include(":data:common:chat:model")

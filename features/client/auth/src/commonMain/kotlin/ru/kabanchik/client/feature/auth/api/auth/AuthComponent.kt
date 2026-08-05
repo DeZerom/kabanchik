@@ -9,4 +9,5 @@ interface AuthComponent {
     fun onPasswordChanged(newPassword: String)
     fun onAuthorizeClicked()
     fun onCreateAccountClicked()
+    fun onChangePasswordVisibility()
 }

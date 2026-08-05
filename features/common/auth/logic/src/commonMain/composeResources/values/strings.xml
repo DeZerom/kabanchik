@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="auth_auth_entrance">Вход</string>
+    <string name="auth_auth_login">Логин</string>
+    <string name="auth_auth_password">Пароль</string>
+    <string name="auth_auth_enter">Войти</string>
+    <string name="auth_auth_no_acc">Нет аккаунта?</string>
+    <string name="auth_auth_create_account">Зарегистрироваться</string>
+
+    <string name="auth_reg_registration">Регистрация</string>
+    <string name="auth_reg_has_acc">Есть аккаунт?</string>
+</resources>

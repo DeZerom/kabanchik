@@ -4,6 +4,7 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.value.Value
 import kotlinx.serialization.Serializable
@@ -25,7 +26,8 @@ class DefaultProChatFlowComponent(
         source = stackNavigation,
         serializer = Config.serializer(),
         initialStack = { listOf(Config.List) },
-        childFactory = ::createChild
+        childFactory = ::createChild,
+        handleBackButton = true
     )
 
     private fun createChild(config: Config, componentContext: ComponentContext): ProChatFlowComponent.Child {
@@ -35,14 +37,19 @@ class DefaultProChatFlowComponent(
                     componentContext = componentContext,
                     dependencies = ProChatsListDependencies.Factory(dependencies),
                     showSnackBar = showSnackBar,
-                    navigateDetails = { stackNavigation.pushNew(Config.Details) }
+                    navigateDetails = { sessionId, shouldReconnect ->
+                        stackNavigation.pushNew(Config.Details(sessionId, shouldReconnect))
+                    }
                 )
             )
-            Config.Details -> ProChatFlowComponent.Child.Details(
+            is Config.Details -> ProChatFlowComponent.Child.Details(
                 component = DefaultProChatDetailsComponent(
                     componentContext = componentContext,
                     dependencies = ProChatDetailsDependencies.Factory(dependencies),
-                    showSnackBar = showSnackBar
+                    showSnackBar = showSnackBar,
+                    navigateBack = { stackNavigation.pop() },
+                    sessionId = config.sessionId,
+                    shouldReconnect = config.shouldReconnect
                 )
             )
         }
@@ -54,6 +61,9 @@ class DefaultProChatFlowComponent(
         object List : Config()
 
         @Serializable
-        object Details : Config()
+        data class Details(
+            val sessionId: String,
+            val shouldReconnect: Boolean
+        ) : Config()
     }
 }

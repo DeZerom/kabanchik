@@ -4,7 +4,7 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
 import ru.kabanchik.client.feature.auth.api.auth.AuthComponent
-import ru.kabanchik.client.feature.auth.api.register.RegisterComponent
+import ru.kabanchik.client.feature.auth.api.register.ClientRegisterComponent
 import ru.kabanchik.client.feature.auth.internal.flow.DefaultAuthFlowComponent
 import ru.kabanchik.common.snackBar.api.SnackBarData
 
@@ -13,7 +13,7 @@ interface AuthFlowComponent {
 
     sealed interface Child {
         class Auth(val component: AuthComponent) : Child
-        class Register(val component: RegisterComponent) : Child
+        class Register(val component: ClientRegisterComponent) : Child
     }
 
     companion object {

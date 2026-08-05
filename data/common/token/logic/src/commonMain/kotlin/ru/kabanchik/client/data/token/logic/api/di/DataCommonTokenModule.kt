@@ -6,7 +6,6 @@ import org.koin.dsl.module
 import ru.kabanchik.client.data.token.logic.internal.DefaultTokenRepository
 import ru.kabanchik.client.domain.token.logic.api.TokenRepository
 import ru.kabanchik.common.domain.auth.logic.api.repository.CommonAuthTokenRepository
-import ru.kabanchik.common.domain.chat.logic.api.repository.CommonChatTokenRepository
 import ru.kabanchik.common.domain.splash.logic.api.repository.CommonSplashTokenRepository
 
 object DataCommonTokenModule {
@@ -15,7 +14,6 @@ object DataCommonTokenModule {
             TokenRepository::class,
             CommonSplashTokenRepository::class,
             CommonAuthTokenRepository::class,
-            CommonChatTokenRepository::class,
         )
     }
 }

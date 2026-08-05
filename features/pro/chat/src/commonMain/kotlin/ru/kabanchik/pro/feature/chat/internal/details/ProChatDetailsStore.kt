@@ -3,20 +3,29 @@ package ru.kabanchik.pro.feature.chat.internal.details
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import ru.kabanchik.common.chat.model.CommonChatMessage
 import ru.kabanchik.common.domain.user.logic.api.UserInteractor
 import ru.kabanchik.common.errorHandler.logic.api.ErrorHandler
-import ru.kabanchik.common.features.chat.logic.toState
+import ru.kabanchik.common.feature.chat.model.CommonUiMessage
+import ru.kabanchik.common.features.chat.logic.details.toState
 import ru.kabanchik.common.store.BaseCoroutineStore
+import ru.kabanchik.common.tools.extensions.toHoursMinutes
 import ru.kabanchik.pro.domain.chat.logic.api.ProChatDetailsInteractor
 import ru.kabanchik.pro.feature.chat.api.details.ProChatDetailsContract.Event
 import ru.kabanchik.pro.feature.chat.api.details.ProChatDetailsContract.SideEffect
 import ru.kabanchik.pro.feature.chat.api.details.ProChatDetailsContract.State
+import kotlin.time.Clock
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 internal class ProChatDetailsStore(
     private val chatDetailsInteractor: ProChatDetailsInteractor,
     private val userInteractor: UserInteractor,
-    private val errorHandler: ErrorHandler
+    private val errorHandler: ErrorHandler,
+    private val sessionId: String,
+    private val shouldReconnect: Boolean
 ) : BaseCoroutineStore<Event, State, SideEffect>() {
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
         pushSideEffect(SideEffect.Error(errorHandler.handleError(throwable).defaultMessage))
@@ -40,9 +49,27 @@ internal class ProChatDetailsStore(
     private fun initChat() {
         coroutineScope.launch(coroutineExceptionHandler) {
             reduceState { State(isLoading = true) }
-            listenMessages()
             val login = userInteractor.getUserLogin()
-            reduceState { copy(login = login.orEmpty(), isLoading = false) }
+            reduceState { copy(login = login.orEmpty()) }
+            loadMessages()
+            listenMessages()
+            reconnectIfNeeded()
+            reduceState { copy(isLoading = false) }
+        }
+    }
+
+    private suspend fun loadMessages() {
+        if (sessionId.isBlank()) return
+
+        val messages = chatDetailsInteractor.getMessages(sessionId = sessionId)
+        reduceState {
+            copy(messages = messages.map { it.toState(currentState.login) })
+        }
+    }
+
+    private suspend fun reconnectIfNeeded() {
+        if (shouldReconnect) {
+            chatDetailsInteractor.reconnect(sessionId = sessionId)
         }
     }
 
@@ -50,14 +77,16 @@ internal class ProChatDetailsStore(
         if (currentState.currentMessage.isBlank()) return
 
         coroutineScope.launch(coroutineExceptionHandler) {
-            chatDetailsInteractor.sendMessage(currentState.currentMessage)
+            val message = currentState.currentMessage
+            addLocalMessage(message)
+            chatDetailsInteractor.sendMessage(sessionId = sessionId, message = message)
             reduceState { copy(currentMessage = "") }
         }
     }
 
     private fun listenMessages() {
         coroutineScope.launch {
-            chatDetailsInteractor.listenMessages()
+            chatDetailsInteractor.listenMessages(sessionId = sessionId)
                 .catch {
                     pushSideEffect(SideEffect.Error(errorHandler.handleError(it).defaultMessage))
                 }.collect {
@@ -69,6 +98,25 @@ internal class ProChatDetailsStore(
     private fun addMessage(message: CommonChatMessage) {
         reduceState {
             copy(messages = messages + message.toState(currentState.login))
+        }
+    }
+
+    @OptIn(ExperimentalUuidApi::class)
+    private fun addLocalMessage(message: String) {
+        val time = Clock.System.now()
+            .toLocalDateTime(TimeZone.currentSystemDefault())
+            .toHoursMinutes()
+
+        reduceState {
+            copy(
+                messages = messages + CommonUiMessage.Message(
+                    id = Uuid.random().toString(),
+                    authorLogin = login,
+                    isUserAuthor = true,
+                    time = time,
+                    text = message,
+                )
+            )
         }
     }
 }

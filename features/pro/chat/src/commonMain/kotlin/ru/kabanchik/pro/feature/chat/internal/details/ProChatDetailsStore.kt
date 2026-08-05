@@ -3,22 +3,16 @@ package ru.kabanchik.pro.feature.chat.internal.details
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 import ru.kabanchik.common.chat.model.CommonChatMessage
 import ru.kabanchik.common.domain.user.logic.api.UserInteractor
 import ru.kabanchik.common.errorHandler.logic.api.ErrorHandler
-import ru.kabanchik.common.feature.chat.model.CommonUiMessage
 import ru.kabanchik.common.features.chat.logic.details.toState
+import ru.kabanchik.common.features.chat.logic.details.upsert
 import ru.kabanchik.common.store.BaseCoroutineStore
-import ru.kabanchik.common.tools.extensions.toHoursMinutes
 import ru.kabanchik.pro.domain.chat.logic.api.ProChatDetailsInteractor
 import ru.kabanchik.pro.feature.chat.api.details.ProChatDetailsContract.Event
 import ru.kabanchik.pro.feature.chat.api.details.ProChatDetailsContract.SideEffect
 import ru.kabanchik.pro.feature.chat.api.details.ProChatDetailsContract.State
-import kotlin.time.Clock
-import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
 
 internal class ProChatDetailsStore(
     private val chatDetailsInteractor: ProChatDetailsInteractor,
@@ -78,8 +72,11 @@ internal class ProChatDetailsStore(
 
         coroutineScope.launch(coroutineExceptionHandler) {
             val message = currentState.currentMessage
-            addLocalMessage(message)
-            chatDetailsInteractor.sendMessage(sessionId = sessionId, message = message)
+            chatDetailsInteractor.sendMessage(
+                sessionId = sessionId,
+                content = message,
+                attachmentIds = emptyList(),
+            )
             reduceState { copy(currentMessage = "") }
         }
     }
@@ -97,26 +94,7 @@ internal class ProChatDetailsStore(
 
     private fun addMessage(message: CommonChatMessage) {
         reduceState {
-            copy(messages = messages + message.toState(currentState.login))
-        }
-    }
-
-    @OptIn(ExperimentalUuidApi::class)
-    private fun addLocalMessage(message: String) {
-        val time = Clock.System.now()
-            .toLocalDateTime(TimeZone.currentSystemDefault())
-            .toHoursMinutes()
-
-        reduceState {
-            copy(
-                messages = messages + CommonUiMessage.Message(
-                    id = Uuid.random().toString(),
-                    authorLogin = login,
-                    isUserAuthor = true,
-                    time = time,
-                    text = message,
-                )
-            )
+            copy(messages = messages.upsert(message.toState(currentState.login)))
         }
     }
 }

@@ -28,10 +28,12 @@ kotlin {
             implementation(libs.components.resources)
             implementation(libs.kotlinx.datetime)
         }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+        }
     }
 }
 
 android {
     namespace = "ru.kabanchik.common.features.chat.logic"
 }
-

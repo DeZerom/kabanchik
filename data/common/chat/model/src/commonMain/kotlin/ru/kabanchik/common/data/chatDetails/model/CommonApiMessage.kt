@@ -15,10 +15,13 @@ data class CommonApiMessage(
     val sender: String,
 
     @SerialName("content")
-    val content: String,
+    val content: String?,
 
     @SerialName("type")
     val type: CommonApiMessageType,
+
+    @SerialName("attachments")
+    val attachments: List<CommonApiAttachment>,
 
     @SerialName("timestamp")
     val timestamp: String,
@@ -30,5 +33,26 @@ enum class CommonApiMessageType {
     Text,
 
     @SerialName("SYSTEM")
-    System
+    System,
+
+    @SerialName("FILE")
+    File,
 }
+
+@Serializable
+data class CommonApiAttachment(
+    @SerialName("fileId")
+    val fileId: String,
+
+    @SerialName("originalName")
+    val originalName: String,
+
+    @SerialName("contentType")
+    val contentType: String,
+
+    @SerialName("size")
+    val size: Long,
+
+    @SerialName("downloadUrl")
+    val downloadUrl: String,
+)

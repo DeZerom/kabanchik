@@ -12,6 +12,7 @@ class MockCommonChatDetailsRepository(
 ) : CommonChatDetailsRepository {
     var reconnectedSessionId: String? = null
     var requestedMessagesSessionId: String? = null
+    val sentMessages = mutableListOf<SentMessage>()
 
     override suspend fun reconnect(sessionId: String) {
         reconnectedSessionId = sessionId
@@ -22,8 +23,18 @@ class MockCommonChatDetailsRepository(
         return messages
     }
 
-    override suspend fun sendMessage(sessionId: String, message: String) {
-        TODO("Not yet implemented")
+    override suspend fun sendMessage(
+        sessionId: String,
+        clientMessageId: String,
+        content: String?,
+        attachmentIds: List<String>,
+    ) {
+        sentMessages += SentMessage(
+            sessionId = sessionId,
+            clientMessageId = clientMessageId,
+            content = content,
+            attachmentIds = attachmentIds,
+        )
     }
 
     override suspend fun listenSession(): Flow<CommonSessionMessage> {
@@ -43,4 +54,11 @@ class MockCommonChatDetailsRepository(
     override suspend fun listenSessionEnd(): Flow<CommonMessage> {
         return emptyFlow()
     }
+
+    data class SentMessage(
+        val sessionId: String,
+        val clientMessageId: String,
+        val content: String?,
+        val attachmentIds: List<String>,
+    )
 }

@@ -35,3 +35,21 @@ fun CommonChatMessage.toState(userLogin: String): CommonUiMessage {
         }
     }
 }
+
+fun List<CommonUiMessage>.upsert(message: CommonUiMessage): List<CommonUiMessage> {
+    if (message is CommonUiMessage.Date) {
+        return if (any { it is CommonUiMessage.Date && it.date == message.date }) {
+            this
+        } else {
+            this + message
+        }
+    }
+    if (message !is CommonUiMessage.Message) return this + message
+
+    val existingIndex = indexOfFirst { it.id == message.id }
+    if (existingIndex == -1) return this + message
+
+    return toMutableList().apply {
+        this[existingIndex] = message
+    }
+}

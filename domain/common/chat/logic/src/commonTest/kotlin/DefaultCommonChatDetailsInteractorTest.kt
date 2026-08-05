@@ -7,6 +7,7 @@ import ru.kabanchik.common.chat.model.CommonMessage
 import ru.kabanchik.common.domain.chat.logic.internal.DefaultCommonChatDetailsInteractor
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
 
 class DefaultCommonChatDetailsInteractorTest {
     @Test
@@ -36,6 +37,29 @@ class DefaultCommonChatDetailsInteractorTest {
             assertEquals("session", repository.requestedMessagesSessionId)
             assertEquals(MockData.Messages.allMessages, messages.map { it.message })
             assertEquals(listOf(MockData.Messages.message1.time.date, MockData.Messages.message3.time.date), dates.map { it.date })
+        }
+    }
+
+    @Test
+    fun generatesNewClientMessageIdForEachMessage() {
+        runBlocking {
+            val repository = MockCommonChatDetailsRepository(messages = emptyList())
+            val interactor = DefaultCommonChatDetailsInteractor(detailsRepository = repository)
+
+            interactor.sendMessage(
+                sessionId = "session-id",
+                content = "First",
+                attachmentIds = emptyList(),
+            )
+            interactor.sendMessage(
+                sessionId = "session-id",
+                content = "Second",
+                attachmentIds = emptyList(),
+            )
+
+            val firstId = repository.sentMessages[0].clientMessageId
+            val secondId = repository.sentMessages[1].clientMessageId
+            assertNotEquals(firstId, secondId)
         }
     }
 

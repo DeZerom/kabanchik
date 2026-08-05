@@ -23,6 +23,6 @@ data class CommonApiErrorMessage(
     @SerialName("sessionId")
     val sessionId: String? = null,
 
-    @SerialName("clientRequestId")
-    val clientRequestId: String? = null,
+    @SerialName("correlationId")
+    val correlationId: String? = null,
 )

@@ -7,7 +7,12 @@ import ru.kabanchik.common.chat.model.CommonSessionMessage
 interface CommonChatDetailsRepository {
     suspend fun reconnect(sessionId: String)
     suspend fun getMessages(sessionId: String): List<CommonMessage>
-    suspend fun sendMessage(sessionId: String, message: String)
+    suspend fun sendMessage(
+        sessionId: String,
+        clientMessageId: String,
+        content: String?,
+        attachmentIds: List<String>,
+    )
     suspend fun listenSession(): Flow<CommonSessionMessage>
     suspend fun listenMessages(): Flow<CommonMessage>
     suspend fun endChat(sessionId: String)

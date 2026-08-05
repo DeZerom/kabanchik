@@ -3,6 +3,7 @@ package ru.kabanchik.pro.feature.chat.internal.list
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import ru.kabanchik.common.errorHandler.logic.api.ErrorHandler
+import ru.kabanchik.common.domain.user.logic.api.UserInteractor
 import ru.kabanchik.common.features.chat.logic.list.toUiChatItem
 import ru.kabanchik.common.features.chat.logic.list.updateWithMessage
 import ru.kabanchik.common.store.BaseCoroutineStore
@@ -13,6 +14,7 @@ import ru.kabanchik.pro.feature.chat.api.list.ProChatsListContract.State
 
 class ProChatsListStore(
     private val proChatsListInteractor: ProChatsListInteractor,
+    private val userInteractor: UserInteractor,
     private val errorHandler: ErrorHandler
 ) : BaseCoroutineStore<Event, State, SideEffect>() {
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
@@ -38,12 +40,18 @@ class ProChatsListStore(
             reduceState { copy(isLoading = true) }
 
             proChatsListInteractor.connect()
+            val currentUserLogin = userInteractor.getUserLogin().orEmpty()
             val loadedChats = proChatsListInteractor.getChats().map { it.toUiChatItem() }
             reduceState { copy(chats = loadedChats) }
             launch {
                 proChatsListInteractor.listenMessages().collect { message ->
                     reduceState {
-                        copy(chats = this.chats.updateWithMessage(message))
+                        copy(
+                            chats = this.chats.updateWithMessage(
+                                message = message,
+                                currentUserLogin = currentUserLogin,
+                            )
+                        )
                     }
                 }
             }

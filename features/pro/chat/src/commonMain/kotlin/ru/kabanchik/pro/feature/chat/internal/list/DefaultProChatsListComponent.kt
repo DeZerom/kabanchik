@@ -21,6 +21,7 @@ internal class DefaultProChatsListComponent(
     private val store = retainedInstance {
         ProChatsListStore(
             proChatsListInteractor = dependencies.chatsListInteractor,
+            userInteractor = dependencies.userInteractor,
             errorHandler = dependencies.errorHandler
         )
     }

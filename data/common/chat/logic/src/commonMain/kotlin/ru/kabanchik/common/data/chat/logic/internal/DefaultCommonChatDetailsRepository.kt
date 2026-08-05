@@ -23,9 +23,19 @@ internal class DefaultCommonChatDetailsRepository(
         return commonRestSource.getMessages(sessionId).map { it.toDomain() }
     }
 
-    override suspend fun sendMessage(sessionId: String, message: String) {
+    override suspend fun sendMessage(
+        sessionId: String,
+        clientMessageId: String,
+        content: String?,
+        attachmentIds: List<String>,
+    ) {
         commonStompSource.send(
-            CommonApiSendMessage(sessionId = sessionId, content = message)
+            CommonApiSendMessage(
+                clientMessageId = clientMessageId,
+                sessionId = sessionId,
+                content = content,
+                attachmentIds = attachmentIds,
+            )
         )
     }
 

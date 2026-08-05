@@ -22,6 +22,7 @@ class DefaultClientChatsListComponent(
     private val store = retainedInstance {
         ClientChatsListStore(
             listInteractor = dependencies.listInteractor,
+            userInteractor = dependencies.userInteractor,
             errorHandler = dependencies.errorHandler
         )
     }

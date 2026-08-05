@@ -13,6 +13,8 @@ import ru.kabanchik.common.chat.model.CommonSessionStatus
 import ru.kabanchik.common.domain.chat.logic.api.CommonChatDetailsInteractor
 import ru.kabanchik.common.domain.chat.logic.api.repository.CommonChatDetailsRepository
 import ru.kabanchik.common.domain.chat.logic.api.splitAndTrimMessage
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 class DefaultCommonChatDetailsInteractor(
     private val detailsRepository: CommonChatDetailsRepository
@@ -26,11 +28,21 @@ class DefaultCommonChatDetailsInteractor(
             .toChatMessages()
     }
 
-    override suspend fun sendMessage(sessionId: String, message: String) {
-        val messages = splitAndTrimMessage(message)
+    @OptIn(ExperimentalUuidApi::class)
+    override suspend fun sendMessage(
+        sessionId: String,
+        content: String?,
+        attachmentIds: List<String>,
+    ) {
+        val messageParts = content?.let(::splitAndTrimMessage) ?: listOf(null)
 
-        messages.forEach {
-            detailsRepository.sendMessage(sessionId, it)
+        messageParts.forEachIndexed { index, part ->
+            detailsRepository.sendMessage(
+                sessionId = sessionId,
+                clientMessageId = Uuid.random().toString(),
+                content = part,
+                attachmentIds = if (index == 0) attachmentIds else emptyList(),
+            )
         }
     }
 

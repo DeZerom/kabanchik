@@ -3,6 +3,7 @@ package ru.kabanchik.common.features.chat.logic.details
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -96,7 +97,6 @@ fun CommonChatContent(
     ) {
         Box(
             modifier = Modifier
-                .padding(horizontal = 16.dp)
                 .keyboardInsetsPadding()
         ) {
             LazyColumn(
@@ -104,7 +104,9 @@ fun CommonChatContent(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Bottom),
                 state = listState,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp)
             ) {
                 items(
                     items = messages,
@@ -128,31 +130,48 @@ fun CommonChatContent(
                     }
                 }
             }
-            CommonTextInput(
-                value = currentMessageText,
-                onValueChange = onMessageTextChanged,
-                shape = RoundedCornerShape(20.dp),
-                trailingIcon = {
-                    IconButton(onClick = onMessageSent) {
-                        Icon(
-                            imageVector = KabanchikIcons.Send24,
-                            contentDescription = null,
-                            tint = KabanchikTheme.colors.accent
-                        )
-                    }
-                },
+            Row(
+                verticalAlignment = Alignment.Bottom,
                 modifier = Modifier
-                    .sendMessageModifier(onMessageSent)
-                    .onFocusChanged { focusState ->
-                        if (focusState.isFocused && imeBottom == 0) {
-                            shouldScrollOnImeOpen.value =
-                                listState.isItemVisible(messages.lastIndex)
-                        }
-                    }
                     .fillMaxWidth()
                     .align(Alignment.BottomCenter)
                     .padding(bottom = 16.dp)
-            )
+            ) {
+                IconButton(
+                    onClick = {},
+                    modifier = Modifier.padding(bottom = 4.dp)
+                ) {
+                    Icon(
+                        painter = KabanchikIcons.Plus24,
+                        contentDescription = null,
+                        tint = KabanchikTheme.colors.accent
+                    )
+                }
+                CommonTextInput(
+                    value = currentMessageText,
+                    onValueChange = onMessageTextChanged,
+                    shape = RoundedCornerShape(20.dp),
+                    trailingIcon = {
+                        IconButton(onClick = onMessageSent) {
+                            Icon(
+                                imageVector = KabanchikIcons.Send24,
+                                contentDescription = null,
+                                tint = KabanchikTheme.colors.accent
+                            )
+                        }
+                    },
+                    modifier = Modifier
+                        .padding(end = 16.dp)
+                        .weight(1f)
+                        .sendMessageModifier(onMessageSent)
+                        .onFocusChanged { focusState ->
+                            if (focusState.isFocused && imeBottom == 0) {
+                                shouldScrollOnImeOpen.value =
+                                    listState.isItemVisible(messages.lastIndex)
+                            }
+                        }
+                )
+            }
         }
     }
 }

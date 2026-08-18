@@ -57,6 +57,7 @@ kotlin {
             implementation(projects.common.dataStore)
             implementation(projects.common.tools)
             implementation(projects.common.errorHandler.logic)
+            implementation(projects.common.filePicker)
 
             implementation(libs.runtime)
             implementation(libs.foundation)
@@ -76,6 +77,7 @@ kotlin {
             implementation(libs.kotlinx.serializationJson)
 
             implementation(libs.koin.core)
+            implementation(libs.filekit.dialogs)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -99,7 +101,7 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "ru.kabanchik.pro"
             packageVersion = "1.0.5"
-            modules("jdk.unsupported")
+            modules("jdk.unsupported", "jdk.security.auth")
 
             macOS {
                 iconFile.set(project.file("src/jvmMain/resources/app-icon.icns"))

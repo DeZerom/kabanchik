@@ -71,6 +71,7 @@ class DefaultProRootComponent(
                             chatDetailsInteractor = get(),
                             userInteractor = get(),
                             errorHandler = get(),
+                            filePicker = get(),
                         )
                     )
                 )

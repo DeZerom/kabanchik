@@ -3,6 +3,7 @@ package ru.kabanchik.common.data.chat.logic.internal
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import ru.kabanchik.common.chat.model.CommonMessage
+import ru.kabanchik.common.chat.model.CommonAttachment
 import ru.kabanchik.common.chat.model.CommonSessionMessage
 import ru.kabanchik.common.data.chat.logic.api.CommonChatRestSource
 import ru.kabanchik.common.data.chat.logic.api.CommonStompSource
@@ -21,6 +22,24 @@ internal class DefaultCommonChatDetailsRepository(
 
     override suspend fun getMessages(sessionId: String): List<CommonMessage> {
         return commonRestSource.getMessages(sessionId).map { it.toDomain() }
+    }
+
+    override suspend fun uploadFile(
+        sessionId: String,
+        fileName: String,
+        contentType: String,
+        bytes: ByteArray,
+    ): CommonAttachment {
+        return commonRestSource.uploadFile(
+            sessionId = sessionId,
+            fileName = fileName,
+            contentType = contentType,
+            bytes = bytes,
+        ).toDomain()
+    }
+
+    override suspend fun downloadFile(sessionId: String, fileId: String): ByteArray {
+        return commonRestSource.downloadFile(sessionId = sessionId, fileId = fileId)
     }
 
     override suspend fun sendMessage(

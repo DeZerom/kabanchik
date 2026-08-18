@@ -6,6 +6,7 @@ import kotlinx.coroutines.launch
 import ru.kabanchik.common.chat.model.CommonChatMessage
 import ru.kabanchik.common.domain.user.logic.api.UserInteractor
 import ru.kabanchik.common.errorHandler.logic.api.ErrorHandler
+import ru.kabanchik.common.feature.chat.model.CommonPendingFile
 import ru.kabanchik.common.features.chat.logic.details.toState
 import ru.kabanchik.common.features.chat.logic.details.upsert
 import ru.kabanchik.common.store.BaseCoroutineStore
@@ -21,6 +22,8 @@ internal class ProChatDetailsStore(
     private val sessionId: String,
     private val shouldReconnect: Boolean
 ) : BaseCoroutineStore<Event, State, SideEffect>() {
+    private var isSending = false
+
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
         pushSideEffect(SideEffect.Error(errorHandler.handleError(throwable).defaultMessage))
     }
@@ -32,6 +35,9 @@ internal class ProChatDetailsStore(
     override fun handleEvent(event: Event) {
         when (event) {
             Event.MessageSent -> sendMessage()
+            is Event.FilesSelected -> reduceState {
+                copy(selectedFiles = selectedFiles + event.files.map(::CommonPendingFile))
+            }
             is Event.MessageTextChanged -> reduceState { copy(currentMessage = event.newText) }
         }
     }
@@ -68,17 +74,53 @@ internal class ProChatDetailsStore(
     }
 
     private fun sendMessage() {
-        if (currentState.currentMessage.isBlank()) return
+        if (isSending || currentState.currentMessage.isBlank() && currentState.selectedFiles.isEmpty()) return
 
+        isSending = true
         coroutineScope.launch(coroutineExceptionHandler) {
-            val message = currentState.currentMessage
-            chatDetailsInteractor.sendMessage(
-                sessionId = sessionId,
-                content = message,
-                attachmentIds = emptyList(),
-            )
-            reduceState { copy(currentMessage = "") }
+            try {
+                val message = currentState.currentMessage
+                val files = currentState.selectedFiles
+                val attachmentIds = files.map { pendingFile ->
+                    uploadFile(pendingFile)
+                }
+
+                chatDetailsInteractor.sendMessage(
+                    sessionId = sessionId,
+                    content = message.takeIf { it.isNotBlank() },
+                    attachmentIds = attachmentIds,
+                )
+
+                reduceState {
+                    copy(
+                        currentMessage = if (currentMessage == message) "" else currentMessage,
+                        selectedFiles = selectedFiles.drop(files.size),
+                    )
+                }
+            } finally {
+                isSending = false
+            }
         }
+    }
+
+    private suspend fun uploadFile(pendingFile: CommonPendingFile): String {
+        pendingFile.attachmentId?.let { return it }
+
+        val attachmentId = chatDetailsInteractor.uploadFile(
+            sessionId = sessionId,
+            fileName = pendingFile.file.fileName,
+            contentType = pendingFile.file.contentType,
+            bytes = pendingFile.file.bytes,
+        ).fileId
+
+        reduceState {
+            copy(
+                selectedFiles = selectedFiles.map { file ->
+                    if (file === pendingFile) file.copy(attachmentId = attachmentId) else file
+                }
+            )
+        }
+        return attachmentId
     }
 
     private fun listenMessages() {

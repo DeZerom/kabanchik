@@ -44,6 +44,7 @@ fun CommonChatContent(
     currentMessageText: String,
     onMessageTextChanged: (String) -> Unit,
     onMessageSent: () -> Unit,
+    onFileSelectionRequested: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val listState = rememberLazyListState()
@@ -138,7 +139,7 @@ fun CommonChatContent(
                     .padding(bottom = 16.dp)
             ) {
                 IconButton(
-                    onClick = {},
+                    onClick = onFileSelectionRequested,
                     modifier = Modifier.padding(bottom = 4.dp)
                 ) {
                     Icon(

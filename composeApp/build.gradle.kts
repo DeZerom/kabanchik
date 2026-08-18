@@ -41,6 +41,7 @@ kotlin {
             implementation(projects.common.network)
             implementation(projects.common.dataStore)
             implementation(projects.common.errorHandler.logic)
+            implementation(projects.common.filePicker)
 
             implementation(projects.data.common.token.logic)
             implementation(projects.domain.common.token.logic)
@@ -81,6 +82,7 @@ kotlin {
             implementation(libs.kotlinx.serializationJson)
 
             implementation(libs.koin.core)
+            implementation(libs.filekit.dialogs)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -131,7 +133,7 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "ru.kabanchik.client"
             packageVersion = "1.0.9"
-            modules("jdk.unsupported")
+            modules("jdk.unsupported", "jdk.security.auth")
 
             macOS {
                 iconFile.set(project.file("src/jvmMain/resources/app-icon.icns"))

@@ -8,6 +8,7 @@ import ru.kabanchik.common.domain.chat.logic.internal.DefaultCommonChatDetailsIn
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
+import kotlin.test.assertContentEquals
 
 class DefaultCommonChatDetailsInteractorTest {
     @Test
@@ -60,6 +61,60 @@ class DefaultCommonChatDetailsInteractorTest {
             val firstId = repository.sentMessages[0].clientMessageId
             val secondId = repository.sentMessages[1].clientMessageId
             assertNotEquals(firstId, secondId)
+        }
+    }
+
+    @Test
+    fun uploadsFileForRequestedSession() {
+        runBlocking {
+            val repository = MockCommonChatDetailsRepository(messages = emptyList())
+            val interactor = DefaultCommonChatDetailsInteractor(detailsRepository = repository)
+            val bytes = byteArrayOf(4, 5, 6)
+
+            val attachment = interactor.uploadFile(
+                sessionId = "session-id",
+                fileName = "document.pdf",
+                contentType = "application/pdf",
+                bytes = bytes,
+            )
+
+            val request = repository.uploadedFileRequest
+            assertEquals("session-id", request?.sessionId)
+            assertEquals("document.pdf", request?.fileName)
+            assertEquals("application/pdf", request?.contentType)
+            assertContentEquals(bytes, request?.bytes)
+            assertEquals("uploaded-file-id", attachment.fileId)
+        }
+    }
+
+    @Test
+    fun downloadsFileForRequestedSession() {
+        runBlocking {
+            val repository = MockCommonChatDetailsRepository(messages = emptyList())
+            val interactor = DefaultCommonChatDetailsInteractor(detailsRepository = repository)
+
+            val bytes = interactor.downloadFile(sessionId = "session-id", fileId = "file-id")
+
+            assertEquals("session-id", repository.downloadedFileRequest?.sessionId)
+            assertEquals("file-id", repository.downloadedFileRequest?.fileId)
+            assertContentEquals(byteArrayOf(1, 2, 3), bytes)
+        }
+    }
+
+    @Test
+    fun sendsAttachmentsWithoutText() {
+        runBlocking {
+            val repository = MockCommonChatDetailsRepository(messages = emptyList())
+            val interactor = DefaultCommonChatDetailsInteractor(detailsRepository = repository)
+
+            interactor.sendMessage(
+                sessionId = "session-id",
+                content = null,
+                attachmentIds = listOf("file-id"),
+            )
+
+            assertEquals(null, repository.sentMessages.single().content)
+            assertEquals(listOf("file-id"), repository.sentMessages.single().attachmentIds)
         }
     }
 

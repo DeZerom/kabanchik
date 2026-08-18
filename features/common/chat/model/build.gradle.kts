@@ -15,6 +15,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            implementation(projects.common.filePicker)
             implementation(projects.common.tools)
         }
     }
@@ -23,4 +24,3 @@ kotlin {
 android {
     namespace = "ru.kabanchik.common.feature.chat.model"
 }
-

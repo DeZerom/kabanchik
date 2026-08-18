@@ -10,6 +10,7 @@ import ru.kabanchik.common.domain.chat.logic.api.di.DomainCommonChatModule
 import ru.kabanchik.common.domain.splash.logic.api.di.DomainCommonSplashModule
 import ru.kabanchik.common.domain.user.logic.api.di.DomainCommonUserModule
 import ru.kabanchik.common.errorHandler.logic.api.di.CommonErrorHandlerModule
+import ru.kabanchik.common.filePicker.api.di.CommonFilePickerModule
 import ru.kabanchik.common.network.api.di.CommonNetworkModule
 import ru.kabanchik.pro.data.auth.logic.api.di.DataProAuthModule
 import ru.kabanchik.pro.data.chat.logic.api.di.DataProChatDetailsModule
@@ -22,7 +23,8 @@ expect val platformModules: List<Module>
 private val commonModules = listOf(
     CommonDataStoreModule.module,
     CommonNetworkModule.module,
-    CommonErrorHandlerModule.module
+    CommonErrorHandlerModule.module,
+    CommonFilePickerModule.module
 )
 
 private val domainModules = listOf(

@@ -6,6 +6,7 @@ interface ClientChatDetailsComponent {
     val state: StateFlow<ChatDetailsContract.State>
 
     fun messageTextChanged(newText: String)
+    fun filesSelectionRequested()
     fun messageSent()
     fun onBackClicked()
 }

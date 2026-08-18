@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.datetime.LocalDate
 import ru.kabanchik.common.chat.model.CommonChatMessage
+import ru.kabanchik.common.chat.model.CommonAttachment
 import ru.kabanchik.common.chat.model.CommonMessage
 import ru.kabanchik.common.chat.model.CommonSessionStatus
 import ru.kabanchik.common.domain.chat.logic.api.CommonChatDetailsInteractor
@@ -26,6 +27,24 @@ class DefaultCommonChatDetailsInteractor(
     override suspend fun getMessages(sessionId: String): List<CommonChatMessage> {
         return detailsRepository.getMessages(sessionId)
             .toChatMessages()
+    }
+
+    override suspend fun uploadFile(
+        sessionId: String,
+        fileName: String,
+        contentType: String,
+        bytes: ByteArray,
+    ): CommonAttachment {
+        return detailsRepository.uploadFile(
+            sessionId = sessionId,
+            fileName = fileName,
+            contentType = contentType,
+            bytes = bytes,
+        )
+    }
+
+    override suspend fun downloadFile(sessionId: String, fileId: String): ByteArray {
+        return detailsRepository.downloadFile(sessionId = sessionId, fileId = fileId)
     }
 
     @OptIn(ExperimentalUuidApi::class)

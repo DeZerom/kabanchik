@@ -26,6 +26,7 @@ kotlin {
             implementation(projects.common.store)
             implementation(projects.common.tools)
             implementation(projects.common.errorHandler.logic)
+            implementation(projects.common.filePicker)
 
             implementation(libs.components.resources)
             implementation(libs.kotlinx.datetime)
@@ -36,4 +37,3 @@ kotlin {
 android {
     namespace = "ru.kabanchik.pro.feature.chat"
 }
-

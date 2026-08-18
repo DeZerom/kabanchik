@@ -6,6 +6,7 @@ interface ProChatDetailsComponent {
     val state: StateFlow<ru.kabanchik.pro.feature.chat.api.details.ProChatDetailsContract.State>
 
     fun onMessageChanged(newMessage: String)
+    fun onFileSelectionRequested()
     fun onSendClicked()
     fun onBackClicked()
 }

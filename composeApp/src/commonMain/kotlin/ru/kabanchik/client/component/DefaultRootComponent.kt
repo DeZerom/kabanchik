@@ -70,7 +70,8 @@ class DefaultRootComponent(
                             listInteractor = get(),
                             chatDetailsInteractor = get(),
                             userInteractor = get(),
-                            errorHandler = get()
+                            errorHandler = get(),
+                            filePicker = get(),
                         )
                     )
                 )

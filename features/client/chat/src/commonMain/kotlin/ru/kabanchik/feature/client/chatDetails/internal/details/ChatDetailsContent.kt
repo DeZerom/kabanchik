@@ -10,6 +10,7 @@ internal fun ChatDetailsContent(
     state: ChatDetailsContract.State,
     onMessageTextChanged: (String) -> Unit,
     onMessageSent: () -> Unit,
+    onFileSelectionRequested: () -> Unit,
 ) {
     if (state.isLoading) {
         CommonScreenLoader()
@@ -17,7 +18,8 @@ internal fun ChatDetailsContent(
         Chat(
             state = state,
             onMessageTextChanged = onMessageTextChanged,
-            onMessageSent = onMessageSent
+            onMessageSent = onMessageSent,
+            onFileSelectionRequested = onFileSelectionRequested,
         )
     }
 }
@@ -26,12 +28,14 @@ internal fun ChatDetailsContent(
 private fun Chat(
     state: ChatDetailsContract.State,
     onMessageTextChanged: (String) -> Unit,
-    onMessageSent: () -> Unit
+    onMessageSent: () -> Unit,
+    onFileSelectionRequested: () -> Unit,
 ) {
     CommonChatContent(
         messages = state.messages,
         currentMessageText = state.currentMessage,
         onMessageTextChanged = onMessageTextChanged,
-        onMessageSent = onMessageSent
+        onMessageSent = onMessageSent,
+        onFileSelectionRequested = onFileSelectionRequested,
     )
 }

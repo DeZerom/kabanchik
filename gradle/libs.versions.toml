@@ -26,6 +26,7 @@ krossbow = "9.3.0"
 datastore = "1.2.0"
 material3WindowSizeClassAndroid = "1.4.0"
 logger = "1.2.0"
+filekit = "0.14.1"
 
 [libraries]
 components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "composeMultiplatform" }
@@ -73,6 +74,7 @@ androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "d
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 material3-window-size = { module = "org.jetbrains.compose.material3:material3-window-size-class", version.ref = "material3" }
 shivathapaa-logger = { module = "io.github.shivathapaa:logger", version.ref = "logger" }
+filekit-dialogs = { module = "io.github.vinceglb:filekit-dialogs", version.ref = "filekit" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

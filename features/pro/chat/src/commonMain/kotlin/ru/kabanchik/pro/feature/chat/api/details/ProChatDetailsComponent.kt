@@ -7,6 +7,7 @@ interface ProChatDetailsComponent {
 
     fun onMessageChanged(newMessage: String)
     fun onFileSelectionRequested()
+    fun onFileRemoved(fileId: String)
     fun onSendClicked()
     fun onBackClicked()
 }

@@ -8,6 +8,8 @@ import ru.kabanchik.common.chat.model.CommonChatMessage
 import ru.kabanchik.common.domain.user.logic.api.UserInteractor
 import ru.kabanchik.common.errorHandler.logic.api.ErrorHandler
 import ru.kabanchik.common.feature.chat.model.CommonPendingFile
+import ru.kabanchik.common.features.chat.logic.details.appendSelectedFiles
+import ru.kabanchik.common.features.chat.logic.details.removeSelectedFile
 import ru.kabanchik.common.features.chat.logic.details.toState
 import ru.kabanchik.common.features.chat.logic.details.upsert
 import ru.kabanchik.common.store.BaseCoroutineStore
@@ -23,8 +25,6 @@ internal class ClientChatDetailsStore(
     private val shouldReconnect: Boolean
 ): BaseCoroutineStore<Event, State, SideEffect>() {
 
-    private var isSending = false
-
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, error ->
         pushSideEffect(SideEffect.Error(errorHandler.handleError(error).defaultMessage))
     }
@@ -37,7 +37,12 @@ internal class ClientChatDetailsStore(
         when (event) {
             is Event.MessageTextChanged -> reduceState { copy(currentMessage = event.newText) }
             is Event.FilesSelected -> reduceState {
-                copy(selectedFiles = selectedFiles + event.files.map(::CommonPendingFile))
+                copy(selectedFiles = selectedFiles.appendSelectedFiles(event.files))
+            }
+            is Event.FileRemoved -> reduceState {
+                if (isSending) this else copy(
+                    selectedFiles = selectedFiles.removeSelectedFile(event.fileId)
+                )
             }
             Event.MessageSent -> sendMessage()
         }
@@ -75,9 +80,9 @@ internal class ClientChatDetailsStore(
     }
 
     private fun sendMessage() {
-        if (isSending || currentState.currentMessage.isBlank() && currentState.selectedFiles.isEmpty()) return
+        if (currentState.isSending || currentState.currentMessage.isBlank() && currentState.selectedFiles.isEmpty()) return
 
-        isSending = true
+        reduceState { copy(isSending = true) }
         coroutineScope.launch(coroutineExceptionHandler) {
             try {
                 val message = currentState.currentMessage
@@ -95,11 +100,11 @@ internal class ClientChatDetailsStore(
                 reduceState {
                     copy(
                         currentMessage = if (currentMessage == message) "" else currentMessage,
-                        selectedFiles = selectedFiles.drop(files.size),
+                        selectedFiles = emptyList(),
                     )
                 }
             } finally {
-                isSending = false
+                reduceState { copy(isSending = false) }
             }
         }
     }
@@ -117,7 +122,7 @@ internal class ClientChatDetailsStore(
         reduceState {
             copy(
                 selectedFiles = selectedFiles.map { file ->
-                    if (file === pendingFile) file.copy(attachmentId = attachmentId) else file
+                    if (file.id == pendingFile.id) file.copy(attachmentId = attachmentId) else file
                 }
             )
         }

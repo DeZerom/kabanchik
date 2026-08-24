@@ -64,6 +64,10 @@ internal class DefaultClientChatDetailsComponent(
         }
     }
 
+    override fun fileRemoved(fileId: String) {
+        store.handleEvent(ChatDetailsContract.Event.FileRemoved(fileId))
+    }
+
     override fun messageSent() {
         store.handleEvent(ChatDetailsContract.Event.MessageSent)
     }

@@ -11,6 +11,7 @@ internal fun ChatDetailsContent(
     onMessageTextChanged: (String) -> Unit,
     onMessageSent: () -> Unit,
     onFileSelectionRequested: () -> Unit,
+    onFileRemoved: (String) -> Unit,
 ) {
     if (state.isLoading) {
         CommonScreenLoader()
@@ -20,6 +21,7 @@ internal fun ChatDetailsContent(
             onMessageTextChanged = onMessageTextChanged,
             onMessageSent = onMessageSent,
             onFileSelectionRequested = onFileSelectionRequested,
+            onFileRemoved = onFileRemoved,
         )
     }
 }
@@ -30,12 +32,16 @@ private fun Chat(
     onMessageTextChanged: (String) -> Unit,
     onMessageSent: () -> Unit,
     onFileSelectionRequested: () -> Unit,
+    onFileRemoved: (String) -> Unit,
 ) {
     CommonChatContent(
         messages = state.messages,
         currentMessageText = state.currentMessage,
+        selectedFiles = state.selectedFiles,
+        isSending = state.isSending,
         onMessageTextChanged = onMessageTextChanged,
         onMessageSent = onMessageSent,
         onFileSelectionRequested = onFileSelectionRequested,
+        onFileRemoved = { onFileRemoved(it.id) },
     )
 }

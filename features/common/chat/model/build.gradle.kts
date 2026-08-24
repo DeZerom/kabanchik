@@ -15,7 +15,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.common.filePicker)
+            api(projects.common.filePicker)
             implementation(projects.common.tools)
         }
     }

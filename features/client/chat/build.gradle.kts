@@ -31,6 +31,10 @@ kotlin {
             implementation(libs.components.resources)
             implementation(libs.kotlinx.datetime)
         }
+        jvmTest.dependencies {
+            implementation(libs.kotlin.test)
+            implementation(libs.kotlinx.coroutines.test)
+        }
     }
 }
 

@@ -29,6 +29,7 @@ internal fun ClientChatDetailsScreen(
             onMessageTextChanged = component::messageTextChanged,
             onMessageSent = component::messageSent,
             onFileSelectionRequested = component::filesSelectionRequested,
+            onFileRemoved = component::fileRemoved,
         )
     }
 }

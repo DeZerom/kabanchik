@@ -66,6 +66,10 @@ class DefaultProChatDetailsComponent(
         }
     }
 
+    override fun onFileRemoved(fileId: String) {
+        store.handleEvent(Event.FileRemoved(fileId))
+    }
+
     override fun onSendClicked() {
         store.handleEvent(Event.MessageSent)
     }

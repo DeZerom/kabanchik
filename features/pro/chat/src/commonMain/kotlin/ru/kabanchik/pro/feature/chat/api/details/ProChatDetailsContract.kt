@@ -11,7 +11,8 @@ class ProChatDetailsContract {
         val currentMessage: String = "",
         val selectedFiles: List<CommonPendingFile> = emptyList(),
         val messages: List<CommonUiMessage> = emptyList(),
-        val isLoading: Boolean = false
+        val isLoading: Boolean = false,
+        val isSending: Boolean = false,
     ) {
         val toolbarTitle = messages
             .filterIsInstance<CommonUiMessage.Message>()
@@ -29,6 +30,7 @@ class ProChatDetailsContract {
     sealed interface Event {
         class MessageTextChanged(val newText: String) : Event
         class FilesSelected(val files: List<SelectedFile>) : Event
+        class FileRemoved(val fileId: String) : Event
         object MessageSent : Event
     }
 

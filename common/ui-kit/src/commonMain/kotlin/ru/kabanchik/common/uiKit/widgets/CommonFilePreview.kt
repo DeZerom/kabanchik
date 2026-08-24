@@ -30,6 +30,7 @@ import kabanchik.common.ui_kit.generated.resources.file_size_unit_gigabytes
 import kabanchik.common.ui_kit.generated.resources.file_size_unit_kilobytes
 import kabanchik.common.ui_kit.generated.resources.file_size_unit_megabytes
 import org.jetbrains.compose.resources.stringResource
+import ru.kabanchik.common.uiKit.VSpacer
 import ru.kabanchik.common.uiKit.icons.KabanchikIcons
 import ru.kabanchik.common.uiKit.theme.KabanchikTheme
 import ru.kabanchik.common.uiKit.theme.extraSmallText
@@ -63,8 +64,9 @@ fun CommonFilePreview(
                 painter = KabanchikIcons.File16,
                 contentDescription = null,
                 tint = Color.White,
-                modifier = Modifier.size(16.dp)
+                modifier = Modifier.size(24.dp)
             )
+            VSpacer(4.dp)
             Text(
                 text = displayName,
                 color = Color.White,

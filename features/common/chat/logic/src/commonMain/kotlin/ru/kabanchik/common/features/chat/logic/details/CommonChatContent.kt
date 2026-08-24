@@ -2,7 +2,6 @@ package ru.kabanchik.common.features.chat.logic.details
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -13,10 +12,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -28,8 +25,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.decodeToImageBitmap
-import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -44,9 +39,6 @@ import ru.kabanchik.common.tools.textResource.TextResource
 import ru.kabanchik.common.uiKit.icons.KabanchikIcons
 import ru.kabanchik.common.uiKit.icons.extensions.Send24
 import ru.kabanchik.common.uiKit.theme.KabanchikTheme
-import ru.kabanchik.common.uiKit.widgets.CommonFilePreview
-import ru.kabanchik.common.uiKit.widgets.CommonImageFilePreview
-import ru.kabanchik.common.uiKit.widgets.CommonTextInput
 
 @Composable
 fun CommonChatContent(
@@ -165,7 +157,7 @@ fun CommonChatContent(
                         tint = KabanchikTheme.colors.accent
                     )
                 }
-                ChatMessageInput(
+                CommonChatMessageInput(
                     value = currentMessageText,
                     onValueChange = onMessageTextChanged,
                     selectedFiles = selectedFiles,
@@ -203,77 +195,6 @@ fun CommonChatContent(
             }
         }
     }
-}
-
-@Composable
-private fun ChatMessageInput(
-    value: String,
-    onValueChange: (String) -> Unit,
-    selectedFiles: List<CommonPendingFile>,
-    onFileRemoved: (CommonPendingFile) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier = modifier,
-    ) {
-        if (selectedFiles.isNotEmpty()) {
-            LazyRow(
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
-            ) {
-                items(
-                    items = selectedFiles,
-                    key = { it.id },
-                ) { pendingFile ->
-                    PendingFilePreview(
-                        pendingFile = pendingFile,
-                        onRemove = { onFileRemoved(pendingFile) },
-                    )
-                }
-            }
-        }
-
-        CommonTextInput(
-            value = value,
-            onValueChange = onValueChange,
-            shape = RoundedCornerShape(20.dp),
-            modifier = Modifier.fillMaxWidth(),
-        )
-    }
-}
-
-@Composable
-private fun PendingFilePreview(
-    pendingFile: CommonPendingFile,
-    onRemove: () -> Unit,
-) {
-    val file = pendingFile.file
-    val imagePainter = remember(file) {
-        if (file.isImage()) {
-            runCatching { BitmapPainter(file.bytes.decodeToImageBitmap()) }.getOrNull()
-        } else {
-            null
-        }
-    }
-
-    if (imagePainter != null) {
-        CommonImageFilePreview(
-            painter = imagePainter,
-            onRemove = onRemove,
-            contentDescription = file.fileName,
-        )
-    } else {
-        CommonFilePreview(
-            fileName = file.fileName,
-            contentType = file.contentType,
-            fileSize = file.size,
-            onRemove = onRemove,
-        )
-    }
-}
-
-private fun SelectedFile.isImage(): Boolean {
-    return contentType.substringBefore(';').trim().startsWith("image/", ignoreCase = true)
 }
 
 private fun LazyListState.isItemVisible(index: Int): Boolean {

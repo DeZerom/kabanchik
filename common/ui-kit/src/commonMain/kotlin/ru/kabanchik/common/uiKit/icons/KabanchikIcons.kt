@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import kabanchik.common.ui_kit.generated.resources.Res
 import kabanchik.common.ui_kit.generated.resources.check_24px
 import kabanchik.common.ui_kit.generated.resources.close_24px
+import kabanchik.common.ui_kit.generated.resources.file_16px
 import kabanchik.common.ui_kit.generated.resources.plus_24px
 import org.jetbrains.compose.resources.painterResource
 
@@ -16,4 +17,7 @@ object KabanchikIcons {
 
     val Plus24
         @Composable get() = painterResource(Res.drawable.plus_24px)
+
+    val File16
+        @Composable get() = painterResource(Res.drawable.file_16px)
 }

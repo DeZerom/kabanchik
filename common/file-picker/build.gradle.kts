@@ -8,6 +8,9 @@ kotlin {
         commonMain.dependencies {
             implementation(libs.filekit.dialogs)
         }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+        }
     }
 }
 

@@ -22,10 +22,12 @@ kotlin {
             implementation(libs.components.resources)
             implementation(libs.material3.window.size)
         }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+        }
     }
 }
 
 android {
     namespace = "ru.kabanchik.common.uiKit"
 }
-

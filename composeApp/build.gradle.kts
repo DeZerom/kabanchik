@@ -83,6 +83,8 @@ kotlin {
 
             implementation(libs.koin.core)
             implementation(libs.filekit.dialogs)
+            implementation(libs.coil.compose)
+            implementation(libs.coil.network.ktor3)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

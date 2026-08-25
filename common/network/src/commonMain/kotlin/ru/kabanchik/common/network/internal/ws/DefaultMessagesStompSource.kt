@@ -33,7 +33,7 @@ import ru.kabanchik.common.data.chatDetails.model.CommonApiReconnectMessage
 import ru.kabanchik.common.data.chatDetails.model.CommonApiSendMessage
 import ru.kabanchik.common.data.chatDetails.model.CommonApiSessionMessage
 import ru.kabanchik.common.data.chatDetails.model.CommonApiSystemMessage
-import ru.kabanchik.common.network.internal.DEFAULT_HOST
+import ru.kabanchik.common.tools.network.BackendHost
 import ru.kabanchik.pro.data.chat.logic.api.ProMessagesStompSource
 import ru.kabanchik.pro.data.chatDetails.model.ProApiAcceptChat
 import ru.kabanchik.pro.data.chatDetails.model.ProApiIncoming
@@ -54,7 +54,7 @@ internal class DefaultMessagesStompSource(
 
     override suspend fun connect() {
         resetCachedSubscriptions()
-        val url = "ws://$DEFAULT_HOST/ws"
+        val url = "ws://$BackendHost/ws"
         loggerD("Connect: $url")
         session = StompClient(
             webSocketClient = KtorWebSocketClient(httpClient),

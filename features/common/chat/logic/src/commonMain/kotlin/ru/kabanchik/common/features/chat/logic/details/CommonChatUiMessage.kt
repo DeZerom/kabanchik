@@ -11,6 +11,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kabanchik.features.common.chat.logic.generated.resources.Res
 import kabanchik.features.common.chat.logic.generated.resources.chat_details_operator_found
+import ru.kabanchik.common.feature.chat.model.CommonUiAttachment
 import ru.kabanchik.common.feature.chat.model.CommonUiMessage
 import ru.kabanchik.common.tools.extensions.getValue
 import ru.kabanchik.common.tools.textResource.TextResource
@@ -38,7 +39,14 @@ fun CommonChatUiMessage(
                 messageTime = message.time,
                 messageText = message.text,
                 authorLogin = message.authorLogin,
-                modifier = modifier
+                modifier = modifier,
+                attachmentsContent = message.attachments
+                    .takeIf { it.any(CommonUiAttachment::isImage) }
+                    ?.let { attachments ->
+                        {
+                            CommonChatAttachments(attachments = attachments)
+                        }
+                    }
             )
         }
         is CommonUiMessage.SystemMessage -> {
@@ -50,6 +58,10 @@ fun CommonChatUiMessage(
             )
         }
     }
+}
+
+private fun CommonUiAttachment.isImage(): Boolean {
+    return this is CommonUiAttachment.Image
 }
 
 @Preview

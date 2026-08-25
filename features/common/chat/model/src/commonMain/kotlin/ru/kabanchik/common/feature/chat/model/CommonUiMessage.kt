@@ -21,6 +21,7 @@ sealed interface CommonUiMessage {
         val authorLogin: String = "",
         val isUserAuthor: Boolean = false,
         val time: String = "",
-        val text: String = ""
+        val text: String = "",
+        val attachments: List<CommonUiAttachment> = emptyList(),
     ) : CommonUiMessage
 }

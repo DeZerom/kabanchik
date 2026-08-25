@@ -13,7 +13,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,16 +24,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kabanchik.common.ui_kit.generated.resources.Res
 import kabanchik.common.ui_kit.generated.resources.file_preview_remove
-import kabanchik.common.ui_kit.generated.resources.file_size_unit_bytes
-import kabanchik.common.ui_kit.generated.resources.file_size_unit_gigabytes
-import kabanchik.common.ui_kit.generated.resources.file_size_unit_kilobytes
-import kabanchik.common.ui_kit.generated.resources.file_size_unit_megabytes
 import org.jetbrains.compose.resources.stringResource
 import ru.kabanchik.common.uiKit.VSpacer
 import ru.kabanchik.common.uiKit.icons.KabanchikIcons
 import ru.kabanchik.common.uiKit.theme.KabanchikTheme
 import ru.kabanchik.common.uiKit.theme.extraSmallText
-import kotlin.math.round
 
 @Composable
 fun CommonFilePreview(
@@ -57,15 +51,12 @@ fun CommonFilePreview(
                 .size(PreviewContentSize)
                 .align(Alignment.BottomStart)
                 .clip(RoundedCornerShape(PreviewCornerRadius))
-                .background(KabanchikTheme.colors.accent.copy(alpha = 0.72f))
+                .background(
+                    KabanchikTheme.colors.accent.copy(alpha = CommonFileBackgroundAlpha)
+                )
                 .padding(6.dp)
         ) {
-            Icon(
-                painter = KabanchikIcons.File16,
-                contentDescription = null,
-                tint = Color.White,
-                modifier = Modifier.size(24.dp)
-            )
+            CommonFileIcon(size = 24.dp)
             VSpacer(4.dp)
             Text(
                 text = displayName,
@@ -121,41 +112,6 @@ internal fun formatFileName(fileName: String): String {
     return nameWithoutExtension.ifBlank { fileName }
 }
 
-@Composable
-internal fun formatFileSize(sizeInBytes: Long): String {
-    val formattedSize = remember(sizeInBytes) {
-        val safeSize = sizeInBytes.coerceAtLeast(0L)
-        if (safeSize < BytesInKilobyte) {
-            FormattedFileSize(safeSize.toString(), FileSizeUnit.Bytes)
-        } else {
-            var value = safeSize.toDouble() / BytesInKilobyte
-            var unit = FileSizeUnit.Kilobytes
-            while (value >= BytesInKilobyte && unit != FileSizeUnit.Gigabytes) {
-                value /= BytesInKilobyte
-                unit = unit.next()
-            }
-            FormattedFileSize(formatDecimal(value), unit)
-        }
-    }
-
-    val unit = stringResource(
-        when (formattedSize.unit) {
-            FileSizeUnit.Bytes -> Res.string.file_size_unit_bytes
-            FileSizeUnit.Kilobytes -> Res.string.file_size_unit_kilobytes
-            FileSizeUnit.Megabytes -> Res.string.file_size_unit_megabytes
-            FileSizeUnit.Gigabytes -> Res.string.file_size_unit_gigabytes
-        }
-    )
-    return "${formattedSize.value} $unit"
-}
-
-private fun formatDecimal(value: Double): String {
-    val roundedValue = round(value * 100) / 100
-    return roundedValue.toString()
-        .removeSuffix(".0")
-        .replace('.', ',')
-}
-
 @Preview
 @Composable
 private fun CommonFilePreviewPreview() {
@@ -170,7 +126,6 @@ private fun CommonFilePreviewPreview() {
 }
 
 private const val UnknownFileType = "FILE"
-private const val BytesInKilobyte = 1024L
 
 private val MimeTypeExtensions = mapOf(
     "image/jpeg" to "JPG",
@@ -196,24 +151,6 @@ private val MimeTypeExtensions = mapOf(
     "audio/wave" to "WAV",
     "video/mp4" to "MP4",
 )
-
-private data class FormattedFileSize(
-    val value: String,
-    val unit: FileSizeUnit,
-)
-
-private enum class FileSizeUnit {
-    Bytes,
-    Kilobytes,
-    Megabytes,
-    Gigabytes;
-
-    fun next(): FileSizeUnit = when (this) {
-        Bytes -> Kilobytes
-        Kilobytes -> Megabytes
-        Megabytes, Gigabytes -> Gigabytes
-    }
-}
 
 private val PreviewContainerSize = 72.dp
 private val PreviewContentSize = 64.dp

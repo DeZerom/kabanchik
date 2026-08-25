@@ -35,4 +35,20 @@ class CommonFilePreviewTest {
             actual = formatFileName("archive.backup.zip"),
         )
     }
+
+    @Test
+    fun formatsFileSizeUsingBinaryUnits() {
+        assertEquals(
+            expected = FormattedFileSize("3,12", FileSizeUnit.Megabytes),
+            actual = formatFileSizeValue(3_270_246),
+        )
+    }
+
+    @Test
+    fun coercesNegativeFileSizeToZeroBytes() {
+        assertEquals(
+            expected = FormattedFileSize("0", FileSizeUnit.Bytes),
+            actual = formatFileSizeValue(-1),
+        )
+    }
 }

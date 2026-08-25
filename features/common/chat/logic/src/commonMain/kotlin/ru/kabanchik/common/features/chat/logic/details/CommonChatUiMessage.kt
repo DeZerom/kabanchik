@@ -41,7 +41,7 @@ fun CommonChatUiMessage(
                 authorLogin = message.authorLogin,
                 modifier = modifier,
                 attachmentsContent = message.attachments
-                    .takeIf { it.any(CommonUiAttachment::isImage) }
+                    .takeIf { it.isNotEmpty() }
                     ?.let { attachments ->
                         {
                             CommonChatAttachments(attachments = attachments)
@@ -58,10 +58,6 @@ fun CommonChatUiMessage(
             )
         }
     }
-}
-
-private fun CommonUiAttachment.isImage(): Boolean {
-    return this is CommonUiAttachment.Image
 }
 
 @Preview
@@ -102,6 +98,28 @@ private fun CommonChatUiUserMessagePreview() {
         CommonChatUiMessage(
             message = CommonChatUiMessageMock.userMessage,
             modifier = Modifier.fillMaxWidth()
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun CommonChatUiFileMessagePreview() {
+    CommonChatUiMessagePreviewContainer {
+        CommonChatUiMessage(
+            message = CommonChatUiMessageMock.fileMessage,
+            modifier = Modifier.fillMaxWidth(),
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun CommonChatUiMixedAttachmentsMessagePreview() {
+    CommonChatUiMessagePreviewContainer {
+        CommonChatUiMessage(
+            message = CommonChatUiMessageMock.mixedAttachmentsMessage,
+            modifier = Modifier.fillMaxWidth(),
         )
     }
 }
@@ -151,4 +169,62 @@ private object CommonChatUiMessageMock {
         time = "14:10",
         text = "Добрый день. Нужно уточнить детали по бронированию ресторана."
     )
+
+    val fileMessage = CommonUiMessage.Message(
+        id = "file-message",
+        authorLogin = "client",
+        isUserAuthor = true,
+        time = "14:11",
+        text = "Прикладываю документы",
+        attachments = listOf(
+            fileAttachment(
+                id = "contract",
+                name = "Договор на оказание услуг.pdf",
+                size = 3_270_246,
+            ),
+            fileAttachment(
+                id = "conditions",
+                name = "Условия.docx",
+                size = 92_160,
+            ),
+        ),
+    )
+
+    val mixedAttachmentsMessage = CommonUiMessage.Message(
+        id = "mixed-attachments-message",
+        authorLogin = "operator",
+        isUserAuthor = false,
+        time = "14:12",
+        text = "Фото и документы по заказу",
+        attachments = listOf(
+            CommonUiAttachment.File(
+                fileId = "estimate",
+                originalName = "Смета.xlsx",
+                contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                size = 184_320,
+                downloadUrl = "https://example.com/estimate.xlsx",
+            ),
+            CommonUiAttachment.Image(
+                fileId = "photo",
+                originalName = "Фото.jpg",
+                contentType = "image/jpeg",
+                size = 512_000,
+                downloadUrl = "https://example.com/photo.jpg",
+            ),
+        ),
+    )
+
+    private fun fileAttachment(
+        id: String,
+        name: String,
+        size: Long,
+    ): CommonUiAttachment.File {
+        return CommonUiAttachment.File(
+            fileId = id,
+            originalName = name,
+            contentType = "application/octet-stream",
+            size = size,
+            downloadUrl = "https://example.com/$id",
+        )
+    }
 }

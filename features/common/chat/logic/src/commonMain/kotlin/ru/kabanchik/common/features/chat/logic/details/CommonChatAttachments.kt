@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -18,6 +19,7 @@ import coil3.compose.SubcomposeAsyncImage
 import dev.shivathapaa.logger.api.Log
 import ru.kabanchik.common.feature.chat.model.CommonUiAttachment
 import ru.kabanchik.common.uiKit.theme.KabanchikTheme
+import ru.kabanchik.common.uiKit.widgets.CommonChatFileItem
 
 @Composable
 internal fun CommonChatAttachments(
@@ -25,33 +27,51 @@ internal fun CommonChatAttachments(
     modifier: Modifier = Modifier,
 ) {
     val images = attachments.filterIsInstance<CommonUiAttachment.Image>()
-    if (images.isEmpty()) return
+    val files = attachments.filterIsInstance<CommonUiAttachment.File>()
+    if (images.isEmpty() && files.isEmpty()) return
 
     Column(
-        verticalArrangement = Arrangement.spacedBy(ImageSpacing),
+        verticalArrangement = Arrangement.spacedBy(AttachmentSectionSpacing),
         modifier = modifier.fillMaxWidth()
     ) {
-        images.toImageRows().forEach { row ->
-            if (row.size == 1) {
-                CommonChatImage(
-                    image = row.first(),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(FullWidthImageAspectRatio)
-                )
-            } else {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(ImageSpacing),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    row.forEach { image ->
+        if (images.isNotEmpty()) {
+            Column(verticalArrangement = Arrangement.spacedBy(ImageSpacing)) {
+                images.toImageRows().forEach { row ->
+                    if (row.size == 1) {
                         CommonChatImage(
-                            image = image,
+                            image = row.first(),
                             modifier = Modifier
-                                .weight(1f)
-                                .aspectRatio(GridImageAspectRatio)
+                                .fillMaxWidth()
+                                .aspectRatio(FullWidthImageAspectRatio)
                         )
+                    } else {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(ImageSpacing),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            row.forEach { image ->
+                                CommonChatImage(
+                                    image = image,
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .aspectRatio(GridImageAspectRatio)
+                                )
+                            }
+                        }
                     }
+                }
+            }
+        }
+        if (files.isNotEmpty()) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(FileSpacing),
+                modifier = Modifier.padding(horizontal = FileHorizontalPadding),
+            ) {
+                files.forEach { file ->
+                    CommonChatFileItem(
+                        fileName = file.originalName,
+                        fileSize = file.size,
+                    )
                 }
             }
         }
@@ -102,3 +122,6 @@ private const val FullWidthImageAspectRatio = 4f / 3f
 private const val GridImageAspectRatio = 1f
 private val ImageSpacing = 4.dp
 private val ImageCornerRadius = 12.dp
+private val AttachmentSectionSpacing = 12.dp
+private val FileSpacing = 8.dp
+private val FileHorizontalPadding = 16.dp

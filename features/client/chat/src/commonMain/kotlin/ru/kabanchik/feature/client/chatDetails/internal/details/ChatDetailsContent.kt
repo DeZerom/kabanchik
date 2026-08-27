@@ -12,6 +12,7 @@ internal fun ChatDetailsContent(
     onMessageSent: () -> Unit,
     onFileSelectionRequested: () -> Unit,
     onFileRemoved: (String) -> Unit,
+    onImageClicked: (String) -> Unit,
     onFileClicked: (String) -> Unit,
 ) {
     if (state.isLoading) {
@@ -23,6 +24,7 @@ internal fun ChatDetailsContent(
             onMessageSent = onMessageSent,
             onFileSelectionRequested = onFileSelectionRequested,
             onFileRemoved = onFileRemoved,
+            onImageClicked = onImageClicked,
             onFileClicked = onFileClicked,
         )
     }
@@ -35,6 +37,7 @@ private fun Chat(
     onMessageSent: () -> Unit,
     onFileSelectionRequested: () -> Unit,
     onFileRemoved: (String) -> Unit,
+    onImageClicked: (String) -> Unit,
     onFileClicked: (String) -> Unit,
 ) {
     CommonChatContent(
@@ -46,6 +49,7 @@ private fun Chat(
         onMessageSent = onMessageSent,
         onFileSelectionRequested = onFileSelectionRequested,
         onFileRemoved = { onFileRemoved(it.id) },
+        onImageClicked = onImageClicked,
         onFileClicked = onFileClicked,
     )
 }

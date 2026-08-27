@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import ru.kabanchik.common.features.chat.logic.details.imageUrls
 import ru.kabanchik.common.snackBar.api.SnackBarData
 import ru.kabanchik.pro.feature.chat.api.details.ProChatDetailsComponent
 import ru.kabanchik.pro.feature.chat.api.details.ProChatDetailsContract.Event
@@ -20,6 +21,7 @@ class DefaultProChatDetailsComponent(
     private val dependencies: ProChatDetailsDependencies,
     private val showSnackBar: (SnackBarData) -> Unit,
     private val navigateBack: () -> Unit,
+    private val navigateImageViewer: (List<String>, String) -> Unit,
     private val sessionId: String,
     private val shouldReconnect: Boolean
 ) : ProChatDetailsComponent, ComponentContext by componentContext {
@@ -73,6 +75,10 @@ class DefaultProChatDetailsComponent(
 
     override fun onFileOpenRequested(fileId: String) {
         store.handleEvent(Event.FileOpenRequested(fileId))
+    }
+
+    override fun onImageOpenRequested(imageUrl: String) {
+        navigateImageViewer(state.value.messages.imageUrls(), imageUrl)
     }
 
     override fun onSendClicked() {

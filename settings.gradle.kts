@@ -67,6 +67,7 @@ include(":domain:common:chat:logic")
 include(":domain:common:chat:model")
 include(":features:common:chat:logic")
 include(":features:common:chat:model")
+include(":features:common:image-viewer")
 
 // client
 include(":domain:client:splash:logic")

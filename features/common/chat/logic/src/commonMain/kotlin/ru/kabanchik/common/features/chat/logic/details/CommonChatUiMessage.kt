@@ -22,6 +22,7 @@ import ru.kabanchik.common.uiKit.widgets.CommonMessageCard
 @Composable
 fun CommonChatUiMessage(
     message: CommonUiMessage,
+    onImageClicked: (String) -> Unit = {},
     onFileClicked: (String) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
@@ -47,6 +48,7 @@ fun CommonChatUiMessage(
                         {
                             CommonChatAttachments(
                                 attachments = attachments,
+                                onImageClicked = onImageClicked,
                                 onFileClicked = onFileClicked,
                             )
                         }

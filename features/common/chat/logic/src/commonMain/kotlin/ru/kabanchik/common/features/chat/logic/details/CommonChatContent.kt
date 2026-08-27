@@ -50,6 +50,7 @@ fun CommonChatContent(
     onMessageSent: () -> Unit,
     onFileSelectionRequested: () -> Unit = {},
     onFileRemoved: (CommonPendingFile) -> Unit = {},
+    onImageClicked: (String) -> Unit = {},
     onFileClicked: (String) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
@@ -127,6 +128,7 @@ fun CommonChatContent(
                     ) {
                         CommonChatUiMessage(
                             message = message,
+                            onImageClicked = onImageClicked,
                             onFileClicked = onFileClicked,
                             modifier = Modifier
                                 .align(message.horizontalAlignment)

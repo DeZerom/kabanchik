@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import ru.kabanchik.common.features.chat.logic.details.imageUrls
 import ru.kabanchik.common.snackBar.api.SnackBarData
 import ru.kabanchik.feature.client.chatDetails.api.details.ChatDetailsContract
 import ru.kabanchik.feature.client.chatDetails.api.details.ClientChatDetailsComponent
@@ -18,6 +19,7 @@ internal class DefaultClientChatDetailsComponent(
     private val dependencies: ClientChatDetailsDependencies,
     private val showSnackBar: (SnackBarData) -> Unit,
     private val navigateBack: () -> Unit,
+    private val navigateImageViewer: (List<String>, String) -> Unit,
     private val sessionId: String,
     private val shouldReconnect: Boolean
 ) : ClientChatDetailsComponent, ComponentContext by componentContext {
@@ -71,6 +73,10 @@ internal class DefaultClientChatDetailsComponent(
 
     override fun fileOpenRequested(fileId: String) {
         store.handleEvent(ChatDetailsContract.Event.FileOpenRequested(fileId))
+    }
+
+    override fun imageOpenRequested(imageUrl: String) {
+        navigateImageViewer(state.value.messages.imageUrls(), imageUrl)
     }
 
     override fun messageSent() {

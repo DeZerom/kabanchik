@@ -1,6 +1,7 @@
 package ru.kabanchik.common.features.chat.logic.details
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,6 +25,7 @@ import ru.kabanchik.common.uiKit.widgets.CommonChatFileItem
 @Composable
 internal fun CommonChatAttachments(
     attachments: List<CommonUiAttachment>,
+    onImageClicked: (String) -> Unit,
     onFileClicked: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -41,6 +43,7 @@ internal fun CommonChatAttachments(
                     if (row.size == 1) {
                         CommonChatImage(
                             image = row.first(),
+                            onClick = { onImageClicked(row.first().downloadUrl) },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .aspectRatio(FullWidthImageAspectRatio)
@@ -53,6 +56,7 @@ internal fun CommonChatAttachments(
                             row.forEach { image ->
                                 CommonChatImage(
                                     image = image,
+                                    onClick = { onImageClicked(image.downloadUrl) },
                                     modifier = Modifier
                                         .weight(1f)
                                         .aspectRatio(GridImageAspectRatio)
@@ -84,6 +88,7 @@ internal fun CommonChatAttachments(
 @Composable
 private fun CommonChatImage(
     image: CommonUiAttachment.Image,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     SubcomposeAsyncImage(
@@ -95,7 +100,9 @@ private fun CommonChatImage(
             Log.w(it.toString(), "ChatImage")
             ImagePlaceholder()
         },
-        modifier = modifier.clip(RoundedCornerShape(ImageCornerRadius))
+        modifier = modifier
+            .clip(RoundedCornerShape(ImageCornerRadius))
+            .clickable(onClick = onClick)
     )
 }
 

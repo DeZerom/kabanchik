@@ -21,6 +21,7 @@ kotlin {
             implementation(projects.domain.common.user.logic)
             implementation(projects.domain.common.chat.model)
             implementation(projects.features.common.chat.logic)
+            implementation(projects.features.common.imageViewer)
 
             implementation(projects.common.uiKit)
             implementation(projects.common.store)

@@ -9,6 +9,7 @@ interface ClientChatDetailsComponent {
     fun filesSelectionRequested()
     fun fileRemoved(fileId: String)
     fun fileOpenRequested(fileId: String)
+    fun imageOpenRequested(imageUrl: String)
     fun messageSent()
     fun onBackClicked()
 }

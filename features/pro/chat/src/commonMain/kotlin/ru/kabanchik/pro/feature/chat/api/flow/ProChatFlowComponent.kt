@@ -3,6 +3,7 @@ package ru.kabanchik.pro.feature.chat.api.flow
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
+import ru.kabanchik.common.feature.imageViewer.api.ImageViewerComponent
 import ru.kabanchik.common.snackBar.api.SnackBarData
 
 interface ProChatFlowComponent {
@@ -11,6 +12,7 @@ interface ProChatFlowComponent {
     sealed interface Child {
         class List(val component: ru.kabanchik.pro.feature.chat.api.list.ProChatsListComponent) : Child
         class Details(val component: ru.kabanchik.pro.feature.chat.api.details.ProChatDetailsComponent) : Child
+        class ImageViewer(val component: ImageViewerComponent) : Child
     }
 
     companion object {

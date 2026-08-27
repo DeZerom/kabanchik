@@ -102,7 +102,7 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "ru.kabanchik.pro"
-            packageVersion = "1.0.5"
+            packageVersion = "1.0.6"
             modules("jdk.unsupported", "jdk.security.auth")
 
             macOS {
@@ -126,8 +126,8 @@ android {
         applicationId = "ru.kabanchik.pro"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 6
-        versionName = "0.0.5"
+        versionCode = 7
+        versionName = "0.0.6"
     }
     packaging {
         resources {

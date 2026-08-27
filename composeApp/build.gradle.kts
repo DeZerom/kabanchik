@@ -104,8 +104,8 @@ android {
         applicationId = "ru.kabanchik.client"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 6
-        versionName = "0.0.9"
+        versionCode = 7
+        versionName = "0.0.10"
     }
     packaging {
         resources {
@@ -134,7 +134,7 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "ru.kabanchik.client"
-            packageVersion = "1.0.9"
+            packageVersion = "1.0.10"
             modules("jdk.unsupported", "jdk.security.auth")
 
             macOS {

@@ -41,7 +41,7 @@ kotlin {
             implementation(projects.common.network)
             implementation(projects.common.dataStore)
             implementation(projects.common.errorHandler.logic)
-            implementation(projects.common.filePicker)
+            implementation(projects.common.files)
 
             implementation(projects.data.common.token.logic)
             implementation(projects.domain.common.token.logic)

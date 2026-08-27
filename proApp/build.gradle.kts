@@ -57,7 +57,7 @@ kotlin {
             implementation(projects.common.dataStore)
             implementation(projects.common.tools)
             implementation(projects.common.errorHandler.logic)
-            implementation(projects.common.filePicker)
+            implementation(projects.common.files)
 
             implementation(libs.runtime)
             implementation(libs.foundation)

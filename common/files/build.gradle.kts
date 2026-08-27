@@ -7,6 +7,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(libs.filekit.dialogs)
+            implementation(libs.ktor.core)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -15,5 +16,5 @@ kotlin {
 }
 
 android {
-    namespace = "ru.kabanchik.common.filePicker"
+    namespace = "ru.kabanchik.common.files"
 }

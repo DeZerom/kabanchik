@@ -72,6 +72,7 @@ class DefaultRootComponent(
                             userInteractor = get(),
                             errorHandler = get(),
                             filePicker = get(),
+                            fileOpener = get(),
                         )
                     )
                 )

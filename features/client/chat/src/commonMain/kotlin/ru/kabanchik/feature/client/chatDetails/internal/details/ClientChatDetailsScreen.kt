@@ -30,6 +30,7 @@ internal fun ClientChatDetailsScreen(
             onMessageSent = component::messageSent,
             onFileSelectionRequested = component::filesSelectionRequested,
             onFileRemoved = component::fileRemoved,
+            onFileClicked = component::fileOpenRequested,
         )
     }
 }

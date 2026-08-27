@@ -2,7 +2,7 @@ package ru.kabanchik.feature.client.chatDetails.api.details
 
 import ru.kabanchik.common.feature.chat.model.CommonPendingFile
 import ru.kabanchik.common.feature.chat.model.CommonUiMessage
-import ru.kabanchik.common.filePicker.api.SelectedFile
+import ru.kabanchik.common.files.api.SelectedFile
 import ru.kabanchik.common.tools.textResource.TextResource
 
 class ChatDetailsContract {
@@ -31,6 +31,7 @@ class ChatDetailsContract {
         class MessageTextChanged(val newText: String) : Event
         class FilesSelected(val files: List<SelectedFile>) : Event
         class FileRemoved(val fileId: String) : Event
+        class FileOpenRequested(val fileId: String) : Event
         object MessageSent : Event
     }
 

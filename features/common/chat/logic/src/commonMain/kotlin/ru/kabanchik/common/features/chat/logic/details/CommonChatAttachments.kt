@@ -24,6 +24,7 @@ import ru.kabanchik.common.uiKit.widgets.CommonChatFileItem
 @Composable
 internal fun CommonChatAttachments(
     attachments: List<CommonUiAttachment>,
+    onFileClicked: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val images = attachments.filterIsInstance<CommonUiAttachment.Image>()
@@ -71,6 +72,8 @@ internal fun CommonChatAttachments(
                     CommonChatFileItem(
                         fileName = file.originalName,
                         fileSize = file.size,
+                        onClick = { onFileClicked(file.fileId) },
+                        isLoading = file.isLoading,
                     )
                 }
             }

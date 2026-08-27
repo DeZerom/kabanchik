@@ -1,6 +1,7 @@
 package ru.kabanchik.feature.client.chatDetails.internal.details
 
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import ru.kabanchik.client.domain.logic.chat.api.ClientChatDetailsInteractor
@@ -9,9 +10,14 @@ import ru.kabanchik.common.domain.user.logic.api.UserInteractor
 import ru.kabanchik.common.errorHandler.logic.api.ErrorHandler
 import ru.kabanchik.common.feature.chat.model.CommonPendingFile
 import ru.kabanchik.common.features.chat.logic.details.appendSelectedFiles
+import ru.kabanchik.common.features.chat.logic.details.chatFileOpenErrorText
+import ru.kabanchik.common.features.chat.logic.details.findFile
 import ru.kabanchik.common.features.chat.logic.details.removeSelectedFile
 import ru.kabanchik.common.features.chat.logic.details.toState
 import ru.kabanchik.common.features.chat.logic.details.upsert
+import ru.kabanchik.common.features.chat.logic.details.withLoadingFile
+import ru.kabanchik.common.files.api.FileOpener
+import ru.kabanchik.common.files.api.FileOpeningException
 import ru.kabanchik.common.store.BaseCoroutineStore
 import ru.kabanchik.feature.client.chatDetails.api.details.ChatDetailsContract.Event
 import ru.kabanchik.feature.client.chatDetails.api.details.ChatDetailsContract.SideEffect
@@ -21,10 +27,12 @@ internal class ClientChatDetailsStore(
     private val chatDetailsInteractor: ClientChatDetailsInteractor,
     private val userInteractor: UserInteractor,
     private val errorHandler: ErrorHandler,
+    private val fileOpener: FileOpener,
     private val sessionId: String,
     private val shouldReconnect: Boolean
 ): BaseCoroutineStore<Event, State, SideEffect>() {
 
+    private var fileOpeningJob: Job? = null
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, error ->
         pushSideEffect(SideEffect.Error(errorHandler.handleError(error).defaultMessage))
     }
@@ -44,6 +52,7 @@ internal class ClientChatDetailsStore(
                     selectedFiles = selectedFiles.removeSelectedFile(event.fileId)
                 )
             }
+            is Event.FileOpenRequested -> openFile(event.fileId)
             Event.MessageSent -> sendMessage()
         }
     }
@@ -105,6 +114,31 @@ internal class ClientChatDetailsStore(
                 }
             } finally {
                 reduceState { copy(isSending = false) }
+            }
+        }
+    }
+
+    private fun openFile(fileId: String) {
+        val file = currentState.messages.findFile(fileId) ?: return
+
+        fileOpeningJob?.cancel()
+        reduceState { copy(messages = messages.withLoadingFile(fileId)) }
+
+        val job = coroutineScope.launch {
+            try {
+                fileOpener.open(
+                    url = file.downloadUrl,
+                    fileName = file.originalName,
+                )
+            } catch (_: FileOpeningException) {
+                pushSideEffect(SideEffect.Error(chatFileOpenErrorText()))
+            }
+        }
+        fileOpeningJob = job
+        job.invokeOnCompletion {
+            if (fileOpeningJob === job) {
+                fileOpeningJob = null
+                reduceState { copy(messages = messages.withLoadingFile(fileId = null)) }
             }
         }
     }

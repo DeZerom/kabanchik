@@ -1,7 +1,7 @@
 package ru.kabanchik.common.features.chat.logic.details
 
 import ru.kabanchik.common.feature.chat.model.CommonPendingFile
-import ru.kabanchik.common.filePicker.api.SelectedFile
+import ru.kabanchik.common.files.api.SelectedFile
 
 fun List<CommonPendingFile>.appendSelectedFiles(
     files: List<SelectedFile>,

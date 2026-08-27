@@ -22,6 +22,7 @@ import ru.kabanchik.common.uiKit.widgets.CommonMessageCard
 @Composable
 fun CommonChatUiMessage(
     message: CommonUiMessage,
+    onFileClicked: (String) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     when (message) {
@@ -44,7 +45,10 @@ fun CommonChatUiMessage(
                     .takeIf { it.isNotEmpty() }
                     ?.let { attachments ->
                         {
-                            CommonChatAttachments(attachments = attachments)
+                            CommonChatAttachments(
+                                attachments = attachments,
+                                onFileClicked = onFileClicked,
+                            )
                         }
                     }
             )

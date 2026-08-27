@@ -28,6 +28,7 @@ class DefaultProChatDetailsComponent(
             chatDetailsInteractor = dependencies.chatDetailsInteractor,
             userInteractor = dependencies.userInteractor,
             errorHandler = dependencies.errorHandler,
+            fileOpener = dependencies.fileOpener,
             sessionId = sessionId,
             shouldReconnect = shouldReconnect
         )
@@ -68,6 +69,10 @@ class DefaultProChatDetailsComponent(
 
     override fun onFileRemoved(fileId: String) {
         store.handleEvent(Event.FileRemoved(fileId))
+    }
+
+    override fun onFileOpenRequested(fileId: String) {
+        store.handleEvent(Event.FileOpenRequested(fileId))
     }
 
     override fun onSendClicked() {

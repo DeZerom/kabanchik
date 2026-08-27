@@ -1,6 +1,6 @@
 package ru.kabanchik.common.feature.chat.model
 
-import ru.kabanchik.common.filePicker.api.SelectedFile
+import ru.kabanchik.common.files.api.SelectedFile
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 

@@ -1,4 +1,4 @@
-package ru.kabanchik.common.filePicker.api
+package ru.kabanchik.common.files.api
 
 class SelectedFile(
     val fileName: String,

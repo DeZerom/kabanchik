@@ -32,7 +32,7 @@ import kabanchik.features.common.chat.logic.generated.resources.Res
 import kabanchik.features.common.chat.logic.generated.resources.chat_details_operator_found
 import ru.kabanchik.common.feature.chat.model.CommonPendingFile
 import ru.kabanchik.common.feature.chat.model.CommonUiMessage
-import ru.kabanchik.common.filePicker.api.SelectedFile
+import ru.kabanchik.common.files.api.SelectedFile
 import ru.kabanchik.common.modifier.keyboardInsetsPadding
 import ru.kabanchik.common.modifier.sendMessageModifier
 import ru.kabanchik.common.tools.textResource.TextResource
@@ -50,6 +50,7 @@ fun CommonChatContent(
     onMessageSent: () -> Unit,
     onFileSelectionRequested: () -> Unit = {},
     onFileRemoved: (CommonPendingFile) -> Unit = {},
+    onFileClicked: (String) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val listState = rememberLazyListState()
@@ -126,6 +127,7 @@ fun CommonChatContent(
                     ) {
                         CommonChatUiMessage(
                             message = message,
+                            onFileClicked = onFileClicked,
                             modifier = Modifier
                                 .align(message.horizontalAlignment)
                                 .then(

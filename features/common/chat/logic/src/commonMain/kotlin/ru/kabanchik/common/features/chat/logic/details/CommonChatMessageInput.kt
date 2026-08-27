@@ -30,7 +30,7 @@ import kabanchik.features.common.chat.logic.generated.resources.Res
 import kabanchik.features.common.chat.logic.generated.resources.chat_details_hint
 import org.jetbrains.compose.resources.stringResource
 import ru.kabanchik.common.feature.chat.model.CommonPendingFile
-import ru.kabanchik.common.filePicker.api.SelectedFile
+import ru.kabanchik.common.files.api.SelectedFile
 import ru.kabanchik.common.uiKit.theme.KabanchikTheme
 import ru.kabanchik.common.uiKit.theme.bodyMedium
 import ru.kabanchik.common.uiKit.widgets.CommonFilePreview

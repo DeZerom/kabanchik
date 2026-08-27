@@ -3,7 +3,8 @@ package ru.kabanchik.feature.client.chatDetails.api.details
 import ru.kabanchik.client.domain.logic.chat.api.ClientChatDetailsInteractor
 import ru.kabanchik.common.domain.user.logic.api.UserInteractor
 import ru.kabanchik.common.errorHandler.logic.api.ErrorHandler
-import ru.kabanchik.common.filePicker.api.FilePicker
+import ru.kabanchik.common.files.api.FileOpener
+import ru.kabanchik.common.files.api.FilePicker
 import ru.kabanchik.feature.client.chatDetails.api.flow.ClientChatFlowDependencies
 
 interface ClientChatDetailsDependencies {
@@ -11,6 +12,7 @@ interface ClientChatDetailsDependencies {
     val userInteractor: UserInteractor
     val errorHandler: ErrorHandler
     val filePicker: FilePicker
+    val fileOpener: FileOpener
 
     class Factory(
         dependencies: ClientChatFlowDependencies

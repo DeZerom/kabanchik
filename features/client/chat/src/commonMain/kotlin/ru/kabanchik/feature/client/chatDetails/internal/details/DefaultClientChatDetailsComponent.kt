@@ -26,6 +26,7 @@ internal class DefaultClientChatDetailsComponent(
             chatDetailsInteractor = dependencies.chatDetailsInteractor,
             userInteractor = dependencies.userInteractor,
             errorHandler = dependencies.errorHandler,
+            fileOpener = dependencies.fileOpener,
             sessionId = sessionId,
             shouldReconnect = shouldReconnect
         )
@@ -66,6 +67,10 @@ internal class DefaultClientChatDetailsComponent(
 
     override fun fileRemoved(fileId: String) {
         store.handleEvent(ChatDetailsContract.Event.FileRemoved(fileId))
+    }
+
+    override fun fileOpenRequested(fileId: String) {
+        store.handleEvent(ChatDetailsContract.Event.FileOpenRequested(fileId))
     }
 
     override fun messageSent() {

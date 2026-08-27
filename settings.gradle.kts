@@ -45,7 +45,7 @@ include(":common:store")
 include(":common:tools")
 include(":common:data-store")
 include(":common:error-handler:logic")
-include(":common:file-picker")
+include(":common:files")
 
 // common
 include(":data:common:token:logic")

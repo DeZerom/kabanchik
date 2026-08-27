@@ -1,4 +1,4 @@
-package ru.kabanchik.common.filePicker.internal
+package ru.kabanchik.common.files.internal
 
 import kotlin.test.Test
 import kotlin.test.assertFalse

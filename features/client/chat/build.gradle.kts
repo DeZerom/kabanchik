@@ -26,7 +26,7 @@ kotlin {
             implementation(projects.common.store)
             implementation(projects.common.tools)
             implementation(projects.common.errorHandler.logic)
-            implementation(projects.common.filePicker)
+            implementation(projects.common.files)
 
             implementation(libs.components.resources)
             implementation(libs.kotlinx.datetime)

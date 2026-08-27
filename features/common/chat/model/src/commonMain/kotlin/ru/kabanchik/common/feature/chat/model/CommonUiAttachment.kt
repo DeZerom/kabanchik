@@ -21,5 +21,6 @@ sealed interface CommonUiAttachment {
         override val contentType: String,
         override val size: Long,
         override val downloadUrl: String,
+        val isLoading: Boolean = false,
     ) : CommonUiAttachment
 }

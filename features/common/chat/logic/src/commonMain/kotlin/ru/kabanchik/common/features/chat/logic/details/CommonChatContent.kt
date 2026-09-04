@@ -1,5 +1,6 @@
 package ru.kabanchik.common.features.chat.logic.details
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
@@ -155,11 +157,21 @@ fun CommonChatContent(
                     enabled = !isSending,
                     modifier = Modifier.padding(bottom = 4.dp)
                 ) {
-                    Icon(
-                        painter = KabanchikIcons.Plus24,
-                        contentDescription = null,
-                        tint = KabanchikTheme.colors.accent
-                    )
+                    Box(contentAlignment = Alignment.Center) {
+                        Box(
+                            modifier = Modifier
+                                .size(32.dp)
+                                .background(
+                                    color = KabanchikTheme.colors.background,
+                                    shape = CircleShape
+                                )
+                        )
+                        Icon(
+                            painter = KabanchikIcons.Plus24,
+                            contentDescription = null,
+                            tint = KabanchikTheme.colors.accent
+                        )
+                    }
                 }
                 CommonChatMessageInput(
                     value = currentMessageText,
@@ -188,11 +200,21 @@ fun CommonChatContent(
                         )
                     } else {
                         IconButton(onClick = onMessageSent) {
-                            Icon(
-                                imageVector = KabanchikIcons.Send24,
-                                contentDescription = null,
-                                tint = KabanchikTheme.colors.accent
-                            )
+                            Box(contentAlignment = Alignment.Center) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(32.dp)
+                                        .background(
+                                            color = KabanchikTheme.colors.background,
+                                            shape = CircleShape
+                                        )
+                                )
+                                Icon(
+                                    imageVector = KabanchikIcons.Send24,
+                                    contentDescription = null,
+                                    tint = KabanchikTheme.colors.accent
+                                )
+                            }
                         }
                     }
                 }

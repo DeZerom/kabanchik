@@ -10,6 +10,7 @@ import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import kotlinx.datetime.LocalDateTime
+import kotlinx.io.Buffer
 import ru.kabanchik.common.chat.model.CommonAttachment
 import ru.kabanchik.common.chat.model.CommonChatMessage
 import ru.kabanchik.common.chat.model.CommonMessage
@@ -18,6 +19,7 @@ import ru.kabanchik.common.features.chat.logic.details.findFile
 import ru.kabanchik.common.files.api.SelectedFile
 import ru.kabanchik.feature.client.chatDetails.api.details.ChatDetailsContract.Event
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -71,13 +73,15 @@ class ClientChatDetailsStoreTest {
                 shouldReconnect = false,
             )
             runCurrent()
-            store.handleEvent(Event.FilesSelected(listOf(selectedFile())))
+            var releaseCount = 0
+            store.handleEvent(Event.FilesSelected(listOf(selectedFile { releaseCount++ })))
 
             store.handleEvent(Event.MessageSent)
             advanceUntilIdle()
 
             assertFalse(store.currentState.isSending)
             assertTrue(store.currentState.selectedFiles.isEmpty())
+            assertEquals(1, releaseCount)
             store.onDestroy()
         } finally {
             Dispatchers.resetMain()
@@ -99,7 +103,8 @@ class ClientChatDetailsStoreTest {
                 shouldReconnect = false,
             )
             runCurrent()
-            store.handleEvent(Event.FilesSelected(listOf(selectedFile())))
+            var releaseCount = 0
+            store.handleEvent(Event.FilesSelected(listOf(selectedFile { releaseCount++ })))
 
             store.handleEvent(Event.MessageSent)
 
@@ -107,18 +112,23 @@ class ClientChatDetailsStoreTest {
             advanceUntilIdle()
             assertFalse(store.currentState.isSending)
             assertTrue(store.currentState.selectedFiles.isNotEmpty())
+            assertEquals(0, releaseCount)
+
             store.onDestroy()
+            assertEquals(1, releaseCount)
         } finally {
             Dispatchers.resetMain()
         }
     }
 
-    private fun selectedFile(): SelectedFile {
+    private fun selectedFile(onRelease: () -> Unit = {}): SelectedFile {
         return SelectedFile(
             fileName = "document.pdf",
             contentType = "application/pdf",
             size = 1,
-            bytes = byteArrayOf(1),
+            previewUri = "file:///document.pdf",
+            sourceProvider = { Buffer() },
+            releaseAccess = onRelease,
         )
     }
 

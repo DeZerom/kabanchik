@@ -9,6 +9,7 @@ import ru.kabanchik.common.domain.user.logic.api.UserInteractor
 import ru.kabanchik.common.errorHandler.logic.api.ErrorHandler
 import ru.kabanchik.common.errorHandler.logic.api.ErrorType
 import ru.kabanchik.common.files.api.FileOpener
+import ru.kabanchik.common.files.api.ReadableFile
 
 internal class FakeClientChatDetailsInteractor(
     private val upload: suspend () -> CommonAttachment,
@@ -24,7 +25,7 @@ internal class FakeClientChatDetailsInteractor(
         sessionId: String,
         fileName: String,
         contentType: String,
-        bytes: ByteArray,
+        file: ReadableFile,
     ): CommonAttachment {
         return upload()
     }

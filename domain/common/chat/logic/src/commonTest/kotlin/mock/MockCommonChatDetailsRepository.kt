@@ -7,6 +7,7 @@ import ru.kabanchik.common.chat.model.CommonMessage
 import ru.kabanchik.common.chat.model.CommonAttachment
 import ru.kabanchik.common.chat.model.CommonSessionMessage
 import ru.kabanchik.common.domain.chat.logic.api.repository.CommonChatDetailsRepository
+import ru.kabanchik.common.files.api.ReadableFile
 
 class MockCommonChatDetailsRepository(
     private val messages: List<CommonMessage>,
@@ -38,13 +39,13 @@ class MockCommonChatDetailsRepository(
         sessionId: String,
         fileName: String,
         contentType: String,
-        bytes: ByteArray,
+        file: ReadableFile,
     ): CommonAttachment {
         uploadedFileRequest = UploadedFileRequest(
             sessionId = sessionId,
             fileName = fileName,
             contentType = contentType,
-            bytes = bytes,
+            file = file,
         )
         return uploadedFile
     }
@@ -97,7 +98,7 @@ class MockCommonChatDetailsRepository(
         val sessionId: String,
         val fileName: String,
         val contentType: String,
-        val bytes: ByteArray,
+        val file: ReadableFile,
     )
 
     data class DownloadedFileRequest(

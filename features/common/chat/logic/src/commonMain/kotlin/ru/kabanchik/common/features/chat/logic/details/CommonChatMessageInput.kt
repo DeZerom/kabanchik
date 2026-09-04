@@ -18,14 +18,19 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.decodeToImageBitmap
-import androidx.compose.ui.graphics.painter.BitmapPainter
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImagePainter
+import coil3.compose.LocalPlatformContext
+import coil3.compose.rememberAsyncImagePainter
+import coil3.request.CachePolicy
+import coil3.request.ImageRequest
 import kabanchik.features.common.chat.logic.generated.resources.Res
 import kabanchik.features.common.chat.logic.generated.resources.chat_details_hint
 import org.jetbrains.compose.resources.stringResource
@@ -111,15 +116,23 @@ private fun PendingFilePreview(
     onRemove: () -> Unit,
 ) {
     val file = pendingFile.file
-    val imagePainter = remember(file) {
-        if (file.isImage()) {
-            runCatching { BitmapPainter(file.bytes.decodeToImageBitmap()) }.getOrNull()
-        } else {
-            null
+    val previewSize = with(LocalDensity.current) { 64.dp.roundToPx() }
+    val imagePainter = if (file.isImage()) {
+        val context = LocalPlatformContext.current
+        val request = remember(file, context, previewSize) {
+            ImageRequest.Builder(context)
+                .data(file.previewUri)
+                .size(previewSize)
+                .diskCachePolicy(CachePolicy.DISABLED)
+                .build()
         }
+        rememberAsyncImagePainter(model = request)
+    } else {
+        null
     }
+    val imagePainterState = imagePainter?.state?.collectAsState()?.value
 
-    if (imagePainter != null) {
+    if (imagePainter != null && imagePainterState !is AsyncImagePainter.State.Error) {
         CommonImageFilePreview(
             painter = imagePainter,
             onRemove = onRemove,

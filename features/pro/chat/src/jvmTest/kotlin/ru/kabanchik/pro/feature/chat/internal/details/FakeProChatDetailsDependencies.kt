@@ -8,6 +8,7 @@ import ru.kabanchik.common.domain.user.logic.api.UserInteractor
 import ru.kabanchik.common.errorHandler.logic.api.ErrorHandler
 import ru.kabanchik.common.errorHandler.logic.api.ErrorType
 import ru.kabanchik.common.files.api.FileOpener
+import ru.kabanchik.common.files.api.ReadableFile
 import ru.kabanchik.pro.domain.chat.logic.api.ProChatDetailsInteractor
 
 internal class FakeProChatDetailsInteractor(
@@ -24,7 +25,7 @@ internal class FakeProChatDetailsInteractor(
         sessionId: String,
         fileName: String,
         contentType: String,
-        bytes: ByteArray,
+        file: ReadableFile,
     ): CommonAttachment {
         return upload()
     }

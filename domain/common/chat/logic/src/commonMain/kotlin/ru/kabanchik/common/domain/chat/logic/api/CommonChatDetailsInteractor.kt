@@ -3,6 +3,7 @@ package ru.kabanchik.common.domain.chat.logic.api
 import kotlinx.coroutines.flow.Flow
 import ru.kabanchik.common.chat.model.CommonChatMessage
 import ru.kabanchik.common.chat.model.CommonAttachment
+import ru.kabanchik.common.files.api.ReadableFile
 
 interface CommonChatDetailsInteractor {
     suspend fun reconnect(sessionId: String)
@@ -11,7 +12,7 @@ interface CommonChatDetailsInteractor {
         sessionId: String,
         fileName: String,
         contentType: String,
-        bytes: ByteArray,
+        file: ReadableFile,
     ): CommonAttachment
     suspend fun downloadFile(sessionId: String, fileId: String): ByteArray
     suspend fun sendMessage(

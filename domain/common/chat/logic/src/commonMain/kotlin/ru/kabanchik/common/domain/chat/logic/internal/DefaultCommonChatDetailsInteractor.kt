@@ -14,6 +14,7 @@ import ru.kabanchik.common.chat.model.CommonSessionStatus
 import ru.kabanchik.common.domain.chat.logic.api.CommonChatDetailsInteractor
 import ru.kabanchik.common.domain.chat.logic.api.repository.CommonChatDetailsRepository
 import ru.kabanchik.common.domain.chat.logic.api.splitAndTrimMessage
+import ru.kabanchik.common.files.api.ReadableFile
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -33,13 +34,13 @@ class DefaultCommonChatDetailsInteractor(
         sessionId: String,
         fileName: String,
         contentType: String,
-        bytes: ByteArray,
+        file: ReadableFile,
     ): CommonAttachment {
         return detailsRepository.uploadFile(
             sessionId = sessionId,
             fileName = fileName,
             contentType = contentType,
-            bytes = bytes,
+            file = file,
         )
     }
 

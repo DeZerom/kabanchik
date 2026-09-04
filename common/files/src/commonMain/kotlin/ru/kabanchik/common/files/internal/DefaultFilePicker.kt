@@ -1,13 +1,17 @@
 package ru.kabanchik.common.files.internal
 
 import io.github.vinceglb.filekit.FileKit
+import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.dialogs.FileKitMode
 import io.github.vinceglb.filekit.dialogs.FileKitType
 import io.github.vinceglb.filekit.dialogs.openFilePicker
 import io.github.vinceglb.filekit.mimeType
 import io.github.vinceglb.filekit.name
-import io.github.vinceglb.filekit.readBytes
 import io.github.vinceglb.filekit.size
+import io.github.vinceglb.filekit.source
+import io.github.vinceglb.filekit.startAccessingSecurityScopedResource
+import io.github.vinceglb.filekit.stopAccessingSecurityScopedResource
+import kotlinx.io.buffered
 import ru.kabanchik.common.files.api.FilePicker
 import ru.kabanchik.common.files.api.SelectedFile
 
@@ -23,11 +27,19 @@ internal class DefaultFilePicker : FilePicker {
         return files
             .filter { it.name.hasAllowedFileExtension() }
             .map { file ->
+                val previewUri = file.toPreviewUri()
+                val hasScopedAccess = file.startAccessingSecurityScopedResource()
                 SelectedFile(
                     fileName = file.name,
                     contentType = file.mimeType()?.toString() ?: UnknownContentType,
                     size = file.size(),
-                    bytes = file.readBytes(),
+                    previewUri = previewUri,
+                    sourceProvider = { file.source().buffered() },
+                    releaseAccess = {
+                        if (hasScopedAccess) {
+                            file.stopAccessingSecurityScopedResource()
+                        }
+                    },
                 )
             }
     }
@@ -49,3 +61,5 @@ private val AllowedFileExtensions = setOf(
     "m4a",
     "mp4",
 )
+
+internal expect fun PlatformFile.toPreviewUri(): String

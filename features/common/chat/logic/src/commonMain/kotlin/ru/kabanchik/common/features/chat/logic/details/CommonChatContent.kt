@@ -32,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kabanchik.features.common.chat.logic.generated.resources.Res
 import kabanchik.features.common.chat.logic.generated.resources.chat_details_operator_found
+import kotlinx.io.Buffer
 import ru.kabanchik.common.feature.chat.model.CommonPendingFile
 import ru.kabanchik.common.feature.chat.model.CommonUiMessage
 import ru.kabanchik.common.files.api.SelectedFile
@@ -355,7 +356,8 @@ private object ChatDetailsMock {
                 fileName = "Договор.pdf",
                 contentType = "application/pdf",
                 size = 3_270_246,
-                bytes = byteArrayOf(),
+                previewUri = "file:///preview.pdf",
+                sourceProvider = { Buffer() },
             )
         ),
         CommonPendingFile(
@@ -364,7 +366,8 @@ private object ChatDetailsMock {
                 fileName = "Условия.docx",
                 contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
                 size = 92_160,
-                bytes = byteArrayOf(),
+                previewUri = "file:///preview.docx",
+                sourceProvider = { Buffer() },
             )
         ),
         CommonPendingFile(
@@ -373,7 +376,8 @@ private object ChatDetailsMock {
                 fileName = "Фото.jpg",
                 contentType = "image/jpeg",
                 size = 512_000,
-                bytes = byteArrayOf(),
+                previewUri = "file:///preview.jpg",
+                sourceProvider = { Buffer() },
             )
         ),
     )

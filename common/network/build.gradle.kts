@@ -31,6 +31,7 @@ kotlin {
 
             implementation(projects.domain.common.auth.logic)
             implementation(projects.common.tools)
+            implementation(projects.common.files)
 
             implementation(projects.data.client.auth.logic)
             implementation(projects.data.pro.auth.logic)
@@ -41,6 +42,9 @@ kotlin {
         }
         jvmMain.dependencies {
             implementation(libs.logback)
+        }
+        jvmTest.dependencies {
+            implementation(libs.kotlin.test)
         }
     }
 }

@@ -47,11 +47,7 @@ internal class ClientChatDetailsStore(
             is Event.FilesSelected -> reduceState {
                 copy(selectedFiles = selectedFiles.appendSelectedFiles(event.files))
             }
-            is Event.FileRemoved -> reduceState {
-                if (isSending) this else copy(
-                    selectedFiles = selectedFiles.removeSelectedFile(event.fileId)
-                )
-            }
+            is Event.FileRemoved -> removeFile(event.fileId)
             is Event.FileOpenRequested -> openFile(event.fileId)
             Event.MessageSent -> sendMessage()
         }
@@ -106,10 +102,13 @@ internal class ClientChatDetailsStore(
                     attachmentIds = attachmentIds,
                 )
 
+                files.forEach { it.file.release() }
                 reduceState {
                     copy(
                         currentMessage = if (currentMessage == message) "" else currentMessage,
-                        selectedFiles = emptyList(),
+                        selectedFiles = selectedFiles.filterNot { selectedFile ->
+                            files.any { sentFile -> sentFile.id == selectedFile.id }
+                        },
                     )
                 }
             } finally {
@@ -150,7 +149,7 @@ internal class ClientChatDetailsStore(
             sessionId = sessionId,
             fileName = pendingFile.file.fileName,
             contentType = pendingFile.file.contentType,
-            bytes = pendingFile.file.bytes,
+            file = pendingFile.file,
         ).fileId
 
         reduceState {
@@ -161,6 +160,12 @@ internal class ClientChatDetailsStore(
             )
         }
         return attachmentId
+    }
+
+    private fun removeFile(fileId: String) {
+        if (currentState.isSending) return
+        currentState.selectedFiles.firstOrNull { it.id == fileId }?.file?.release()
+        reduceState { copy(selectedFiles = selectedFiles.removeSelectedFile(fileId)) }
     }
 
     private fun listenMessages() {
@@ -180,5 +185,11 @@ internal class ClientChatDetailsStore(
         reduceState {
             copy(messages = messages.upsert(uiMessage))
         }
+    }
+
+    override fun onDestroy() {
+        val files = currentState.selectedFiles
+        super.onDestroy()
+        files.forEach { it.file.release() }
     }
 }

@@ -1,5 +1,6 @@
 package ru.kabanchik.common.features.chat.logic.details
 
+import kotlinx.io.Buffer
 import ru.kabanchik.common.feature.chat.model.CommonPendingFile
 import ru.kabanchik.common.files.api.SelectedFile
 import kotlin.test.Test
@@ -42,7 +43,8 @@ class CommonPendingFilesTest {
             fileName = fileName,
             contentType = "application/pdf",
             size = 1,
-            bytes = byteArrayOf(1),
+            previewUri = "file:///$fileName",
+            sourceProvider = { Buffer() },
         )
     }
 }

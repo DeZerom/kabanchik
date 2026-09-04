@@ -10,6 +10,7 @@ import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import kotlinx.datetime.LocalDateTime
+import kotlinx.io.Buffer
 import ru.kabanchik.common.chat.model.CommonAttachment
 import ru.kabanchik.common.chat.model.CommonChatMessage
 import ru.kabanchik.common.chat.model.CommonMessage
@@ -18,11 +19,32 @@ import ru.kabanchik.common.features.chat.logic.details.findFile
 import ru.kabanchik.common.files.api.SelectedFile
 import ru.kabanchik.pro.feature.chat.api.details.ProChatDetailsContract.Event
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ProChatDetailsStoreTest {
+    @Test
+    fun releasesFileWhenItIsRemoved() = runTest {
+        Dispatchers.setMain(StandardTestDispatcher(testScheduler))
+        try {
+            var releaseCount = 0
+            val store = createStore()
+            runCurrent()
+            store.handleEvent(Event.FilesSelected(listOf(selectedFile { releaseCount++ })))
+            val fileId = store.currentState.selectedFiles.single().id
+
+            store.handleEvent(Event.FileRemoved(fileId))
+
+            assertTrue(store.currentState.selectedFiles.isEmpty())
+            assertEquals(1, releaseCount)
+            store.onDestroy()
+        } finally {
+            Dispatchers.resetMain()
+        }
+    }
+
     @Test
     fun marksFileAsLoadingUntilItIsOpened() = runTest {
         Dispatchers.setMain(StandardTestDispatcher(testScheduler))
@@ -91,12 +113,25 @@ class ProChatDetailsStoreTest {
         }
     }
 
-    private fun selectedFile(): SelectedFile {
+    private fun selectedFile(onRelease: () -> Unit = {}): SelectedFile {
         return SelectedFile(
             fileName = "document.pdf",
             contentType = "application/pdf",
             size = 1,
-            bytes = byteArrayOf(1),
+            previewUri = "file:///document.pdf",
+            sourceProvider = { Buffer() },
+            releaseAccess = onRelease,
+        )
+    }
+
+    private fun createStore(): ProChatDetailsStore {
+        return ProChatDetailsStore(
+            chatDetailsInteractor = FakeProChatDetailsInteractor(upload = { attachment() }),
+            userInteractor = ProFakeUserInteractor,
+            errorHandler = ProFakeErrorHandler,
+            fileOpener = ProFakeFileOpener(),
+            sessionId = "",
+            shouldReconnect = false,
         )
     }
 

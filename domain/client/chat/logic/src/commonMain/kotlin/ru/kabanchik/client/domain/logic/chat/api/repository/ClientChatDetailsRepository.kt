@@ -4,6 +4,7 @@ import kotlinx.coroutines.flow.Flow
 import ru.kabanchik.common.chat.model.CommonMessage
 import ru.kabanchik.common.chat.model.CommonAttachment
 import ru.kabanchik.common.chat.model.CommonSessionMessage
+import ru.kabanchik.common.files.api.ReadableFile
 
 interface ClientChatDetailsRepository {
     suspend fun reconnect(sessionId: String)
@@ -12,7 +13,7 @@ interface ClientChatDetailsRepository {
         sessionId: String,
         fileName: String,
         contentType: String,
-        bytes: ByteArray,
+        file: ReadableFile,
     ): CommonAttachment
     suspend fun downloadFile(sessionId: String, fileId: String): ByteArray
     suspend fun listenSession(): Flow<CommonSessionMessage>

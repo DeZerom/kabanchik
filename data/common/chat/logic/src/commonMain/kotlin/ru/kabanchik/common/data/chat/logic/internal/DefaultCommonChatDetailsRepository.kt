@@ -11,6 +11,7 @@ import ru.kabanchik.common.data.chat.logic.api.toDomain
 import ru.kabanchik.common.data.chatDetails.model.CommonApiReconnectMessage
 import ru.kabanchik.common.data.chatDetails.model.CommonApiSendMessage
 import ru.kabanchik.common.domain.chat.logic.api.repository.CommonChatDetailsRepository
+import ru.kabanchik.common.files.api.ReadableFile
 
 internal class DefaultCommonChatDetailsRepository(
     private val commonStompSource: CommonStompSource,
@@ -28,13 +29,13 @@ internal class DefaultCommonChatDetailsRepository(
         sessionId: String,
         fileName: String,
         contentType: String,
-        bytes: ByteArray,
+        file: ReadableFile,
     ): CommonAttachment {
         return commonRestSource.uploadFile(
             sessionId = sessionId,
             fileName = fileName,
             contentType = contentType,
-            bytes = bytes,
+            file = file,
         ).toDomain()
     }
 

@@ -1,5 +1,7 @@
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
+import kotlinx.io.Buffer
+import ru.kabanchik.common.files.api.ReadableFile
 import mock.MockCommonChatDetailsRepository
 import mock.MockData
 import ru.kabanchik.common.chat.model.CommonChatMessage
@@ -8,6 +10,7 @@ import ru.kabanchik.common.domain.chat.logic.internal.DefaultCommonChatDetailsIn
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
+import kotlin.test.assertSame
 import kotlin.test.assertContentEquals
 
 class DefaultCommonChatDetailsInteractorTest {
@@ -69,20 +72,23 @@ class DefaultCommonChatDetailsInteractorTest {
         runBlocking {
             val repository = MockCommonChatDetailsRepository(messages = emptyList())
             val interactor = DefaultCommonChatDetailsInteractor(detailsRepository = repository)
-            val bytes = byteArrayOf(4, 5, 6)
+            val file = object : ReadableFile {
+                override val size: Long = 3
+                override fun openSource() = Buffer()
+            }
 
             val attachment = interactor.uploadFile(
                 sessionId = "session-id",
                 fileName = "document.pdf",
                 contentType = "application/pdf",
-                bytes = bytes,
+                file = file,
             )
 
             val request = repository.uploadedFileRequest
             assertEquals("session-id", request?.sessionId)
             assertEquals("document.pdf", request?.fileName)
             assertEquals("application/pdf", request?.contentType)
-            assertContentEquals(bytes, request?.bytes)
+            assertSame(file, request?.file)
             assertEquals("uploaded-file-id", attachment.fileId)
         }
     }

@@ -5,7 +5,7 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import ru.kabanchik.app.buildLogic.tools.debugImplementation
+import ru.kabanchik.app.buildLogic.tools.androidLibrary
 import ru.kabanchik.app.buildLogic.tools.libs
 
 class ComposePlugin: Plugin<Project> {
@@ -18,6 +18,13 @@ class ComposePlugin: Plugin<Project> {
             }
 
             extensions.configure<KotlinMultiplatformExtension> {
+                // Нужны для Compose Resources на Android: новый KMP-плагин по умолчанию их не собирает
+                androidLibrary {
+                    androidResources {
+                        enable = true
+                    }
+                }
+
                 sourceSets.apply {
                     commonMain {
                         dependencies {
@@ -33,7 +40,9 @@ class ComposePlugin: Plugin<Project> {
             }
 
             dependencies {
-                debugImplementation(libs.findLibrary("ui-tooling").get())
+                // У com.android.kotlin.multiplatform.library нет build types, поэтому не debugImplementation.
+                // runtimeClasspath не транзитивен, в потребителей ui-tooling не попадёт
+                add("androidRuntimeClasspath", libs.findLibrary("ui-tooling").get())
             }
         }
     }

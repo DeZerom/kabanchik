@@ -1,24 +1,40 @@
 package ru.kabanchik.app.buildLogic.plugins
 
-import com.android.build.api.dsl.LibraryExtension
-import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import ru.kabanchik.app.buildLogic.tools.androidLibrary
 import ru.kabanchik.app.buildLogic.tools.libs
 
 class KotlinMultiplatformPlugin: Plugin<Project> {
     override fun apply(target: Project): Unit = with(target) {
         with(pluginManager){
             apply(libs.findPlugin("kotlinMultiplatform").get().get().pluginId)
-            apply(libs.findPlugin("androidLibrary").get().get().pluginId)
+            apply(libs.findPlugin("androidMultiplatformLibrary").get().get().pluginId)
         }
 
         extensions.configure<KotlinMultiplatformExtension> {
             jvmToolchain(21)
 
-            androidTarget()
+            androidLibrary {
+                compileSdk = libs.findVersion("android-compileSdk").get().requiredVersion.toInt()
+                minSdk = libs.findVersion("android-minSdk").get().requiredVersion.toInt()
+
+                compilerOptions {
+                    jvmTarget.set(JvmTarget.JVM_21)
+                }
+
+                packaging {
+                    resources {
+                        excludes += "/META-INF/{AL2.0,LGPL2.1}"
+                    }
+                }
+
+                // commonTest также гоняется как android unit-тесты, как было с com.android.library
+                withHostTest {}
+            }
             iosArm64()
             iosSimulatorArm64()
             jvm()
@@ -36,22 +52,6 @@ class KotlinMultiplatformPlugin: Plugin<Project> {
                     dependencies {
                         implementation(libs.findLibrary("kotlinx-coroutines-android").get())
                     }
-                }
-            }
-        }
-
-        extensions.configure<LibraryExtension> {
-            compileSdk = libs.findVersion("android-compileSdk").get().requiredVersion.toInt()
-            defaultConfig {
-                minSdk = libs.findVersion("android-minSdk").get().requiredVersion.toInt()
-            }
-            compileOptions {
-                sourceCompatibility = JavaVersion.VERSION_21
-                targetCompatibility = JavaVersion.VERSION_21
-            }
-            packaging {
-                resources {
-                    excludes += "/META-INF/{AL2.0,LGPL2.1}"
                 }
             }
         }

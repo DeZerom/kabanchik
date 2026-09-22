@@ -4,6 +4,10 @@ plugins {
 }
 
 kotlin {
+    android {
+        namespace = "ru.kabanchik.common.store"
+    }
+
     listOf(
         iosArm64(),
         iosSimulatorArm64()
@@ -17,8 +21,3 @@ kotlin {
     sourceSets {
     }
 }
-
-android {
-    namespace = "ru.kabanchik.common.store"
-}
-

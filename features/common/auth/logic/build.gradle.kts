@@ -5,6 +5,10 @@ plugins {
 }
 
 kotlin {
+    android {
+        namespace = "ru.kabanchik.common.feature.auth"
+    }
+
     listOf(
         iosArm64(),
         iosSimulatorArm64()
@@ -26,8 +30,3 @@ kotlin {
         }
     }
 }
-
-android {
-    namespace = "ru.kabanchik.common.feature.auth"
-}
-

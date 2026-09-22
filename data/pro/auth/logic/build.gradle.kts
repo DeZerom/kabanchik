@@ -5,6 +5,10 @@ plugins {
 }
 
 kotlin {
+    android {
+        namespace = "ru.kabanchik.pro.data.auth.logic"
+    }
+
     listOf(
         iosArm64(),
         iosSimulatorArm64()
@@ -23,8 +27,4 @@ kotlin {
             implementation(libs.kotlinx.serializationJson)
         }
     }
-}
-
-android {
-    namespace = "ru.kabanchik.pro.data.auth.logic"
 }

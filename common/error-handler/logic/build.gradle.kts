@@ -5,6 +5,10 @@ plugins {
 }
 
 kotlin {
+    android {
+        namespace = "ru.kabanchik.common.errorHandler.logic"
+    }
+
     listOf(
         iosArm64(),
         iosSimulatorArm64()
@@ -23,8 +27,4 @@ kotlin {
             implementation(libs.components.resources)
         }
     }
-}
-
-android {
-    namespace = "ru.kabanchik.common.errorHandler.logic"
 }

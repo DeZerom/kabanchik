@@ -17,6 +17,8 @@
 - `domain/common/*`, `data/common/*`, `features/common/*` содержат бизнес-логику, data-логику и feature-логику, используемую обоими приложениями.
 - `domain/client/*`, `data/client/*`, `features/client/*` содержат логику только для клиентского приложения.
 - `domain/pro/*`, `data/pro/*`, `features/pro/*` содержат логику только для приложения сотрудников/исполнителей.
+- `androidApp` - Android entry point для клиентского приложения (`Application`, `MainActivity`, манифест, ресурсы, `applicationId` и версии).
+- `androidProApp` - Android entry point для pro-приложения.
 - `iosApp` - iOS entry point для клиентского приложения.
 - `iosProApp` - iOS entry point для pro-приложения.
 - `build-logic` содержит Gradle convention plugins, которые используются feature/domain/data/common модулями.
@@ -29,7 +31,8 @@
   - `features/*` могут зависеть от domain-модулей, common UI kit, common store, tools и error handling.
   - `domain/*` должен предоставлять интерфейсы и бизнес-модели; избегайте зависимостей на data-реализации.
   - `data/*` реализует repositories и sources, может зависеть от domain-интерфейсов/моделей и API-моделей.
-  - app-модули (`composeApp`, `proApp`) собирают финальный граф зависимостей.
+  - app-модули (`composeApp`, `proApp`) собирают финальный граф зависимостей. Это KMP-библиотеки (`com.android.kotlin.multiplatform.library`): AGP 9 не позволяет совмещать KMP и `com.android.application` в одном модуле.
+  - `androidApp`/`androidProApp` - тонкие Android-обертки над `composeApp`/`proApp`; бизнес-логику и DI в них не добавляйте.
 - Публичные API фич должны находиться в `api` пакетах. Реализации должны находиться в `internal` пакетах.
 - На границах слоев предпочитайте узкие интерфейсы и мапперы вместо протаскивания API DTO в domain или UI.
 
@@ -73,6 +76,8 @@
 - Не дублируйте зависимости, которые уже добавляются convention plugins, если модулю не требуется что-то дополнительное.
 - Версии зависимостей храните в `gradle/libs.versions.toml`.
 - Новые модули регистрируйте в `settings.gradle.kts`.
+- KMP library-модули используют `com.android.kotlin.multiplatform.library`; Android-настройки (включая `namespace`) задаются в `kotlin { android { } }`, а не в top-level `android { }`.
+- Build types и `debugImplementation` у KMP library-модулей нет.
 - JVM target и Java compatibility - 21.
 - Android compile/target/min SDK берутся из version catalog.
 
@@ -81,8 +86,8 @@
 По возможности используйте сфокусированные Gradle-команды:
 
 ```shell
-./gradlew :composeApp:assembleDebug
-./gradlew :proApp:assembleDebug
+./gradlew :androidApp:assembleDebug
+./gradlew :androidProApp:assembleDebug
 ./gradlew :composeApp:run
 ./gradlew :proApp:run
 ./gradlew :domain:common:chat:logic:allTests
@@ -102,6 +107,7 @@
 - Общий Kotlin-код кладите в `src/commonMain/kotlin`.
 - Общие тесты кладите в `src/commonTest/kotlin`.
 - Используйте `androidMain`, `iosMain` и `jvmMain` только для platform-specific кода.
+- Android-специфичный код app-уровня (`Activity`, `Application`, манифест, launcher-ресурсы) кладите в `androidApp/src/main` или `androidProApp/src/main`; `actual`-реализации остаются в `androidMain` модулей `composeApp`/`proApp`.
 - Избегайте platform APIs в `commonMain`; вместо этого вводите expect/actual или platform provider.
 
 ## Добавление Новой Фичи

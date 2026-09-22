@@ -3,6 +3,10 @@ plugins {
 }
 
 kotlin {
+    android {
+        namespace = "ru.kabanchik.pro.domain.chatDetails.model"
+    }
+
     listOf(
         iosArm64(),
         iosSimulatorArm64()
@@ -17,8 +21,4 @@ kotlin {
         commonMain.dependencies {
         }
     }
-}
-
-android {
-    namespace = "ru.kabanchik.pro.domain.chatDetails.model"
 }

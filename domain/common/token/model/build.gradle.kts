@@ -3,6 +3,10 @@ plugins {
 }
 
 kotlin {
+    android {
+        namespace = "ru.kabanchik.common.token.model"
+    }
+
     listOf(
         iosArm64(),
         iosSimulatorArm64()
@@ -18,8 +22,3 @@ kotlin {
         }
     }
 }
-
-android {
-    namespace = "ru.kabanchik.common.token.model"
-}
-

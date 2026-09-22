@@ -4,6 +4,10 @@ plugins {
 }
 
 kotlin {
+    android {
+        namespace = "ru.kabanchik.pro.domain.splash.logic"
+    }
+
     listOf(
         iosArm64(),
         iosSimulatorArm64()
@@ -20,8 +24,3 @@ kotlin {
         }
     }
 }
-
-android {
-    namespace = "ru.kabanchik.pro.domain.splash.logic"
-}
-

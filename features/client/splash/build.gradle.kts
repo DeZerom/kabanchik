@@ -5,6 +5,10 @@ plugins {
 }
 
 kotlin {
+    android {
+        namespace = "ru.kabanchik.client.feature.splash"
+    }
+
     listOf(
         iosArm64(),
         iosSimulatorArm64()
@@ -27,8 +31,3 @@ kotlin {
         }
     }
 }
-
-android {
-    namespace = "ru.kabanchik.client.feature.splash"
-}
-

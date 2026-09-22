@@ -5,6 +5,10 @@ plugins {
 }
 
 kotlin {
+    android {
+        namespace = "ru.kabanchik.client.feature.chatDetails"
+    }
+
     listOf(
         iosArm64(),
         iosSimulatorArm64()
@@ -32,8 +36,3 @@ kotlin {
         }
     }
 }
-
-android {
-    namespace = "ru.kabanchik.client.feature.chatDetails"
-}
-

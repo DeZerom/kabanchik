@@ -4,6 +4,10 @@ plugins {
 }
 
 kotlin {
+    android {
+        namespace = "ru.kabanchik.common.files"
+    }
+
     sourceSets {
         commonMain.dependencies {
             implementation(libs.filekit.dialogs)
@@ -14,8 +18,4 @@ kotlin {
             implementation(libs.kotlin.test)
         }
     }
-}
-
-android {
-    namespace = "ru.kabanchik.common.files"
 }

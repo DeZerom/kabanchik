@@ -5,6 +5,10 @@ plugins {
 }
 
 kotlin {
+    android {
+        namespace = "ru.kabanchik.common.feature.imageViewer"
+    }
+
     listOf(
         iosArm64(),
         iosSimulatorArm64()
@@ -26,8 +30,4 @@ kotlin {
             implementation(libs.kotlin.test)
         }
     }
-}
-
-android {
-    namespace = "ru.kabanchik.common.feature.imageViewer"
 }

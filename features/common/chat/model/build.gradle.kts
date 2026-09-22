@@ -3,6 +3,10 @@ plugins {
 }
 
 kotlin {
+    android {
+        namespace = "ru.kabanchik.common.feature.chat.model"
+    }
+
     listOf(
         iosArm64(),
         iosSimulatorArm64()
@@ -19,8 +23,4 @@ kotlin {
             implementation(projects.common.tools)
         }
     }
-}
-
-android {
-    namespace = "ru.kabanchik.common.feature.chat.model"
 }

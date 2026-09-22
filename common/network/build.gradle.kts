@@ -5,6 +5,10 @@ plugins {
 }
 
 kotlin {
+    android {
+        namespace = "ru.kabanchik.common.network"
+    }
+
     listOf(
         iosArm64(),
         iosSimulatorArm64()
@@ -47,8 +51,4 @@ kotlin {
             implementation(libs.kotlin.test)
         }
     }
-}
-
-android {
-    namespace = "ru.kabanchik.common.network"
 }

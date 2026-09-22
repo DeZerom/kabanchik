@@ -4,7 +4,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.composeMultiplatform)
-    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.androidMultiplatformLibrary)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
     alias(libs.plugins.kotlinx.serialization)
@@ -13,9 +13,17 @@ plugins {
 kotlin {
     jvm()
 
-    androidTarget {
+    android {
+        namespace = "ru.kabanchik.pro.proApp"
+        compileSdk = libs.versions.android.compileSdk.get().toInt()
+        minSdk = libs.versions.android.minSdk.get().toInt()
+
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_21)
+        }
+
+        androidResources {
+            enable = true
         }
     }
 
@@ -88,10 +96,6 @@ kotlin {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
         }
-        androidMain.dependencies {
-            implementation(libs.koin.android)
-            implementation(libs.androidx.activity.compose)
-        }
     }
 }
 
@@ -115,32 +119,5 @@ compose.desktop {
                 iconFile.set(project.file("src/jvmMain/resources/app-icon.png"))
             }
         }
-    }
-}
-
-android {
-    namespace = "ru.kabanchik.pro"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
-
-    defaultConfig {
-        applicationId = "ru.kabanchik.pro"
-        minSdk = libs.versions.android.minSdk.get().toInt()
-        targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 7
-        versionName = "0.0.6"
-    }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = false
-        }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
     }
 }

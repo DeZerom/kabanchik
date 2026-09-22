@@ -5,6 +5,10 @@ plugins {
 }
 
 kotlin {
+    android {
+        namespace = "ru.kabanchik.common.features.chat.logic"
+    }
+
     listOf(
         iosArm64(),
         iosSimulatorArm64()
@@ -37,8 +41,4 @@ kotlin {
             implementation(libs.ui.test.junit4)
         }
     }
-}
-
-android {
-    namespace = "ru.kabanchik.common.features.chat.logic"
 }

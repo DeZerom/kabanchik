@@ -5,6 +5,10 @@ plugins {
 }
 
 kotlin {
+    android {
+        namespace = "ru.kabanchik.pro.feature.chat"
+    }
+
     listOf(
         iosArm64(),
         iosSimulatorArm64()
@@ -37,8 +41,4 @@ kotlin {
             implementation(libs.kotlinx.coroutines.test)
         }
     }
-}
-
-android {
-    namespace = "ru.kabanchik.pro.feature.chat"
 }

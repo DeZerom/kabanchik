@@ -38,6 +38,8 @@ plugins {
 
 include(":composeApp")
 include(":proApp")
+include(":androidApp")
+include(":androidProApp")
 
 include(":common:ui-kit")
 include(":common:network")

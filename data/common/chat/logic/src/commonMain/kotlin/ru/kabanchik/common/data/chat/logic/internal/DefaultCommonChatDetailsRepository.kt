@@ -2,11 +2,12 @@ package ru.kabanchik.common.data.chat.logic.internal
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import ru.kabanchik.common.chat.model.CommonMessage
 import ru.kabanchik.common.chat.model.CommonAttachment
+import ru.kabanchik.common.chat.model.CommonMessage
 import ru.kabanchik.common.chat.model.CommonSessionMessage
 import ru.kabanchik.common.data.chat.logic.api.CommonChatRestSource
 import ru.kabanchik.common.data.chat.logic.api.CommonStompSource
+import ru.kabanchik.common.data.chat.logic.api.CommonUploadFile
 import ru.kabanchik.common.data.chat.logic.api.toDomain
 import ru.kabanchik.common.data.chatDetails.model.CommonApiReconnectMessage
 import ru.kabanchik.common.data.chatDetails.model.CommonApiSendMessage
@@ -31,12 +32,16 @@ internal class DefaultCommonChatDetailsRepository(
         contentType: String,
         file: ReadableFile,
     ): CommonAttachment {
-        return commonRestSource.uploadFile(
+        return commonRestSource.uploadFiles(
             sessionId = sessionId,
-            fileName = fileName,
-            contentType = contentType,
-            file = file,
-        ).toDomain()
+            files = listOf(
+                CommonUploadFile(
+                    fileName = fileName,
+                    contentType = contentType,
+                    file = file,
+                )
+            ),
+        ).single().toDomain()
     }
 
     override suspend fun downloadFile(sessionId: String, fileId: String): ByteArray {

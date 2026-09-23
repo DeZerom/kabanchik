@@ -7,6 +7,7 @@ import kotlinx.io.Buffer
 import kotlinx.io.RawSource
 import kotlinx.io.buffered
 import kotlinx.io.readByteArray
+import ru.kabanchik.common.data.chat.logic.api.CommonUploadFile
 import ru.kabanchik.common.files.api.ReadableFile
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
@@ -19,10 +20,14 @@ class FileUploadBodyTest {
     fun opensFreshSourceOnlyWhenMultipartPartIsRead() {
         val content = byteArrayOf(1, 2, 3, 4)
         val file = TrackingReadableFile(content)
-        val body = createFileUploadBody(
-            fileName = "photo.jpg",
-            contentType = "image/jpeg",
-            file = file,
+        val body = createFilesUploadBody(
+            listOf(
+                CommonUploadFile(
+                    fileName = "photo.jpg",
+                    contentType = "image/jpeg",
+                    file = file,
+                )
+            )
         )
 
         assertEquals(0, file.openCount)
@@ -42,6 +47,21 @@ class FileUploadBodyTest {
 
         assertEquals(2, file.openCount)
         assertEquals(2, file.closeCount)
+    }
+
+    @Test
+    fun addsEachFileAsFilesPartInRequestOrder() {
+        val body = createFilesUploadBody(
+            listOf(
+                CommonUploadFile("photo.jpg", "image/jpeg", TrackingReadableFile(byteArrayOf(1))),
+                CommonUploadFile("clip.mp4", "video/mp4", TrackingReadableFile(byteArrayOf(2, 3))),
+            )
+        )
+
+        val parts = body.parts.map { it as PartData.BinaryItem }
+        assertEquals(listOf("files", "files"), parts.map { it.name })
+        assertEquals(listOf("image/jpeg", "video/mp4"), parts.map { it.headers[HttpHeaders.ContentType] })
+        assertEquals(listOf("1", "2"), parts.map { it.headers[HttpHeaders.ContentLength] })
     }
 
     private class TrackingReadableFile(

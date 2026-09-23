@@ -12,9 +12,13 @@ import ru.kabanchik.common.files.api.ReadableFile
 import ru.kabanchik.pro.domain.chat.logic.api.ProChatDetailsInteractor
 
 internal class FakeProChatDetailsInteractor(
-    private val upload: suspend () -> CommonAttachment,
+    private val upload: suspend (fileName: String) -> CommonAttachment,
     private val messages: List<CommonChatMessage> = emptyList(),
+    private val send: suspend (SentMessage) -> Unit = {},
 ) : ProChatDetailsInteractor {
+    val uploadedFileNames = mutableListOf<String>()
+    val sentMessages = mutableListOf<SentMessage>()
+
     override suspend fun reconnect(sessionId: String): Unit = Unit
 
     override suspend fun getMessages(sessionId: String): List<CommonChatMessage> {
@@ -27,7 +31,8 @@ internal class FakeProChatDetailsInteractor(
         contentType: String,
         file: ReadableFile,
     ): CommonAttachment {
-        return upload()
+        uploadedFileNames += fileName
+        return upload(fileName)
     }
 
     override suspend fun downloadFile(sessionId: String, fileId: String): ByteArray {
@@ -38,13 +43,22 @@ internal class FakeProChatDetailsInteractor(
         sessionId: String,
         content: String?,
         attachmentIds: List<String>,
-    ): Unit = Unit
+    ) {
+        val message = SentMessage(content = content, attachmentIds = attachmentIds)
+        send(message)
+        sentMessages += message
+    }
 
     override suspend fun listenMessages(sessionId: String): Flow<CommonChatMessage> {
         return emptyFlow()
     }
 
     override suspend fun endChat(sessionId: String): Unit = Unit
+
+    data class SentMessage(
+        val content: String?,
+        val attachmentIds: List<String>,
+    )
 }
 
 internal class ProFakeFileOpener(

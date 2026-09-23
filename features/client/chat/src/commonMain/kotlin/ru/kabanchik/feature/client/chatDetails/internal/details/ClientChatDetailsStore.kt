@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import ru.kabanchik.client.domain.logic.chat.api.ClientChatDetailsInteractor
 import ru.kabanchik.common.chat.model.CommonChatMessage
+import ru.kabanchik.common.domain.chat.logic.api.MaxAttachmentsPerMessage
 import ru.kabanchik.common.domain.user.logic.api.UserInteractor
 import ru.kabanchik.common.errorHandler.logic.api.ErrorHandler
 import ru.kabanchik.common.feature.chat.model.CommonPendingFile
@@ -18,6 +19,7 @@ import ru.kabanchik.common.features.chat.logic.details.upsert
 import ru.kabanchik.common.features.chat.logic.details.withLoadingFile
 import ru.kabanchik.common.files.api.FileOpener
 import ru.kabanchik.common.files.api.FileOpeningException
+import ru.kabanchik.common.files.api.SelectedFile
 import ru.kabanchik.common.store.BaseCoroutineStore
 import ru.kabanchik.feature.client.chatDetails.api.details.ChatDetailsContract.Event
 import ru.kabanchik.feature.client.chatDetails.api.details.ChatDetailsContract.SideEffect
@@ -44,9 +46,7 @@ internal class ClientChatDetailsStore(
     override fun handleEvent(event: Event) {
         when (event) {
             is Event.MessageTextChanged -> reduceState { copy(currentMessage = event.newText) }
-            is Event.FilesSelected -> reduceState {
-                copy(selectedFiles = selectedFiles.appendSelectedFiles(event.files))
-            }
+            is Event.FilesSelected -> selectFiles(event.files)
             is Event.FileRemoved -> removeFile(event.fileId)
             is Event.FileOpenRequested -> openFile(event.fileId)
             Event.MessageSent -> sendMessage()
@@ -91,25 +91,31 @@ internal class ClientChatDetailsStore(
         coroutineScope.launch(coroutineExceptionHandler) {
             try {
                 val message = currentState.currentMessage
-                val files = currentState.selectedFiles
-                val attachmentIds = files.map { pendingFile ->
-                    uploadFile(pendingFile)
-                }
+                val batches = currentState.selectedFiles
+                    .chunked(MaxAttachmentsPerMessage)
+                    .ifEmpty { listOf(emptyList()) }
 
-                chatDetailsInteractor.sendMessage(
-                    sessionId = sessionId,
-                    content = message.takeIf { it.isNotBlank() },
-                    attachmentIds = attachmentIds,
-                )
+                batches.forEachIndexed { index, batch ->
+                    val isFirstBatch = index == 0
+                    val attachmentIds = batch.map { pendingFile ->
+                        uploadFile(pendingFile)
+                    }
 
-                files.forEach { it.file.release() }
-                reduceState {
-                    copy(
-                        currentMessage = if (currentMessage == message) "" else currentMessage,
-                        selectedFiles = selectedFiles.filterNot { selectedFile ->
-                            files.any { sentFile -> sentFile.id == selectedFile.id }
-                        },
+                    chatDetailsInteractor.sendMessage(
+                        sessionId = sessionId,
+                        content = message.takeIf { isFirstBatch && it.isNotBlank() },
+                        attachmentIds = attachmentIds,
                     )
+
+                    batch.forEach { it.file.release() }
+                    reduceState {
+                        copy(
+                            currentMessage = if (isFirstBatch && currentMessage == message) "" else currentMessage,
+                            selectedFiles = selectedFiles.filterNot { selectedFile ->
+                                batch.any { sentFile -> sentFile.id == selectedFile.id }
+                            },
+                        )
+                    }
                 }
             } finally {
                 reduceState { copy(isSending = false) }
@@ -160,6 +166,14 @@ internal class ClientChatDetailsStore(
             )
         }
         return attachmentId
+    }
+
+    private fun selectFiles(files: List<SelectedFile>) {
+        if (currentState.isSending) {
+            files.forEach { it.release() }
+            return
+        }
+        reduceState { copy(selectedFiles = selectedFiles.appendSelectedFiles(files)) }
     }
 
     private fun removeFile(fileId: String) {

@@ -7,11 +7,12 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.datetime.LocalDate
-import ru.kabanchik.common.chat.model.CommonChatMessage
 import ru.kabanchik.common.chat.model.CommonAttachment
+import ru.kabanchik.common.chat.model.CommonChatMessage
 import ru.kabanchik.common.chat.model.CommonMessage
 import ru.kabanchik.common.chat.model.CommonSessionStatus
 import ru.kabanchik.common.domain.chat.logic.api.CommonChatDetailsInteractor
+import ru.kabanchik.common.domain.chat.logic.api.MaxAttachmentsPerMessage
 import ru.kabanchik.common.domain.chat.logic.api.repository.CommonChatDetailsRepository
 import ru.kabanchik.common.domain.chat.logic.api.splitAndTrimMessage
 import ru.kabanchik.common.files.api.ReadableFile
@@ -54,6 +55,10 @@ class DefaultCommonChatDetailsInteractor(
         content: String?,
         attachmentIds: List<String>,
     ) {
+        require(attachmentIds.size <= MaxAttachmentsPerMessage) {
+            "Message can contain at most $MaxAttachmentsPerMessage attachments"
+        }
+
         val messageParts = content?.let(::splitAndTrimMessage) ?: listOf(null)
 
         messageParts.forEachIndexed { index, part ->
@@ -61,7 +66,7 @@ class DefaultCommonChatDetailsInteractor(
                 sessionId = sessionId,
                 clientMessageId = Uuid.random().toString(),
                 content = part,
-                attachmentIds = if (index == 0) attachmentIds else emptyList(),
+                attachmentIds = if (index == messageParts.lastIndex) attachmentIds else emptyList(),
             )
         }
     }

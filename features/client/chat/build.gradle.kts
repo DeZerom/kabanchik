@@ -21,6 +21,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            implementation(projects.domain.common.chat.logic)
             implementation(projects.domain.client.chat.logic)
             implementation(projects.domain.common.user.logic)
             implementation(projects.domain.common.chat.model)

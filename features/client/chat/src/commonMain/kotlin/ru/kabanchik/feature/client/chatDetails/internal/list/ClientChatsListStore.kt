@@ -1,10 +1,12 @@
 package ru.kabanchik.feature.client.chatDetails.internal.list
 
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import ru.kabanchik.client.domain.logic.chat.api.ClientChatsListInteractor
-import ru.kabanchik.common.errorHandler.logic.api.ErrorHandler
 import ru.kabanchik.common.domain.user.logic.api.UserInteractor
+import ru.kabanchik.common.errorHandler.logic.api.ErrorHandler
 import ru.kabanchik.common.features.chat.logic.list.toUiChatItem
 import ru.kabanchik.common.features.chat.logic.list.updateWithMessage
 import ru.kabanchik.common.store.BaseCoroutineStore
@@ -20,6 +22,7 @@ internal class ClientChatsListStore(
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
         pushSideEffect(SideEffect.ShowError(errorHandler.handleError(throwable).defaultMessage))
     }
+    private var messagesJob: Job? = null
 
     init {
         initChats()
@@ -36,28 +39,51 @@ internal class ClientChatsListStore(
     }
 
     private fun initChats() {
+        listenReconnections()
         coroutineScope.launch(coroutineExceptionHandler) {
             reduceState { copy(isLoading = true) }
 
             listInteractor.connect()
-            val currentUserLogin = userInteractor.getUserLogin().orEmpty()
-            val loadedChats = listInteractor.getChats().map { it.toUiChatItem() }
-            reduceState { copy(chats = loadedChats) }
+            loadChats()
+        }
+    }
 
-            launch {
-                listInteractor.listenMessages().collect { message ->
-                    reduceState {
-                        copy(
-                            chats = this.chats.updateWithMessage(
-                                message = message,
-                                currentUserLogin = currentUserLogin,
-                            )
+    private suspend fun loadChats() {
+        val currentUserLogin = userInteractor.getUserLogin().orEmpty()
+        val loadedChats = listInteractor.getChats().map { it.toUiChatItem() }
+        reduceState { copy(chats = loadedChats, isLoading = false) }
+        listenMessages(currentUserLogin)
+    }
+
+    private fun listenMessages(currentUserLogin: String) {
+        if (messagesJob != null) return
+
+        messagesJob = coroutineScope.launch(coroutineExceptionHandler) {
+            listInteractor.listenMessages().collect { message ->
+                reduceState {
+                    copy(
+                        chats = this.chats.updateWithMessage(
+                            message = message,
+                            currentUserLogin = currentUserLogin,
                         )
-                    }
+                    )
                 }
             }
+        }
+    }
 
-            reduceState { copy(isLoading = false) }
+    // После переподключения сокета дозагружаем то, что могло прийти, пока соединения не было
+    private fun listenReconnections() {
+        coroutineScope.launch {
+            listInteractor.listenReconnections().collect {
+                try {
+                    loadChats()
+                } catch (e: CancellationException) {
+                    throw e
+                } catch (e: Throwable) {
+                    pushSideEffect(SideEffect.ShowError(errorHandler.handleError(e).defaultMessage))
+                }
+            }
         }
     }
 

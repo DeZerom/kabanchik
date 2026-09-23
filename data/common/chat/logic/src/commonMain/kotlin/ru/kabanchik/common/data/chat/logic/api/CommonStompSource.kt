@@ -9,6 +9,7 @@ import ru.kabanchik.common.data.chatDetails.model.CommonApiSessionMessage
 
 interface CommonStompSource {
     suspend fun connect()
+    suspend fun listenReconnections(): Flow<Unit>
     suspend fun reconnect(message: CommonApiReconnectMessage)
     suspend fun send(message: CommonApiSendMessage)
     suspend fun listenErrors(): Flow<CommonApiErrorMessage>

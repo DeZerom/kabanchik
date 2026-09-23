@@ -22,6 +22,10 @@ internal class DefaultCommonChatDetailsRepository(
         commonStompSource.reconnect(CommonApiReconnectMessage(sessionId))
     }
 
+    override suspend fun listenReconnections(): Flow<Unit> {
+        return commonStompSource.listenReconnections()
+    }
+
     override suspend fun getMessages(sessionId: String): List<CommonMessage> {
         return commonRestSource.getMessages(sessionId).map { it.toDomain() }
     }

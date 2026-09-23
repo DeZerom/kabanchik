@@ -1,5 +1,6 @@
 package ru.kabanchik.pro.feature.chat.internal.details
 
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.catch
@@ -57,6 +58,7 @@ internal class ProChatDetailsStore(
     }
 
     private fun initChat() {
+        listenReconnections()
         coroutineScope.launch(coroutineExceptionHandler) {
             reduceState { State(isLoading = true) }
             val login = userInteractor.getUserLogin()
@@ -74,6 +76,21 @@ internal class ProChatDetailsStore(
         val messages = chatDetailsInteractor.getMessages(sessionId = sessionId)
         reduceState {
             copy(messages = messages.map { it.toState(currentState.login) })
+        }
+    }
+
+    // После переподключения сокета дозагружаем сообщения, пришедшие, пока соединения не было
+    private fun listenReconnections() {
+        coroutineScope.launch {
+            chatDetailsInteractor.listenReconnections().collect {
+                try {
+                    loadMessages()
+                } catch (e: CancellationException) {
+                    throw e
+                } catch (e: Throwable) {
+                    pushSideEffect(SideEffect.Error(errorHandler.handleError(e).defaultMessage))
+                }
+            }
         }
     }
 

@@ -13,6 +13,10 @@ internal class DefaultCommonChatsListInteractor(
         listRepository.connect()
     }
 
+    override suspend fun listenReconnections(): Flow<Unit> {
+        return listRepository.listenReconnections()
+    }
+
     override suspend fun getChats(): List<CommonChatSummary> {
         return listRepository.getChats()
             .sortedByDescending { chat -> chat.lastMessageTimestamp }

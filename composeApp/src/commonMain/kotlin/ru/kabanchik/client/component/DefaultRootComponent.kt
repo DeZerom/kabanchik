@@ -8,6 +8,7 @@ import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.router.stack.replaceCurrent
 import com.arkivanov.decompose.value.Value
+import com.arkivanov.essenty.lifecycle.doOnStart
 import kotlinx.serialization.Serializable
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
@@ -15,6 +16,7 @@ import ru.kabanchik.client.feature.auth.api.flow.AuthFlowComponent
 import ru.kabanchik.client.feature.auth.api.flow.AuthFlowDependencies
 import ru.kabanchik.client.feature.splash.api.ClientSplashComponent
 import ru.kabanchik.client.feature.splash.api.ClientSplashDependencies
+import ru.kabanchik.common.network.api.StompConnectionController
 import ru.kabanchik.common.snackBar.api.SnackBarComponent
 import ru.kabanchik.feature.client.chatDetails.api.flow.ClientChatFlowComponent
 import ru.kabanchik.feature.client.chatDetails.api.flow.ClientChatFlowDependencies
@@ -33,6 +35,12 @@ class DefaultRootComponent(
     override val snackBarComponent: SnackBarComponent = SnackBarComponent.create(
         componentContext = childContext("root_snack_bar_component")
     )
+
+    init {
+        // На Android сокет рвется, пока приложение свернуто: при возврате переподключаемся сразу
+        val connectionController = get<StompConnectionController>()
+        lifecycle.doOnStart { connectionController.onAppForeground() }
+    }
 
     private fun createChild(config: Config, context: ComponentContext): RootComponent.Child {
         return when (config) {

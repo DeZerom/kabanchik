@@ -26,6 +26,10 @@ class DefaultCommonChatDetailsInteractor(
         detailsRepository.reconnect(sessionId)
     }
 
+    override suspend fun listenReconnections(): Flow<Unit> {
+        return detailsRepository.listenReconnections()
+    }
+
     override suspend fun getMessages(sessionId: String): List<CommonChatMessage> {
         return detailsRepository.getMessages(sessionId)
             .toChatMessages()

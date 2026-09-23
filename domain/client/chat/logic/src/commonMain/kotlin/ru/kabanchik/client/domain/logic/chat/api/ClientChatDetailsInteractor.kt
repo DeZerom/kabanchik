@@ -1,12 +1,13 @@
 package ru.kabanchik.client.domain.logic.chat.api
 
 import kotlinx.coroutines.flow.Flow
-import ru.kabanchik.common.chat.model.CommonChatMessage
 import ru.kabanchik.common.chat.model.CommonAttachment
+import ru.kabanchik.common.chat.model.CommonChatMessage
 import ru.kabanchik.common.files.api.ReadableFile
 
 interface ClientChatDetailsInteractor {
     suspend fun reconnect(sessionId: String)
+    suspend fun listenReconnections(): Flow<Unit>
     suspend fun getMessages(sessionId: String): List<CommonChatMessage>
     suspend fun uploadFile(
         sessionId: String,

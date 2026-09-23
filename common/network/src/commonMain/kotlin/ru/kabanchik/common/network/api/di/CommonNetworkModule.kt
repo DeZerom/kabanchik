@@ -8,6 +8,7 @@ import ru.kabanchik.client.data.auth.logic.api.sources.ClientAuthApi
 import ru.kabanchik.client.data.chat.logic.api.ClientMessagesStompSource
 import ru.kabanchik.common.data.chat.logic.api.CommonChatRestSource
 import ru.kabanchik.common.data.chat.logic.api.CommonStompSource
+import ru.kabanchik.common.network.api.StompConnectionController
 import ru.kabanchik.common.network.internal.api.auth.DefaultClientAuthApi
 import ru.kabanchik.common.network.internal.api.auth.DefaultProAuthApi
 import ru.kabanchik.common.network.internal.api.chat.DefaultCommonChatRestSource
@@ -33,7 +34,8 @@ object CommonNetworkModule {
         } binds arrayOf(
             CommonStompSource::class,
             ClientMessagesStompSource::class,
-            ProMessagesStompSource::class
+            ProMessagesStompSource::class,
+            StompConnectionController::class
         )
 
         factory {

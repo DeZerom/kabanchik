@@ -3,17 +3,27 @@ package ru.kabanchik.common.network.internal.ws
 import dev.shivathapaa.logger.api.loggerD
 import dev.shivathapaa.logger.api.loggerE
 import io.ktor.client.HttpClient
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.job
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import org.hildan.krossbow.stomp.StompClient
 import org.hildan.krossbow.stomp.config.HeartBeat
@@ -33,192 +43,183 @@ import ru.kabanchik.common.data.chatDetails.model.CommonApiReconnectMessage
 import ru.kabanchik.common.data.chatDetails.model.CommonApiSendMessage
 import ru.kabanchik.common.data.chatDetails.model.CommonApiSessionMessage
 import ru.kabanchik.common.data.chatDetails.model.CommonApiSystemMessage
+import ru.kabanchik.common.network.api.StompConnectionController
 import ru.kabanchik.common.tools.network.BackendHost
 import ru.kabanchik.pro.data.chat.logic.api.ProMessagesStompSource
 import ru.kabanchik.pro.data.chatDetails.model.ProApiAcceptChat
 import ru.kabanchik.pro.data.chatDetails.model.ProApiIncoming
+import kotlin.math.min
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
+private val InitialReconnectDelay = 1.seconds
+private val MaxReconnectDelay = 30.seconds
+private val SendConnectionTimeout = 10.seconds
+
+/**
+ * Держит одно STOMP-соединение и автоматически восстанавливает его при обрыве.
+ *
+ * Подписки регистрируются один раз и переживают переподключения: после каждого нового
+ * соединения все зарегистрированные destination подписываются заново, а сообщения
+ * продолжают приходить в те же [Flow], что вернули `listen*()`.
+ */
 internal class DefaultMessagesStompSource(
-    private val httpClient: HttpClient
-) : CommonStompSource, ClientMessagesStompSource, ProMessagesStompSource {
-    var session: StompSessionWithKxSerialization? = null
-    private val subscriptionsMutex = Mutex()
-    private var subscriptionsScope = createSubscriptionsScope()
-    private var systemMessagesFlow: Flow<CommonApiSystemMessage>? = null
-    private var errorMessagesFlow: Flow<CommonApiErrorMessage>? = null
-    private var sessionMessagesFlow: Flow<CommonApiSessionMessage>? = null
-    private var incomingMessagesFlow: Flow<ProApiIncoming>? = null
-    private var messagesFlow: Flow<CommonApiMessage>? = null
-    private var sessionEndMessagesFlow: Flow<CommonApiMessage>? = null
+    httpClient: HttpClient
+) : CommonStompSource,
+    ClientMessagesStompSource,
+    ProMessagesStompSource,
+    StompConnectionController {
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+    private val stompClient = StompClient(
+        webSocketClient = KtorWebSocketClient(httpClient),
+        configure = {
+            heartBeat = HeartBeat(
+                minSendPeriod = 5.seconds,
+                expectedPeriod = 5.seconds
+            )
+        }
+    )
+    private val json = Json {
+        ignoreUnknownKeys = true
+    }
+
+    // Защищает connectionJob, subscriptions и подписку на текущую сессию
+    private val mutex = Mutex()
+    private var connectionJob: Job? = null
+    private val subscriptions = mutableMapOf<String, Subscription<*>>()
+    private val connectionState = MutableStateFlow<ConnectionState>(ConnectionState.Disconnected(error = null))
+    private val reconnectRequests = Channel<Unit>(Channel.CONFLATED)
+    private val reconnections = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+    private var isFirstAttempt = true
 
     override suspend fun connect() {
-        resetCachedSubscriptions()
-        val url = "ws://$BackendHost/ws"
-        loggerD("Connect: $url")
-        session = StompClient(
-            webSocketClient = KtorWebSocketClient(httpClient),
-            configure = {
-                heartBeat = HeartBeat(
-                    minSendPeriod = 5.seconds,
-                    expectedPeriod = 5.seconds
-                )
-            }
-        ).connect(url = url).withJsonConversions(
-            json = Json {
-                ignoreUnknownKeys = true
-            }
-        )
         startCommonSubscriptions()
+
+        val initialState = connectionState.value
+        if (initialState is ConnectionState.Connected) return
+
+        mutex.withLock {
+            if (connectionJob == null) {
+                connectionJob = scope.launch { runConnectionLoop() }
+            }
+        }
+        reconnectRequests.trySend(Unit)
+
+        val result = connectionState.first { state ->
+            state is ConnectionState.Connected ||
+                state is ConnectionState.Disconnected && state !== initialState && state.error != null
+        }
+        if (result is ConnectionState.Disconnected) {
+            throw checkNotNull(result.error)
+        }
+    }
+
+    override fun onAppForeground() {
+        if (connectionJob != null && connectionState.value !is ConnectionState.Connected) {
+            loggerD("App foreground: reconnect now")
+            reconnectRequests.trySend(Unit)
+        }
+    }
+
+    override suspend fun listenReconnections(): Flow<Unit> {
+        return reconnections.asSharedFlow()
     }
 
     override suspend fun register() {
         loggerD("Register: app/executor.register")
-        requireSession().sendEmptyMsg(destination = "/app/executor.register")
+        withSession { it.sendEmptyMsg(destination = "/app/executor.register") }
     }
 
     override suspend fun startChat(message: ClientApiChatRequest) {
         loggerD("Start chat: /app/chat.request. Body: $message")
-        requireSession().convertAndSend(
-            destination = "/app/chat.request",
-            body = message
-        )
+        withSession {
+            it.convertAndSend(
+                destination = "/app/chat.request",
+                body = message
+            )
+        }
     }
 
     override suspend fun endChat(sessionId: String) {
         val message = CommonApiEndChat(sessionId)
         loggerD("End chat: /app/chat.end. Body: $message")
-        requireSession().convertAndSend(
-            destination = "/app/chat.end",
-            body = message
-        )
+        withSession {
+            it.convertAndSend(
+                destination = "/app/chat.end",
+                body = message
+            )
+        }
     }
 
     override suspend fun reconnect(message: CommonApiReconnectMessage) {
         loggerD("Reconnect chat: /app/chat.reconnect. Body: $message")
-        requireSession().convertAndSend(
-            destination = "/app/chat.reconnect",
-            body = message
-        )
+        withSession {
+            it.convertAndSend(
+                destination = "/app/chat.reconnect",
+                body = message
+            )
+        }
     }
 
     override suspend fun acceptChat(message: ProApiAcceptChat) {
         loggerD("Accept chat: /app/chat.accept. Body: $message")
-        requireSession().convertAndSend(
-            destination = "/app/chat.accept",
-            body = message
-        )
+        withSession {
+            it.convertAndSend(
+                destination = "/app/chat.accept",
+                body = message
+            )
+        }
     }
 
     override suspend fun send(message: CommonApiSendMessage) {
         loggerD("Send message: /app/chat.send. Body: $message")
-        requireSession().convertAndSend(
-            destination = "/app/chat.send",
-            body = message
-        )
+        withSession {
+            it.convertAndSend(
+                destination = "/app/chat.send",
+                body = message
+            )
+        }
     }
 
     override suspend fun listenSystem(): Flow<CommonApiSystemMessage> {
-        return subscriptionsMutex.withLock {
-            systemMessagesFlow ?: requireSession().subscribe(
-                destination = "/user/queue/system",
-                deserializer = CommonApiSystemMessage.serializer()
-            ).catch {
-                loggerE("System listening error", it)
-            }.onEach {
-                loggerD("System listening message: $it")
-            }.shareSubscription().also {
-                loggerD("Start listening system: /user/queue/system")
-                systemMessagesFlow = it
-            }
-        }
+        return listen(
+            destination = "/user/queue/system",
+            deserializer = CommonApiSystemMessage.serializer()
+        )
     }
 
     override suspend fun listenErrors(): Flow<CommonApiErrorMessage> {
-        return subscriptionsMutex.withLock {
-            errorMessagesFlow ?: requireSession().subscribe(
-                destination = "/user/queue/errors",
-                deserializer = CommonApiErrorMessage.serializer()
-            ).catch {
-                loggerE("Errors listening error", it)
-            }.onEach {
-                loggerD("Errors listening message: $it")
-            }.shareSubscription().also {
-                loggerD("Start listening errors: /user/queue/errors")
-                errorMessagesFlow = it
-            }
-        }
+        return listen(
+            destination = "/user/queue/errors",
+            deserializer = CommonApiErrorMessage.serializer()
+        )
     }
 
     override suspend fun listenSession(): Flow<CommonApiSessionMessage> {
-        return subscriptionsMutex.withLock {
-            sessionMessagesFlow ?: requireSession().subscribe(
-                destination = "/user/queue/session",
-                deserializer = CommonApiSessionMessage.serializer()
-            ).catch {
-                loggerE("Session listening error", it)
-            }.onEach {
-                loggerD("Session listening message: $it")
-            }.shareSubscription().also {
-                loggerD("Start listening session: /user/queue/session")
-                sessionMessagesFlow = it
-            }
-        }
+        return listen(
+            destination = "/user/queue/session",
+            deserializer = CommonApiSessionMessage.serializer()
+        )
     }
 
     override suspend fun listenIncoming(): Flow<ProApiIncoming> {
-        return subscriptionsMutex.withLock {
-            incomingMessagesFlow ?: requireSession().subscribe(
-                destination = "/user/queue/incoming",
-                deserializer = ProApiIncoming.serializer()
-            ).catch {
-                loggerE("Incoming listening error", it)
-            }.onEach {
-                loggerD("Incoming listening message: $it")
-            }.shareSubscription().also {
-                loggerD("Start listening incoming: /user/queue/incoming")
-                incomingMessagesFlow = it
-            }
-        }
+        return listen(
+            destination = "/user/queue/incoming",
+            deserializer = ProApiIncoming.serializer()
+        )
     }
 
     override suspend fun listenMessages(): Flow<CommonApiMessage> {
-        return subscriptionsMutex.withLock {
-            messagesFlow ?: requireSession().subscribe(
-                destination = "/user/queue/messages",
-                deserializer = CommonApiMessage.serializer()
-            ).catch {
-                loggerE("Messages listening error", it)
-            }.onEach {
-                loggerD("Messages listening message: $it")
-            }.shareSubscription().also {
-                loggerD("Start listening messages: /user/queue/messages")
-                messagesFlow = it
-            }
-        }
+        return listen(
+            destination = "/user/queue/messages",
+            deserializer = CommonApiMessage.serializer()
+        )
     }
 
     override suspend fun listenSessionEnd(): Flow<CommonApiMessage> {
-        return subscriptionsMutex.withLock {
-            sessionEndMessagesFlow ?: requireSession().subscribe(
-                destination = "/user/queue/session-end",
-                deserializer = CommonApiMessage.serializer()
-            ).catch {
-                loggerE("SessionEnd listening error", it)
-            }.onEach {
-                loggerD("SessionEnd listening message: $it")
-            }.shareSubscription().also {
-                loggerD("Start listening session end: /user/queue/session-end")
-                sessionEndMessagesFlow = it
-            }
-        }
-    }
-
-    private fun <T> Flow<T>.shareSubscription(): Flow<T> {
-        return shareIn(
-            scope = subscriptionsScope,
-            started = SharingStarted.Eagerly,
-            replay = 0
+        return listen(
+            destination = "/user/queue/session-end",
+            deserializer = CommonApiMessage.serializer()
         )
     }
 
@@ -229,23 +230,173 @@ internal class DefaultMessagesStompSource(
         listenSessionEnd()
     }
 
-    private fun resetCachedSubscriptions() {
-        subscriptionsScope.cancel()
-        subscriptionsScope = createSubscriptionsScope()
-        systemMessagesFlow = null
-        errorMessagesFlow = null
-        sessionMessagesFlow = null
-        incomingMessagesFlow = null
-        messagesFlow = null
-        sessionEndMessagesFlow = null
+    private suspend fun runConnectionLoop() {
+        var failedAttempts = 0
+        while (true) {
+            reconnectRequests.receive()
+            connectionState.value = ConnectionState.Connecting
+
+            val error = try {
+                val session = openSession()
+                failedAttempts = 0
+                val cause = session.closed.await()
+                loggerE("Connection lost", cause)
+                session.close()
+                cause
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Throwable) {
+                loggerE("Connection failed", e)
+                failedAttempts++
+                e
+            }
+            connectionState.value = ConnectionState.Disconnected(error ?: ConnectionClosedException())
+
+            // Ждем паузу backoff или явный запрос на переподключение (connect(), возврат в foreground)
+            withTimeoutOrNull(reconnectDelay(failedAttempts)) { reconnectRequests.receive() }
+            reconnectRequests.trySend(Unit)
+        }
     }
 
-    private fun createSubscriptionsScope(): CoroutineScope {
-        return CoroutineScope(SupervisorJob() + Dispatchers.Default)
-    }
+    private suspend fun openSession(): ActiveSession {
+        // Первое подключение ждет сам вызывающий connect(), остальные - переподключения
+        val isReconnection = !isFirstAttempt
+        isFirstAttempt = false
+        val url = "ws://$BackendHost/ws"
+        loggerD("Connect: $url")
+        val stompSession = stompClient.connect(url = url).withJsonConversions(json = json)
+        val session = ActiveSession(
+            session = stompSession,
+            scope = CoroutineScope(SupervisorJob(scope.coroutineContext.job) + Dispatchers.Default)
+        )
 
-    private fun requireSession(): StompSessionWithKxSerialization {
+        mutex.withLock {
+            try {
+                subscriptions.values.forEach { it.subscribe(session) }
+            } catch (e: Throwable) {
+                session.close()
+                throw e
+            }
+            connectionState.value = ConnectionState.Connected(session)
+            loggerD("Connected, subscriptions: ${subscriptions.keys}")
+        }
+
+        if (isReconnection) {
+            reconnections.tryEmit(Unit)
+        }
         return session
-            ?: throw IllegalStateException("call session before connect()")
+    }
+
+    private fun reconnectDelay(failedAttempts: Int): Duration {
+        if (failedAttempts == 0) return Duration.ZERO
+        val multiplier = 1 shl min(failedAttempts - 1, 5)
+        return minOf(InitialReconnectDelay * multiplier, MaxReconnectDelay)
+    }
+
+    private suspend fun <T : Any> listen(destination: String, deserializer: KSerializer<T>): Flow<T> {
+        return mutex.withLock {
+            @Suppress("UNCHECKED_CAST")
+            val existing = subscriptions[destination] as Subscription<T>?
+            if (existing != null) return@withLock existing.messages
+
+            val subscription = Subscription(destination, deserializer)
+            subscriptions[destination] = subscription
+            loggerD("Start listening: $destination")
+
+            // Если соединение уже есть - подписываемся сразу, чтобы не пропустить ответы на следующие команды.
+            // Иначе подписка произойдет при ближайшем подключении.
+            val connected = connectionState.value as? ConnectionState.Connected
+            if (connected != null) {
+                try {
+                    subscription.subscribe(connected.session)
+                } catch (e: CancellationException) {
+                    throw e
+                } catch (e: Throwable) {
+                    loggerE("Subscribe $destination failed", e)
+                    connected.session.markClosed(e)
+                }
+            }
+            subscription.messages
+        }
+    }
+
+    private suspend fun <T> withSession(block: suspend (StompSessionWithKxSerialization) -> T): T {
+        val session = awaitSession()
+        return try {
+            block(session.session)
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Throwable) {
+            session.markClosed(e)
+            throw e
+        }
+    }
+
+    private suspend fun awaitSession(): ActiveSession {
+        (connectionState.value as? ConnectionState.Connected)?.let { return it.session }
+
+        reconnectRequests.trySend(Unit)
+        val connected = withTimeoutOrNull(SendConnectionTimeout) {
+            connectionState.first { it is ConnectionState.Connected } as ConnectionState.Connected
+        }
+        return connected?.session ?: throw StompNotConnectedException()
+    }
+
+    private sealed interface ConnectionState {
+        // Обычный класс, а не data: connect() сравнивает состояния по ссылке
+        class Disconnected(val error: Throwable?) : ConnectionState
+        data object Connecting : ConnectionState
+        class Connected(val session: ActiveSession) : ConnectionState
+    }
+
+    private class ActiveSession(
+        val session: StompSessionWithKxSerialization,
+        val scope: CoroutineScope
+    ) {
+        val closed = CompletableDeferred<Throwable?>()
+
+        fun markClosed(cause: Throwable?) {
+            closed.complete(cause)
+        }
+
+        suspend fun close() {
+            scope.cancel()
+            withContext(NonCancellable) {
+                runCatching { session.disconnect() }
+            }
+        }
+    }
+
+    private inner class Subscription<T : Any>(
+        private val destination: String,
+        private val deserializer: KSerializer<T>
+    ) {
+        private val _messages = MutableSharedFlow<T>(extraBufferCapacity = 64)
+        val messages: Flow<T> = _messages.asSharedFlow()
+
+        suspend fun subscribe(session: ActiveSession) {
+            val flow = session.session.subscribe(
+                destination = destination,
+                deserializer = deserializer
+            )
+            session.scope.launch {
+                try {
+                    flow.collect {
+                        loggerD("Message from $destination: $it")
+                        _messages.emit(it)
+                    }
+                    session.markClosed(null)
+                } catch (e: CancellationException) {
+                    throw e
+                } catch (e: Throwable) {
+                    loggerE("Listening $destination error", e)
+                    session.markClosed(e)
+                }
+            }
+        }
     }
 }
+
+internal class StompNotConnectedException : IllegalStateException("STOMP session is not connected")
+
+internal class ConnectionClosedException : IllegalStateException("STOMP session was closed")

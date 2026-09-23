@@ -3,8 +3,8 @@ package mock
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
-import ru.kabanchik.common.chat.model.CommonMessage
 import ru.kabanchik.common.chat.model.CommonAttachment
+import ru.kabanchik.common.chat.model.CommonMessage
 import ru.kabanchik.common.chat.model.CommonSessionMessage
 import ru.kabanchik.common.domain.chat.logic.api.repository.CommonChatDetailsRepository
 import ru.kabanchik.common.files.api.ReadableFile
@@ -28,6 +28,10 @@ class MockCommonChatDetailsRepository(
 
     override suspend fun reconnect(sessionId: String) {
         reconnectedSessionId = sessionId
+    }
+
+    override suspend fun listenReconnections(): Flow<Unit> {
+        return emptyFlow()
     }
 
     override suspend fun getMessages(sessionId: String): List<CommonMessage> {

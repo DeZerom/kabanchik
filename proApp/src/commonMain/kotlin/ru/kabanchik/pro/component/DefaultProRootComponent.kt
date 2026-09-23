@@ -7,9 +7,11 @@ import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.value.Value
+import com.arkivanov.essenty.lifecycle.doOnStart
 import kotlinx.serialization.Serializable
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
+import ru.kabanchik.common.network.api.StompConnectionController
 import ru.kabanchik.common.snackBar.api.SnackBarComponent
 import ru.kabanchik.common.snackBar.api.SnackBarData.Error
 import ru.kabanchik.pro.feature.auth.api.ProAuthComponent
@@ -33,6 +35,12 @@ class DefaultProRootComponent(
     override val snackBarComponent: SnackBarComponent = SnackBarComponent.create(
         componentContext = childContext("pro_snack_bar")
     )
+
+    init {
+        // На Android сокет рвется, пока приложение свернуто: при возврате переподключаемся сразу
+        val connectionController = get<StompConnectionController>()
+        lifecycle.doOnStart { connectionController.onAppForeground() }
+    }
 
     private fun createChild(config: Config, componentContext: ComponentContext): ProRootComponent.Child {
         return when (config) {

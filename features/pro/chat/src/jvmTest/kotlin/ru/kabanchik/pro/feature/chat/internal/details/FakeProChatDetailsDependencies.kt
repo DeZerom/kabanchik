@@ -21,6 +21,8 @@ internal class FakeProChatDetailsInteractor(
 
     override suspend fun reconnect(sessionId: String): Unit = Unit
 
+    override suspend fun listenReconnections(): Flow<Unit> = emptyFlow()
+
     override suspend fun getMessages(sessionId: String): List<CommonChatMessage> {
         return messages
     }

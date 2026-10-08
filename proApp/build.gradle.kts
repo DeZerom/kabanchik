@@ -60,6 +60,9 @@ kotlin {
             implementation(projects.domain.pro.chat.logic)
             implementation(projects.features.pro.chat)
 
+            implementation(projects.domain.common.profile.logic)
+            implementation(projects.features.pro.profile)
+
             implementation(projects.common.uiKit)
             implementation(projects.common.network)
             implementation(projects.common.dataStore)

@@ -7,6 +7,9 @@ import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.value.Value
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.serialization.Serializable
 import ru.kabanchik.common.feature.imageViewer.api.ImageViewerComponent
 import ru.kabanchik.common.snackBar.api.SnackBarData
@@ -29,8 +32,17 @@ internal class DefaultClientChatFlowComponent(
         initialStack = { listOf(Config.ChatsList) },
         childFactory = ::createChild,
         handleBackButton = true
-    ) 
-    
+    )
+
+    private val _showBottomNavigation = MutableStateFlow(true)
+    override val showBottomNavigation: StateFlow<Boolean> = _showBottomNavigation.asStateFlow()
+
+    init {
+        stackNavigation.subscribe { currentStack ->
+            _showBottomNavigation.value = currentStack.active.instance is ClientChatFlowComponent.Child.List
+        }
+    }
+
     private fun createChild(config: Config, componentContext: ComponentContext): ClientChatFlowComponent.Child {
         return when (config) {
             is Config.Details -> {

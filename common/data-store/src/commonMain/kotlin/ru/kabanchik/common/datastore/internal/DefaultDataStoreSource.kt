@@ -18,6 +18,12 @@ class DefaultDataStoreSource(
         return getValue(stringPreferencesKey(key))
     }
 
+    override suspend fun clear() {
+        dataStore.edit {
+            it.clear()
+        }
+    }
+
     private suspend fun <T> setValue(key: Preferences.Key<T>, value: T) {
         dataStore.edit {
             it[key] = value

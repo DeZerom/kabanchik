@@ -5,7 +5,7 @@ import com.arkivanov.decompose.childContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
-import com.arkivanov.decompose.router.stack.pushNew
+import com.arkivanov.decompose.router.stack.replaceAll
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.lifecycle.doOnStart
 import kotlinx.serialization.Serializable
@@ -16,8 +16,6 @@ import ru.kabanchik.common.snackBar.api.SnackBarComponent
 import ru.kabanchik.common.snackBar.api.SnackBarData.Error
 import ru.kabanchik.pro.feature.auth.api.ProAuthComponent
 import ru.kabanchik.pro.feature.auth.api.ProAuthDependencies.Factory
-import ru.kabanchik.pro.feature.chat.api.flow.ProChatFlowComponent
-import ru.kabanchik.pro.feature.chat.api.flow.ProChatFlowDependencies
 import ru.kabanchik.pro.feature.splash.api.ProSplashComponent
 import ru.kabanchik.pro.feature.splash.api.ProSplashDependencies
 
@@ -51,8 +49,8 @@ class DefaultProRootComponent(
                         dependencies = ProSplashDependencies.Factory(
                             splashInteractor = get()
                         ),
-                        navigateAuth = { stackNavigation.pushNew(Config.Auth) },
-                        navigateChatsList = { stackNavigation.pushNew(Config.Chat) }
+                        navigateAuth = { stackNavigation.replaceAll(Config.Auth) },
+                        navigateChatsList = { stackNavigation.replaceAll(Config.Home) }
                     )
                 )
             }
@@ -64,24 +62,17 @@ class DefaultProRootComponent(
                             authInteractor = get(),
                             errorHandler = get()
                         ),
-                        onAuthorize = { stackNavigation.pushNew(Config.Chat) },
+                        onAuthorize = { stackNavigation.replaceAll(Config.Home) },
                         onError = { snackBarComponent.setData(Error(it)) },
                     )
                 )
             }
-            Config.Chat -> {
-                ProRootComponent.Child.Chat(
-                    component = ProChatFlowComponent.create(
+            Config.Home -> {
+                ProRootComponent.Child.Home(
+                    component = ProHomeComponent.create(
                         componentContext = componentContext,
                         showSnackBar = { snackBarComponent.setData(it) },
-                        dependencies = ProChatFlowDependencies.Factory(
-                            chatsListInteractor = get(),
-                            chatDetailsInteractor = get(),
-                            userInteractor = get(),
-                            errorHandler = get(),
-                            filePicker = get(),
-                            fileOpener = get(),
-                        )
+                        navigateAuth = { stackNavigation.replaceAll(Config.Auth) }
                     )
                 )
             }
@@ -97,6 +88,6 @@ class DefaultProRootComponent(
         data object Auth : Config()
 
         @Serializable
-        data object Chat : Config()
+        data object Home : Config()
     }
 }

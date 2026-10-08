@@ -67,6 +67,9 @@ kotlin {
             implementation(projects.domain.client.chat.logic)
             implementation(projects.features.client.chat)
 
+            implementation(projects.domain.common.profile.logic)
+            implementation(projects.features.client.profile)
+
             implementation(libs.runtime)
             implementation(libs.foundation)
             implementation(libs.material3)

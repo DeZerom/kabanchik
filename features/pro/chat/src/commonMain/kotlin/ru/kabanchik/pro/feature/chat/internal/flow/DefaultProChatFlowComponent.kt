@@ -7,6 +7,9 @@ import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.value.Value
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.serialization.Serializable
 import ru.kabanchik.common.feature.imageViewer.api.ImageViewerComponent
 import ru.kabanchik.common.snackBar.api.SnackBarData
@@ -30,6 +33,15 @@ class DefaultProChatFlowComponent(
         childFactory = ::createChild,
         handleBackButton = true
     )
+
+    private val _showBottomNavigation = MutableStateFlow(true)
+    override val showBottomNavigation: StateFlow<Boolean> = _showBottomNavigation.asStateFlow()
+
+    init {
+        stack.subscribe { currentStack ->
+            _showBottomNavigation.value = currentStack.active.instance is ProChatFlowComponent.Child.List
+        }
+    }
 
     private fun createChild(config: Config, componentContext: ComponentContext): ProChatFlowComponent.Child {
         return when (config) {

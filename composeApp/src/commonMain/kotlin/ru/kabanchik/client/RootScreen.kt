@@ -17,7 +17,6 @@ import ru.kabanchik.client.feature.splash.api.ClientSplashScreen
 import ru.kabanchik.common.scaffold.ScaffoldState
 import ru.kabanchik.common.scaffold.toolbar.CommonToolbar
 import ru.kabanchik.common.snackBar.api.CommonSnackBarHost
-import ru.kabanchik.feature.client.chatDetails.api.flow.ClientChatFlowScreen
 
 @Composable
 fun RootScreen(component: RootComponent) {
@@ -40,7 +39,7 @@ fun RootScreen(component: RootComponent) {
             when (val child = it.instance) {
                 is RootComponent.Child.Splash -> ClientSplashScreen(component = child.component)
                 is RootComponent.Child.Auth -> AuthFlowScreen(component = child.component)
-                is RootComponent.Child.Chat -> ClientChatFlowScreen(component = child.component)
+                is RootComponent.Child.Home -> HomeScreen(component = child.component)
             }
         }
     }

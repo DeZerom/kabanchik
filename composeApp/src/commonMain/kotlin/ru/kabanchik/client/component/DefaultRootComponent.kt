@@ -5,8 +5,7 @@ import com.arkivanov.decompose.childContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
-import com.arkivanov.decompose.router.stack.pushNew
-import com.arkivanov.decompose.router.stack.replaceCurrent
+import com.arkivanov.decompose.router.stack.replaceAll
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.lifecycle.doOnStart
 import kotlinx.serialization.Serializable
@@ -18,8 +17,6 @@ import ru.kabanchik.client.feature.splash.api.ClientSplashComponent
 import ru.kabanchik.client.feature.splash.api.ClientSplashDependencies
 import ru.kabanchik.common.network.api.StompConnectionController
 import ru.kabanchik.common.snackBar.api.SnackBarComponent
-import ru.kabanchik.feature.client.chatDetails.api.flow.ClientChatFlowComponent
-import ru.kabanchik.feature.client.chatDetails.api.flow.ClientChatFlowDependencies
 
 class DefaultRootComponent(
     componentContext: ComponentContext
@@ -51,8 +48,8 @@ class DefaultRootComponent(
                         dependencies = ClientSplashDependencies.Factory(
                             splashInteractor = get()
                         ),
-                        navigateChatsList = { stackNavigation.pushNew(Config.Chat) },
-                        navigateAuth = { stackNavigation.pushNew(Config.Auth) }
+                        navigateChatsList = { stackNavigation.replaceAll(Config.Home) },
+                        navigateAuth = { stackNavigation.replaceAll(Config.Auth) }
                     )
                 )
             }
@@ -65,23 +62,16 @@ class DefaultRootComponent(
                             errorHandler = get()
                         ),
                         showSnackBar = { snackBarComponent.setData(it) },
-                        navigateHome = { stackNavigation.replaceCurrent(Config.Chat) }
+                        navigateHome = { stackNavigation.replaceAll(Config.Home) }
                     )
                 )
             }
-            Config.Chat -> {
-                RootComponent.Child.Chat(
-                    component = ClientChatFlowComponent.create(
+            Config.Home -> {
+                RootComponent.Child.Home(
+                    component = HomeComponent.create(
                         componentContext = context,
                         showSnackBar = { snackBarComponent.setData(it) },
-                        dependencies = ClientChatFlowDependencies.Factory(
-                            listInteractor = get(),
-                            chatDetailsInteractor = get(),
-                            userInteractor = get(),
-                            errorHandler = get(),
-                            filePicker = get(),
-                            fileOpener = get(),
-                        )
+                        navigateAuth = { stackNavigation.replaceAll(Config.Auth) }
                     )
                 )
             }
@@ -95,6 +85,6 @@ class DefaultRootComponent(
         @Serializable
         data object Auth : Config()
         @Serializable
-        data object Chat : Config()
+        data object Home : Config()
     }
 }

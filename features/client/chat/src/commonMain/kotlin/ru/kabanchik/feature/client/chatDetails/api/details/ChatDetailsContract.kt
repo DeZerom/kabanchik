@@ -1,14 +1,18 @@
 package ru.kabanchik.feature.client.chatDetails.api.details
 
+import ru.kabanchik.common.feature.chat.model.CommonPendingFile
 import ru.kabanchik.common.feature.chat.model.CommonUiMessage
+import ru.kabanchik.common.files.api.SelectedFile
 import ru.kabanchik.common.tools.textResource.TextResource
 
 class ChatDetailsContract {
     data class State(
         val login: String = "",
         val currentMessage: String = "",
+        val selectedFiles: List<CommonPendingFile> = emptyList(),
         val messages: List<CommonUiMessage> = emptyList(),
-        val isLoading: Boolean = false
+        val isLoading: Boolean = false,
+        val isSending: Boolean = false,
     ) {
         val toolbarTitle = messages
             .filterIsInstance<CommonUiMessage.Message>()
@@ -25,6 +29,9 @@ class ChatDetailsContract {
 
     sealed interface Event {
         class MessageTextChanged(val newText: String) : Event
+        class FilesSelected(val files: List<SelectedFile>) : Event
+        class FileRemoved(val fileId: String) : Event
+        class FileOpenRequested(val fileId: String) : Event
         object MessageSent : Event
     }
 

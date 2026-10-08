@@ -1,18 +1,22 @@
 package ru.kabanchik.common.features.chat.logic.details
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -20,33 +24,45 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kabanchik.features.common.chat.logic.generated.resources.Res
 import kabanchik.features.common.chat.logic.generated.resources.chat_details_operator_found
+import kotlinx.io.Buffer
+import ru.kabanchik.common.feature.chat.model.CommonPendingFile
 import ru.kabanchik.common.feature.chat.model.CommonUiMessage
+import ru.kabanchik.common.files.api.SelectedFile
 import ru.kabanchik.common.modifier.keyboardInsetsPadding
 import ru.kabanchik.common.modifier.sendMessageModifier
 import ru.kabanchik.common.tools.textResource.TextResource
 import ru.kabanchik.common.uiKit.icons.KabanchikIcons
 import ru.kabanchik.common.uiKit.icons.extensions.Send24
 import ru.kabanchik.common.uiKit.theme.KabanchikTheme
-import ru.kabanchik.common.uiKit.widgets.CommonTextInput
+
+internal const val CHAT_MESSAGES_TEST_TAG = "chat_messages"
 
 @Composable
 fun CommonChatContent(
     messages: List<CommonUiMessage>,
     currentMessageText: String,
+    selectedFiles: List<CommonPendingFile> = emptyList(),
+    isSending: Boolean = false,
     onMessageTextChanged: (String) -> Unit,
     onMessageSent: () -> Unit,
+    onFileSelectionRequested: () -> Unit = {},
+    onFileRemoved: (CommonPendingFile) -> Unit = {},
+    onImageClicked: (String) -> Unit = {},
+    onFileClicked: (String) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val listState = rememberLazyListState()
-    val initialScrollDone = remember { mutableStateOf(false) }
+    val initialScrollDone = rememberSaveable { mutableStateOf(false) }
     val density = LocalDensity.current
     val imeBottom = WindowInsets.ime.getBottom(density)
     val previousImeBottom = remember { mutableStateOf(imeBottom) }
@@ -82,8 +98,8 @@ fun CommonChatContent(
 
         val layoutInfo = listState.layoutInfo
         val lastVisibleItem = layoutInfo.visibleItemsInfo.lastOrNull()
-        val wasAtBottom = lastVisibleItem == null ||
-                lastVisibleItem.index >= layoutInfo.totalItemsCount - 2
+            ?: return@LaunchedEffect
+        val wasAtBottom = lastVisibleItem.index >= layoutInfo.totalItemsCount - 2
 
         if (wasAtBottom) {
             listState.animateScrollToItem(lastMessageIndex)
@@ -96,15 +112,20 @@ fun CommonChatContent(
     ) {
         Box(
             modifier = Modifier
-                .padding(horizontal = 16.dp)
                 .keyboardInsetsPadding()
         ) {
             LazyColumn(
-                contentPadding = PaddingValues(top = 16.dp, bottom = 88.dp),
+                contentPadding = PaddingValues(
+                    top = 16.dp,
+                    bottom = if (selectedFiles.isEmpty()) 88.dp else 168.dp,
+                ),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Bottom),
                 state = listState,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .testTag(CHAT_MESSAGES_TEST_TAG)
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp)
             ) {
                 items(
                     items = messages,
@@ -115,6 +136,8 @@ fun CommonChatContent(
                     ) {
                         CommonChatUiMessage(
                             message = message,
+                            onImageClicked = onImageClicked,
+                            onFileClicked = onFileClicked,
                             modifier = Modifier
                                 .align(message.horizontalAlignment)
                                 .then(
@@ -128,31 +151,80 @@ fun CommonChatContent(
                     }
                 }
             }
-            CommonTextInput(
-                value = currentMessageText,
-                onValueChange = onMessageTextChanged,
-                shape = RoundedCornerShape(20.dp),
-                trailingIcon = {
-                    IconButton(onClick = onMessageSent) {
+            Row(
+                verticalAlignment = Alignment.Bottom,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 16.dp)
+            ) {
+                IconButton(
+                    onClick = onFileSelectionRequested,
+                    enabled = !isSending,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Box(
+                            modifier = Modifier
+                                .size(32.dp)
+                                .background(
+                                    color = KabanchikTheme.colors.background,
+                                    shape = CircleShape
+                                )
+                        )
                         Icon(
-                            imageVector = KabanchikIcons.Send24,
+                            painter = KabanchikIcons.Plus24,
                             contentDescription = null,
                             tint = KabanchikTheme.colors.accent
                         )
                     }
-                },
-                modifier = Modifier
-                    .sendMessageModifier(onMessageSent)
-                    .onFocusChanged { focusState ->
-                        if (focusState.isFocused && imeBottom == 0) {
-                            shouldScrollOnImeOpen.value =
-                                listState.isItemVisible(messages.lastIndex)
+                }
+                CommonChatMessageInput(
+                    value = currentMessageText,
+                    onValueChange = onMessageTextChanged,
+                    selectedFiles = selectedFiles,
+                    onFileRemoved = onFileRemoved,
+                    modifier = Modifier
+                        .weight(1f)
+                        .sendMessageModifier(onMessageSent)
+                        .onFocusChanged { focusState ->
+                            if (focusState.isFocused && imeBottom == 0) {
+                                shouldScrollOnImeOpen.value =
+                                    listState.isItemVisible(messages.lastIndex)
+                            }
+                        }
+                )
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.size(48.dp)
+                ) {
+                    if (isSending) {
+                        CircularProgressIndicator(
+                            color = KabanchikTheme.colors.accent,
+                            strokeWidth = 2.dp,
+                            modifier = Modifier.size(24.dp),
+                        )
+                    } else {
+                        IconButton(onClick = onMessageSent) {
+                            Box(contentAlignment = Alignment.Center) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(32.dp)
+                                        .background(
+                                            color = KabanchikTheme.colors.background,
+                                            shape = CircleShape
+                                        )
+                                )
+                                Icon(
+                                    imageVector = KabanchikIcons.Send24,
+                                    contentDescription = null,
+                                    tint = KabanchikTheme.colors.accent
+                                )
+                            }
                         }
                     }
-                    .fillMaxWidth()
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 16.dp)
-            )
+                }
+            }
         }
     }
 }
@@ -214,6 +286,39 @@ private fun CommonChatContentDifferentDatesPreview() {
     }
 }
 
+@Preview
+@Composable
+private fun CommonChatContentWithSelectedFilesPreview() {
+    KabanchikTheme {
+        Scaffold {
+            CommonChatContent(
+                messages = ChatDetailsMock.messages,
+                currentMessageText = "Сообщение с файлами",
+                selectedFiles = ChatDetailsMock.selectedFiles,
+                onMessageTextChanged = {},
+                onMessageSent = {},
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun CommonChatContentSendingFilesPreview() {
+    KabanchikTheme {
+        Scaffold {
+            CommonChatContent(
+                messages = ChatDetailsMock.messages,
+                currentMessageText = "Отправляю документы",
+                selectedFiles = ChatDetailsMock.selectedFiles,
+                isSending = true,
+                onMessageTextChanged = {},
+                onMessageSent = {},
+            )
+        }
+    }
+}
+
 private object ChatDetailsMock {
     private val operatorFound = CommonUiMessage.SystemMessage(
         id = "operator-found",
@@ -247,6 +352,39 @@ private object ChatDetailsMock {
             time = "14:12",
             text = "Конечно. На какую дату и сколько гостей планируете?"
         )
+    )
+
+    val selectedFiles = listOf(
+        CommonPendingFile(
+            id = "preview-pdf",
+            file = SelectedFile(
+                fileName = "Договор.pdf",
+                contentType = "application/pdf",
+                size = 3_270_246,
+                previewUri = "file:///preview.pdf",
+                sourceProvider = { Buffer() },
+            )
+        ),
+        CommonPendingFile(
+            id = "preview-docx",
+            file = SelectedFile(
+                fileName = "Условия.docx",
+                contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                size = 92_160,
+                previewUri = "file:///preview.docx",
+                sourceProvider = { Buffer() },
+            )
+        ),
+        CommonPendingFile(
+            id = "preview-image",
+            file = SelectedFile(
+                fileName = "Фото.jpg",
+                contentType = "image/jpeg",
+                size = 512_000,
+                previewUri = "file:///preview.jpg",
+                sourceProvider = { Buffer() },
+            )
+        ),
     )
 
     val messagesFromDifferentDates = listOf(

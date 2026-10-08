@@ -3,6 +3,7 @@ package ru.kabanchik.feature.client.chatDetails.api.flow
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
+import ru.kabanchik.common.feature.imageViewer.api.ImageViewerComponent
 import ru.kabanchik.common.snackBar.api.SnackBarData
 import ru.kabanchik.feature.client.chatDetails.api.details.ClientChatDetailsComponent
 import ru.kabanchik.feature.client.chatDetails.api.list.ClientChatsListComponent
@@ -14,6 +15,7 @@ interface ClientChatFlowComponent {
     sealed interface Child {
         class List(val component: ClientChatsListComponent) : Child
         class Details(val component: ClientChatDetailsComponent) : Child
+        class ImageViewer(val component: ImageViewerComponent) : Child
     }
 
     companion object {

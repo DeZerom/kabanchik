@@ -6,6 +6,10 @@ interface ClientChatDetailsComponent {
     val state: StateFlow<ChatDetailsContract.State>
 
     fun messageTextChanged(newText: String)
+    fun filesSelectionRequested()
+    fun fileRemoved(fileId: String)
+    fun fileOpenRequested(fileId: String)
+    fun imageOpenRequested(imageUrl: String)
     fun messageSent()
     fun onBackClicked()
 }

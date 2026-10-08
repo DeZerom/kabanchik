@@ -1,32 +1,40 @@
 package ru.kabanchik.pro.feature.chat.internal.details
 
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 import ru.kabanchik.common.chat.model.CommonChatMessage
+import ru.kabanchik.common.domain.chat.logic.api.MaxAttachmentsPerMessage
 import ru.kabanchik.common.domain.user.logic.api.UserInteractor
 import ru.kabanchik.common.errorHandler.logic.api.ErrorHandler
-import ru.kabanchik.common.feature.chat.model.CommonUiMessage
+import ru.kabanchik.common.feature.chat.model.CommonPendingFile
+import ru.kabanchik.common.features.chat.logic.details.appendSelectedFiles
+import ru.kabanchik.common.features.chat.logic.details.chatFileOpenErrorText
+import ru.kabanchik.common.features.chat.logic.details.findFile
+import ru.kabanchik.common.features.chat.logic.details.removeSelectedFile
 import ru.kabanchik.common.features.chat.logic.details.toState
+import ru.kabanchik.common.features.chat.logic.details.upsert
+import ru.kabanchik.common.features.chat.logic.details.withLoadingFile
+import ru.kabanchik.common.files.api.FileOpener
+import ru.kabanchik.common.files.api.FileOpeningException
+import ru.kabanchik.common.files.api.SelectedFile
 import ru.kabanchik.common.store.BaseCoroutineStore
-import ru.kabanchik.common.tools.extensions.toHoursMinutes
 import ru.kabanchik.pro.domain.chat.logic.api.ProChatDetailsInteractor
 import ru.kabanchik.pro.feature.chat.api.details.ProChatDetailsContract.Event
 import ru.kabanchik.pro.feature.chat.api.details.ProChatDetailsContract.SideEffect
 import ru.kabanchik.pro.feature.chat.api.details.ProChatDetailsContract.State
-import kotlin.time.Clock
-import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
 
 internal class ProChatDetailsStore(
     private val chatDetailsInteractor: ProChatDetailsInteractor,
     private val userInteractor: UserInteractor,
     private val errorHandler: ErrorHandler,
+    private val fileOpener: FileOpener,
     private val sessionId: String,
     private val shouldReconnect: Boolean
 ) : BaseCoroutineStore<Event, State, SideEffect>() {
+    private var fileOpeningJob: Job? = null
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
         pushSideEffect(SideEffect.Error(errorHandler.handleError(throwable).defaultMessage))
     }
@@ -38,6 +46,9 @@ internal class ProChatDetailsStore(
     override fun handleEvent(event: Event) {
         when (event) {
             Event.MessageSent -> sendMessage()
+            is Event.FilesSelected -> selectFiles(event.files)
+            is Event.FileRemoved -> removeFile(event.fileId)
+            is Event.FileOpenRequested -> openFile(event.fileId)
             is Event.MessageTextChanged -> reduceState { copy(currentMessage = event.newText) }
         }
     }
@@ -47,6 +58,7 @@ internal class ProChatDetailsStore(
     }
 
     private fun initChat() {
+        listenReconnections()
         coroutineScope.launch(coroutineExceptionHandler) {
             reduceState { State(isLoading = true) }
             val login = userInteractor.getUserLogin()
@@ -67,6 +79,21 @@ internal class ProChatDetailsStore(
         }
     }
 
+    // После переподключения сокета дозагружаем сообщения, пришедшие, пока соединения не было
+    private fun listenReconnections() {
+        coroutineScope.launch {
+            chatDetailsInteractor.listenReconnections().collect {
+                try {
+                    loadMessages()
+                } catch (e: CancellationException) {
+                    throw e
+                } catch (e: Throwable) {
+                    pushSideEffect(SideEffect.Error(errorHandler.handleError(e).defaultMessage))
+                }
+            }
+        }
+    }
+
     private suspend fun reconnectIfNeeded() {
         if (shouldReconnect) {
             chatDetailsInteractor.reconnect(sessionId = sessionId)
@@ -74,14 +101,101 @@ internal class ProChatDetailsStore(
     }
 
     private fun sendMessage() {
-        if (currentState.currentMessage.isBlank()) return
+        if (currentState.isSending || currentState.currentMessage.isBlank() && currentState.selectedFiles.isEmpty()) return
 
+        reduceState { copy(isSending = true) }
         coroutineScope.launch(coroutineExceptionHandler) {
-            val message = currentState.currentMessage
-            addLocalMessage(message)
-            chatDetailsInteractor.sendMessage(sessionId = sessionId, message = message)
-            reduceState { copy(currentMessage = "") }
+            try {
+                val message = currentState.currentMessage
+                val batches = currentState.selectedFiles
+                    .chunked(MaxAttachmentsPerMessage)
+                    .ifEmpty { listOf(emptyList()) }
+
+                batches.forEachIndexed { index, batch ->
+                    val isFirstBatch = index == 0
+                    val attachmentIds = batch.map { pendingFile ->
+                        uploadFile(pendingFile)
+                    }
+
+                    chatDetailsInteractor.sendMessage(
+                        sessionId = sessionId,
+                        content = message.takeIf { isFirstBatch && it.isNotBlank() },
+                        attachmentIds = attachmentIds,
+                    )
+
+                    batch.forEach { it.file.release() }
+                    reduceState {
+                        copy(
+                            currentMessage = if (isFirstBatch && currentMessage == message) "" else currentMessage,
+                            selectedFiles = selectedFiles.filterNot { selectedFile ->
+                                batch.any { sentFile -> sentFile.id == selectedFile.id }
+                            },
+                        )
+                    }
+                }
+            } finally {
+                reduceState { copy(isSending = false) }
+            }
         }
+    }
+
+    private fun openFile(fileId: String) {
+        val file = currentState.messages.findFile(fileId) ?: return
+
+        fileOpeningJob?.cancel()
+        reduceState { copy(messages = messages.withLoadingFile(fileId)) }
+
+        val job = coroutineScope.launch {
+            try {
+                fileOpener.open(
+                    url = file.downloadUrl,
+                    fileName = file.originalName,
+                )
+            } catch (_: FileOpeningException) {
+                pushSideEffect(SideEffect.Error(chatFileOpenErrorText()))
+            }
+        }
+        fileOpeningJob = job
+        job.invokeOnCompletion {
+            if (fileOpeningJob === job) {
+                fileOpeningJob = null
+                reduceState { copy(messages = messages.withLoadingFile(fileId = null)) }
+            }
+        }
+    }
+
+    private suspend fun uploadFile(pendingFile: CommonPendingFile): String {
+        pendingFile.attachmentId?.let { return it }
+
+        val attachmentId = chatDetailsInteractor.uploadFile(
+            sessionId = sessionId,
+            fileName = pendingFile.file.fileName,
+            contentType = pendingFile.file.contentType,
+            file = pendingFile.file,
+        ).fileId
+
+        reduceState {
+            copy(
+                selectedFiles = selectedFiles.map { file ->
+                    if (file.id == pendingFile.id) file.copy(attachmentId = attachmentId) else file
+                }
+            )
+        }
+        return attachmentId
+    }
+
+    private fun selectFiles(files: List<SelectedFile>) {
+        if (currentState.isSending) {
+            files.forEach { it.release() }
+            return
+        }
+        reduceState { copy(selectedFiles = selectedFiles.appendSelectedFiles(files)) }
+    }
+
+    private fun removeFile(fileId: String) {
+        if (currentState.isSending) return
+        currentState.selectedFiles.firstOrNull { it.id == fileId }?.file?.release()
+        reduceState { copy(selectedFiles = selectedFiles.removeSelectedFile(fileId)) }
     }
 
     private fun listenMessages() {
@@ -97,26 +211,13 @@ internal class ProChatDetailsStore(
 
     private fun addMessage(message: CommonChatMessage) {
         reduceState {
-            copy(messages = messages + message.toState(currentState.login))
+            copy(messages = messages.upsert(message.toState(currentState.login)))
         }
     }
 
-    @OptIn(ExperimentalUuidApi::class)
-    private fun addLocalMessage(message: String) {
-        val time = Clock.System.now()
-            .toLocalDateTime(TimeZone.currentSystemDefault())
-            .toHoursMinutes()
-
-        reduceState {
-            copy(
-                messages = messages + CommonUiMessage.Message(
-                    id = Uuid.random().toString(),
-                    authorLogin = login,
-                    isUserAuthor = true,
-                    time = time,
-                    text = message,
-                )
-            )
-        }
+    override fun onDestroy() {
+        val files = currentState.selectedFiles
+        super.onDestroy()
+        files.forEach { it.file.release() }
     }
 }

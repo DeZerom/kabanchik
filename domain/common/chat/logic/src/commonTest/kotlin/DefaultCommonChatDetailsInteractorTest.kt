@@ -1,12 +1,19 @@
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
+import kotlinx.io.Buffer
 import mock.MockCommonChatDetailsRepository
 import mock.MockData
 import ru.kabanchik.common.chat.model.CommonChatMessage
 import ru.kabanchik.common.chat.model.CommonMessage
 import ru.kabanchik.common.domain.chat.logic.internal.DefaultCommonChatDetailsInteractor
+import ru.kabanchik.common.files.api.ReadableFile
 import kotlin.test.Test
+import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertNotEquals
+import kotlin.test.assertSame
+import kotlin.test.assertTrue
 
 class DefaultCommonChatDetailsInteractorTest {
     @Test
@@ -36,6 +43,162 @@ class DefaultCommonChatDetailsInteractorTest {
             assertEquals("session", repository.requestedMessagesSessionId)
             assertEquals(MockData.Messages.allMessages, messages.map { it.message })
             assertEquals(listOf(MockData.Messages.message1.time.date, MockData.Messages.message3.time.date), dates.map { it.date })
+        }
+    }
+
+    @Test
+    fun generatesNewClientMessageIdForEachMessage() {
+        runBlocking {
+            val repository = MockCommonChatDetailsRepository(messages = emptyList())
+            val interactor = DefaultCommonChatDetailsInteractor(detailsRepository = repository)
+
+            interactor.sendMessage(
+                sessionId = "session-id",
+                content = "First",
+                attachmentIds = emptyList(),
+            )
+            interactor.sendMessage(
+                sessionId = "session-id",
+                content = "Second",
+                attachmentIds = emptyList(),
+            )
+
+            val firstId = repository.sentMessages[0].clientMessageId
+            val secondId = repository.sentMessages[1].clientMessageId
+            assertNotEquals(firstId, secondId)
+        }
+    }
+
+    @Test
+    fun uploadsFileForRequestedSession() {
+        runBlocking {
+            val repository = MockCommonChatDetailsRepository(messages = emptyList())
+            val interactor = DefaultCommonChatDetailsInteractor(detailsRepository = repository)
+            val file = object : ReadableFile {
+                override val size: Long = 3
+                override fun openSource() = Buffer()
+            }
+
+            val attachment = interactor.uploadFile(
+                sessionId = "session-id",
+                fileName = "document.pdf",
+                contentType = "application/pdf",
+                file = file,
+            )
+
+            val request = repository.uploadedFileRequest
+            assertEquals("session-id", request?.sessionId)
+            assertEquals("document.pdf", request?.fileName)
+            assertEquals("application/pdf", request?.contentType)
+            assertSame(file, request?.file)
+            assertEquals("uploaded-file-id", attachment.fileId)
+        }
+    }
+
+    @Test
+    fun downloadsFileForRequestedSession() {
+        runBlocking {
+            val repository = MockCommonChatDetailsRepository(messages = emptyList())
+            val interactor = DefaultCommonChatDetailsInteractor(detailsRepository = repository)
+
+            val bytes = interactor.downloadFile(sessionId = "session-id", fileId = "file-id")
+
+            assertEquals("session-id", repository.downloadedFileRequest?.sessionId)
+            assertEquals("file-id", repository.downloadedFileRequest?.fileId)
+            assertContentEquals(byteArrayOf(1, 2, 3), bytes)
+        }
+    }
+
+    @Test
+    fun sendsAttachmentsWithoutText() {
+        runBlocking {
+            val repository = MockCommonChatDetailsRepository(messages = emptyList())
+            val interactor = DefaultCommonChatDetailsInteractor(detailsRepository = repository)
+
+            interactor.sendMessage(
+                sessionId = "session-id",
+                content = null,
+                attachmentIds = listOf("file-id"),
+            )
+
+            assertEquals(null, repository.sentMessages.single().content)
+            assertEquals(listOf("file-id"), repository.sentMessages.single().attachmentIds)
+        }
+    }
+
+    @Test
+    fun sendsExactNumberOfMessagesForBoundaryTextLengths() {
+        runBlocking {
+            val expectedMessagesCount = mapOf(4095 to 1, 4096 to 1, 4097 to 2, 8192 to 2)
+
+            expectedMessagesCount.forEach { (length, expectedCount) ->
+                val repository = MockCommonChatDetailsRepository(messages = emptyList())
+                val interactor = DefaultCommonChatDetailsInteractor(detailsRepository = repository)
+                val text = "a".repeat(length)
+
+                interactor.sendMessage(
+                    sessionId = "session-id",
+                    content = text,
+                    attachmentIds = listOf("file-id"),
+                )
+
+                assertEquals(expectedCount, repository.sentMessages.size, "length = $length")
+                assertEquals(text, repository.sentMessages.joinToString(separator = "") { it.content.orEmpty() })
+            }
+        }
+    }
+
+    @Test
+    fun attachesFilesToLastTextPart() {
+        runBlocking {
+            val repository = MockCommonChatDetailsRepository(messages = emptyList())
+            val interactor = DefaultCommonChatDetailsInteractor(detailsRepository = repository)
+
+            interactor.sendMessage(
+                sessionId = "session-id",
+                content = "a".repeat(4096 * 2 + 1),
+                attachmentIds = listOf("first-id", "second-id"),
+            )
+
+            assertEquals(
+                listOf(emptyList(), emptyList(), listOf("first-id", "second-id")),
+                repository.sentMessages.map { it.attachmentIds },
+            )
+        }
+    }
+
+    @Test
+    fun sendsShortTextWithFilesInSingleMessage() {
+        runBlocking {
+            val repository = MockCommonChatDetailsRepository(messages = emptyList())
+            val interactor = DefaultCommonChatDetailsInteractor(detailsRepository = repository)
+
+            interactor.sendMessage(
+                sessionId = "session-id",
+                content = "text",
+                attachmentIds = listOf("file-id"),
+            )
+
+            val message = repository.sentMessages.single()
+            assertEquals("text", message.content)
+            assertEquals(listOf("file-id"), message.attachmentIds)
+        }
+    }
+
+    @Test
+    fun rejectsMoreAttachmentsThanAllowedPerMessage() {
+        runBlocking {
+            val repository = MockCommonChatDetailsRepository(messages = emptyList())
+            val interactor = DefaultCommonChatDetailsInteractor(detailsRepository = repository)
+
+            assertFailsWith<IllegalArgumentException> {
+                interactor.sendMessage(
+                    sessionId = "session-id",
+                    content = "text",
+                    attachmentIds = List(11) { "file-$it" },
+                )
+            }
+            assertTrue(repository.sentMessages.isEmpty())
         }
     }
 

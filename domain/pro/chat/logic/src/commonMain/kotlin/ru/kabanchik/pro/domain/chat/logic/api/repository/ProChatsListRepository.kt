@@ -6,6 +6,7 @@ import ru.kabanchik.pro.domain.chatDetails.model.ProIncoming
 
 interface ProChatsListRepository {
     suspend fun register()
+    suspend fun listenReconnections(): Flow<Unit>
     suspend fun listenIncoming(): Flow<ProIncoming>
     suspend fun acceptChat(sessionId: String)
     suspend fun listenSession(): Flow<CommonSessionMessage>

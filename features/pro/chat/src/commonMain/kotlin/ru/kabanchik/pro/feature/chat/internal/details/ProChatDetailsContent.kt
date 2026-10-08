@@ -10,6 +10,10 @@ internal fun ProChatDetailsContent(
     state: ProChatDetailsContract.State,
     onMessageTextChanged: (String) -> Unit,
     onMessageSent: () -> Unit,
+    onFileSelectionRequested: () -> Unit,
+    onFileRemoved: (String) -> Unit,
+    onImageClicked: (String) -> Unit,
+    onFileClicked: (String) -> Unit,
 ) {
     if (state.isLoading) {
         CommonScreenLoader()
@@ -17,7 +21,11 @@ internal fun ProChatDetailsContent(
         Chat(
             state = state,
             onMessageTextChanged = onMessageTextChanged,
-            onMessageSent = onMessageSent
+            onMessageSent = onMessageSent,
+            onFileSelectionRequested = onFileSelectionRequested,
+            onFileRemoved = onFileRemoved,
+            onImageClicked = onImageClicked,
+            onFileClicked = onFileClicked,
         )
     }
 }
@@ -26,12 +34,22 @@ internal fun ProChatDetailsContent(
 private fun Chat(
     state: ProChatDetailsContract.State,
     onMessageTextChanged: (String) -> Unit,
-    onMessageSent: () -> Unit
+    onMessageSent: () -> Unit,
+    onFileSelectionRequested: () -> Unit,
+    onFileRemoved: (String) -> Unit,
+    onImageClicked: (String) -> Unit,
+    onFileClicked: (String) -> Unit,
 ) {
     CommonChatContent(
         messages = state.messages,
         currentMessageText = state.currentMessage,
+        selectedFiles = state.selectedFiles,
+        isSending = state.isSending,
         onMessageTextChanged = onMessageTextChanged,
-        onMessageSent = onMessageSent
+        onMessageSent = onMessageSent,
+        onFileSelectionRequested = onFileSelectionRequested,
+        onFileRemoved = { onFileRemoved(it.id) },
+        onImageClicked = onImageClicked,
+        onFileClicked = onFileClicked,
     )
 }

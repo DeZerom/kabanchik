@@ -26,6 +26,9 @@ enum class CommonApiSessionStatus {
     @SerialName("OPEN")
     Open,
 
+    @SerialName("PAUSED")
+    Paused,
+
     @SerialName("CLOSED")
     Closed,
 }

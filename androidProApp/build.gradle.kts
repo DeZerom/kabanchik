@@ -43,6 +43,7 @@ dependencies {
     implementation(libs.material3.window.size)
     implementation(libs.decompose)
     implementation(libs.koin.android)
+    implementation(libs.filekit.dialogs)
 
     debugImplementation(libs.ui.tooling)
 }

@@ -24,15 +24,21 @@ kotlin {
             implementation(projects.domain.common.chat.logic)
             implementation(projects.domain.pro.chat.logic)
             implementation(projects.features.common.chat.logic)
+            implementation(projects.features.common.imageViewer)
             implementation(projects.domain.common.user.logic)
 
             implementation(projects.common.uiKit)
             implementation(projects.common.store)
             implementation(projects.common.tools)
             implementation(projects.common.errorHandler.logic)
+            implementation(projects.common.files)
 
             implementation(libs.components.resources)
             implementation(libs.kotlinx.datetime)
+        }
+        jvmTest.dependencies {
+            implementation(libs.kotlin.test)
+            implementation(libs.kotlinx.coroutines.test)
         }
     }
 }

@@ -7,6 +7,7 @@ import ru.kabanchik.common.chat.model.CommonSessionMessage
 
 interface ProChatsListInteractor {
     suspend fun connect()
+    suspend fun listenReconnections(): Flow<Unit>
     suspend fun getChats(): List<CommonChatSummary>
     suspend fun listenMessages(): Flow<CommonMessage>
     suspend fun requestChat(): CommonSessionMessage

@@ -30,7 +30,15 @@ kotlin {
             implementation(projects.common.errorHandler.logic)
 
             implementation(libs.components.resources)
+            implementation(libs.coil.compose)
             implementation(libs.kotlinx.datetime)
+        }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+        }
+        jvmTest.dependencies {
+            implementation(compose.desktop.currentOs)
+            implementation(libs.ui.test.junit4)
         }
     }
 }

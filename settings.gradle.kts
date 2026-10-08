@@ -47,6 +47,7 @@ include(":common:store")
 include(":common:tools")
 include(":common:data-store")
 include(":common:error-handler:logic")
+include(":common:files")
 
 // common
 include(":data:common:token:logic")
@@ -68,6 +69,7 @@ include(":domain:common:chat:logic")
 include(":domain:common:chat:model")
 include(":features:common:chat:logic")
 include(":features:common:chat:model")
+include(":features:common:image-viewer")
 
 // client
 include(":domain:client:splash:logic")

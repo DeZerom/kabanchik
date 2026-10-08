@@ -48,6 +48,8 @@ private class RecordingProChatsListRepository : ProChatsListRepository {
         calls += "register"
     }
 
+    override suspend fun listenReconnections(): Flow<Unit> = emptyFlow()
+
     override suspend fun listenIncoming(): Flow<ProIncoming> {
         calls += "listenIncoming"
         return flowOf(ProIncoming(sessionId = "session-id", clientLogin = "user_77"))
@@ -73,6 +75,8 @@ private class RecordingProChatsListRepository : ProChatsListRepository {
 
 private class StubCommonChatsListInteractor : CommonChatsListInteractor {
     override suspend fun connect() = Unit
+
+    override suspend fun listenReconnections(): Flow<Unit> = emptyFlow()
 
     override suspend fun getChats(): List<CommonChatSummary> = emptyList()
 

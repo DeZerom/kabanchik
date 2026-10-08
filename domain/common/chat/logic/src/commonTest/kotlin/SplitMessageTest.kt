@@ -108,4 +108,26 @@ class SplitMessageTest {
             assertEquals(trimmedMessage, parts.joinToString(separator = ""))
         }
     }
+
+    @Test
+    fun splitsBoundaryLengthsIntoExpectedPartsCount() {
+        val expectedPartsCount = mapOf(
+            4095 to 1,
+            4096 to 1,
+            4097 to 2,
+            8191 to 2,
+            8192 to 2,
+            8193 to 3,
+        )
+
+        expectedPartsCount.forEach { (length, expectedCount) ->
+            val message = "a".repeat(length)
+
+            val parts = splitAndTrimMessage(message)
+
+            assertEquals(expectedCount, parts.size, "length = $length")
+            assertTrue(parts.all { it.isNotEmpty() && it.length <= 4096 }, "length = $length")
+            assertEquals(message, parts.joinToString(separator = ""), "length = $length")
+        }
+    }
 }

@@ -21,18 +21,25 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            implementation(projects.domain.common.chat.logic)
             implementation(projects.domain.client.chat.logic)
             implementation(projects.domain.common.user.logic)
             implementation(projects.domain.common.chat.model)
             implementation(projects.features.common.chat.logic)
+            implementation(projects.features.common.imageViewer)
 
             implementation(projects.common.uiKit)
             implementation(projects.common.store)
             implementation(projects.common.tools)
             implementation(projects.common.errorHandler.logic)
+            implementation(projects.common.files)
 
             implementation(libs.components.resources)
             implementation(libs.kotlinx.datetime)
+        }
+        jvmTest.dependencies {
+            implementation(libs.kotlin.test)
+            implementation(libs.kotlinx.coroutines.test)
         }
     }
 }

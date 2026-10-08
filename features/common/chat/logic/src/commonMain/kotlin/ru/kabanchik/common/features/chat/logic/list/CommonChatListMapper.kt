@@ -17,27 +17,31 @@ fun CommonChatSummary.toUiChatItem(): CommonUiChatItem {
     )
 }
 
-fun List<CommonUiChatItem>.updateWithMessage(message: CommonMessage): List<CommonUiChatItem> {
+fun List<CommonUiChatItem>.updateWithMessage(
+    message: CommonMessage,
+    currentUserLogin: String,
+): List<CommonUiChatItem> {
     val existingItem = firstOrNull { it.id == message.sessionId }
+    val isIncomingMessage = !message.isUserAuthor(currentUserLogin)
     val updatedItem = existingItem?.copy(
         title = existingItem.title.ifEmpty {
             message.text.takeIf { message.type == CommonMessageType.Text }.orEmpty()
         },
         lastUpdate = message.time.toChatListLastUpdateText(),
         lastMessage = message.text,
-        hasUnread = true
-    ) ?: message.toUiChatItem()
+        hasUnread = existingItem.hasUnread || isIncomingMessage
+    ) ?: message.toUiChatItem(hasUnread = isIncomingMessage)
 
     return listOf(updatedItem) + filterNot { it.id == message.sessionId }
 }
 
-private fun CommonMessage.toUiChatItem(): CommonUiChatItem {
+private fun CommonMessage.toUiChatItem(hasUnread: Boolean): CommonUiChatItem {
     return CommonUiChatItem(
         id = sessionId,
         title = text.takeIf { type == CommonMessageType.Text }.orEmpty(),
         lastUpdate = time.toChatListLastUpdateText(),
         lastMessage = text,
-        hasUnread = true,
+        hasUnread = hasUnread,
         otherPersonName = authorLogin
     )
 }

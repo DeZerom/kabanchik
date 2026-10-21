@@ -60,6 +60,13 @@ kotlin {
             implementation(projects.domain.pro.chat.logic)
             implementation(projects.features.pro.chat)
 
+            implementation(projects.domain.common.profile.logic)
+            implementation(projects.features.pro.profile)
+
+            implementation(projects.domain.pro.shift.logic)
+            implementation(projects.data.pro.shift.logic)
+            implementation(projects.features.pro.shift)
+
             implementation(projects.common.uiKit)
             implementation(projects.common.network)
             implementation(projects.common.dataStore)
@@ -78,6 +85,8 @@ kotlin {
             implementation(libs.decompose)
             implementation(libs.decompose.extensionsCompose)
             implementation(libs.essenty)
+            implementation(libs.essenty.coroutines)
+            implementation(libs.shivathapaa.logger)
 
             implementation(libs.androidx.datastore)
             implementation(libs.androidx.datastore.preferences)

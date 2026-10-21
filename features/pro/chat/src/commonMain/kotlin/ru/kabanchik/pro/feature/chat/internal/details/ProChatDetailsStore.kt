@@ -4,6 +4,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import ru.kabanchik.common.chat.model.CommonChatMessage
 import ru.kabanchik.common.domain.chat.logic.api.MaxAttachmentsPerMessage
@@ -59,6 +60,7 @@ internal class ProChatDetailsStore(
 
     private fun initChat() {
         listenReconnections()
+        listenPaused()
         coroutineScope.launch(coroutineExceptionHandler) {
             reduceState { State(isLoading = true) }
             val login = userInteractor.getUserLogin()
@@ -206,6 +208,14 @@ internal class ProChatDetailsStore(
                 }.collect {
                     addMessage(it)
                 }
+        }
+    }
+
+    // Оператор завершил смену (возможно, на другом устройстве): чат снят с него и передан в очередь
+    private fun listenPaused() {
+        coroutineScope.launch(coroutineExceptionHandler) {
+            chatDetailsInteractor.listenPaused(sessionId = sessionId).first()
+            pushSideEffect(SideEffect.ChatPaused)
         }
     }
 

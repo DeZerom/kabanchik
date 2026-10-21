@@ -11,6 +11,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -112,6 +113,19 @@ internal class DefaultMessagesStompSource(
         if (result is ConnectionState.Disconnected) {
             throw checkNotNull(result.error)
         }
+    }
+
+    override suspend fun disconnect() {
+        val job = mutex.withLock {
+            connectionJob.also { connectionJob = null }
+        } ?: return
+
+        loggerD("Disconnect")
+        job.cancelAndJoin()
+        // Запрос, оставшийся от прошлой сессии, не должен сразу запустить новое подключение
+        reconnectRequests.tryReceive()
+        isFirstAttempt = true
+        connectionState.value = ConnectionState.Disconnected(error = null)
     }
 
     override fun onAppForeground() {
@@ -239,9 +253,13 @@ internal class DefaultMessagesStompSource(
             val error = try {
                 val session = openSession()
                 failedAttempts = 0
-                val cause = session.closed.await()
+                // finally: при disconnect() цикл отменяется, и сессию нужно закрыть явно
+                val cause = try {
+                    session.closed.await()
+                } finally {
+                    session.close()
+                }
                 loggerE("Connection lost", cause)
-                session.close()
                 cause
             } catch (e: CancellationException) {
                 throw e
@@ -270,15 +288,16 @@ internal class DefaultMessagesStompSource(
             scope = CoroutineScope(SupervisorJob(scope.coroutineContext.job) + Dispatchers.Default)
         )
 
-        mutex.withLock {
-            try {
+        // Ошибка подписки или отмена через disconnect() не должны оставить открытый сокет
+        try {
+            mutex.withLock {
                 subscriptions.values.forEach { it.subscribe(session) }
-            } catch (e: Throwable) {
-                session.close()
-                throw e
+                connectionState.value = ConnectionState.Connected(session)
+                loggerD("Connected, subscriptions: ${subscriptions.keys}")
             }
-            connectionState.value = ConnectionState.Connected(session)
-            loggerD("Connected, subscriptions: ${subscriptions.keys}")
+        } catch (e: Throwable) {
+            session.close()
+            throw e
         }
 
         if (isReconnection) {

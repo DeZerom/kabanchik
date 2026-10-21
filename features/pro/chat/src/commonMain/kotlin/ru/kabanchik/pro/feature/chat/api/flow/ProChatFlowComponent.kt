@@ -3,11 +3,17 @@ package ru.kabanchik.pro.feature.chat.api.flow
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
+import kotlinx.coroutines.flow.StateFlow
 import ru.kabanchik.common.feature.imageViewer.api.ImageViewerComponent
 import ru.kabanchik.common.snackBar.api.SnackBarData
 
 interface ProChatFlowComponent {
     val stack: Value<ChildStack<*, Child>>
+
+    /**
+     * Нижняя навигация показывается только на списке чатов.
+     */
+    val showBottomNavigation: StateFlow<Boolean>
 
     sealed interface Child {
         class List(val component: ru.kabanchik.pro.feature.chat.api.list.ProChatsListComponent) : Child

@@ -4,8 +4,8 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.post
-import ru.kabanchik.pro.data.chat.logic.api.ProShiftRestSource
-import ru.kabanchik.pro.data.chatDetails.model.ProApiShift
+import ru.kabanchik.pro.data.shift.logic.api.ProShiftRestSource
+import ru.kabanchik.pro.data.shift.model.ProApiShift
 
 internal class DefaultProShiftRestSource(
     private val httpClient: HttpClient

@@ -44,6 +44,7 @@ kotlin {
             implementation(projects.common.network)
             implementation(projects.common.dataStore)
             implementation(projects.common.errorHandler.logic)
+            implementation(projects.common.tools)
             implementation(projects.common.files)
 
             implementation(projects.data.common.token.logic)
@@ -81,6 +82,8 @@ kotlin {
             implementation(libs.decompose)
             implementation(libs.decompose.extensionsCompose)
             implementation(libs.essenty)
+            implementation(libs.essenty.coroutines)
+            implementation(libs.shivathapaa.logger)
 
             implementation(libs.androidx.datastore)
             implementation(libs.androidx.datastore.preferences)

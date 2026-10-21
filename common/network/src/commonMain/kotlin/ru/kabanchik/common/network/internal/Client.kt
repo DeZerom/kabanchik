@@ -3,7 +3,9 @@ package ru.kabanchik.common.network.internal
 import dev.shivathapaa.logger.api.loggerD
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.HttpResponseValidator
 import io.ktor.client.plugins.HttpTimeout
+import io.ktor.client.plugins.ResponseException
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
@@ -40,10 +42,20 @@ private val AuthPaths = setOf(
 )
 
 internal fun createRestClient(
-    tokenRepository: CommonAuthTokenRepository
+    tokenRepository: CommonAuthTokenRepository,
+    sessionExpirationNotifier: DefaultSessionExpirationNotifier
 ): HttpClient {
     return HttpClient(CIO) {
         expectSuccess = true
+        HttpResponseValidator {
+            handleResponseExceptionWithRequest { cause, request ->
+                val response = (cause as? ResponseException)?.response ?: return@handleResponseExceptionWithRequest
+                sessionExpirationNotifier.onResponseError(
+                    statusCode = response.status.value,
+                    path = request.url.encodedPath
+                )
+            }
+        }
 
         defaultRequest {
             url("$BackendBaseUrl/")

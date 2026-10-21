@@ -7,7 +7,12 @@ import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.replaceAll
 import com.arkivanov.decompose.value.Value
+import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import com.arkivanov.essenty.lifecycle.doOnStart
+import dev.shivathapaa.logger.api.loggerE
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.serialization.Serializable
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
@@ -15,12 +20,17 @@ import ru.kabanchik.client.feature.auth.api.flow.AuthFlowComponent
 import ru.kabanchik.client.feature.auth.api.flow.AuthFlowDependencies
 import ru.kabanchik.client.feature.splash.api.ClientSplashComponent
 import ru.kabanchik.client.feature.splash.api.ClientSplashDependencies
+import ru.kabanchik.common.domain.profile.logic.api.CommonProfileInteractor
+import ru.kabanchik.common.errorHandler.logic.api.ErrorType
+import ru.kabanchik.common.network.api.SessionExpirationNotifier
 import ru.kabanchik.common.network.api.StompConnectionController
 import ru.kabanchik.common.snackBar.api.SnackBarComponent
+import ru.kabanchik.common.snackBar.api.SnackBarData
 
 class DefaultRootComponent(
     componentContext: ComponentContext
 ) : RootComponent, ComponentContext by componentContext, KoinComponent {
+    private val coroutineScope = coroutineScope()
     private val stackNavigation = StackNavigation<Config>()
     override val stack: Value<ChildStack<*, RootComponent.Child>> = childStack(
         source = stackNavigation,
@@ -37,6 +47,28 @@ class DefaultRootComponent(
         // На Android сокет рвется, пока приложение свернуто: при возврате переподключаемся сразу
         val connectionController = get<StompConnectionController>()
         lifecycle.doOnStart { connectionController.onAppForeground() }
+        observeSessionExpiration()
+    }
+
+    // Сервер отклонил токен: чистим данные пользователя и отправляем на авторизацию
+    private fun observeSessionExpiration() {
+        val profileInteractor = get<CommonProfileInteractor>()
+        get<SessionExpirationNotifier>().sessionExpired.onEach {
+            when (stack.value.active.configuration) {
+                Config.Splash, Config.Auth -> return@onEach
+                else -> Unit
+            }
+
+            try {
+                profileInteractor.logout()
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Throwable) {
+                loggerE("Logout after session expiration failed", e)
+            }
+            stackNavigation.replaceAll(Config.Auth)
+            snackBarComponent.setData(SnackBarData.Error(ErrorType.SessionExpired.defaultMessage))
+        }.launchIn(coroutineScope)
     }
 
     private fun createChild(config: Config, context: ComponentContext): RootComponent.Child {

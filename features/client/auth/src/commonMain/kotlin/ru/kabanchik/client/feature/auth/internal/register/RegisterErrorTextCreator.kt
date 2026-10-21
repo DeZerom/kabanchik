@@ -8,6 +8,6 @@ import ru.kabanchik.common.tools.textResource.TextResource
 internal fun createErrorText(errorType: ErrorType): TextResource {
     return when (errorType) {
         ErrorType.BadRequest -> TextResource.Id(Res.string.auth_reg_has_acc_error)
-        ErrorType.Unauthorized, ErrorType.Unknown -> errorType.defaultMessage
+        ErrorType.Unauthorized, ErrorType.SessionExpired, ErrorType.Unknown -> errorType.defaultMessage
     }
 }

@@ -81,6 +81,8 @@ kotlin {
             implementation(libs.decompose)
             implementation(libs.decompose.extensionsCompose)
             implementation(libs.essenty)
+            implementation(libs.essenty.coroutines)
+            implementation(libs.shivathapaa.logger)
 
             implementation(libs.androidx.datastore)
             implementation(libs.androidx.datastore.preferences)

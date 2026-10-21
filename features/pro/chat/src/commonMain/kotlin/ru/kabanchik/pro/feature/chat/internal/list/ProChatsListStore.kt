@@ -77,15 +77,17 @@ class ProChatsListStore(
     // После переподключения сокета дозагружаем то, что могло прийти, пока соединения не было
     private fun listenReconnections() {
         coroutineScope.launch {
-            proChatsListInteractor.listenReconnections().collect {
-                try {
-                    loadChats()
-                } catch (e: CancellationException) {
-                    throw e
-                } catch (e: Throwable) {
-                    pushSideEffect(SideEffect.ShowError(errorHandler.handleError(e).defaultMessage))
-                }
-            }
+            proChatsListInteractor.listenReconnections().collect { reloadChats() }
+        }
+    }
+
+    private suspend fun reloadChats() {
+        try {
+            loadChats()
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Throwable) {
+            pushSideEffect(SideEffect.ShowError(errorHandler.handleError(e).defaultMessage))
         }
     }
 
@@ -107,6 +109,8 @@ class ProChatsListStore(
                 val session = proChatsListInteractor.requestChat()
                 reduceState { copy(isWaitingForClient = false) }
                 pushSideEffect(SideEffect.NavigateDetails(session.sessionId))
+                // Сообщения клиента пришли до принятия, поэтому сам по сообщениям чат в списке не появится
+                coroutineScope.launch { reloadChats() }
             } catch (e: CancellationException) {
                 throw e
             } catch (_: ExecutorOffShiftException) {

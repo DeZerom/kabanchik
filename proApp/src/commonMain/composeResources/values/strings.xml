@@ -2,4 +2,5 @@
 <resources>
     <string name="home_tab_chats">Чаты</string>
     <string name="home_tab_profile">Профиль</string>
+    <string name="home_shift_ended">Смена завершена</string>
 </resources>

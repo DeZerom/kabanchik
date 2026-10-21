@@ -19,7 +19,7 @@ import ru.kabanchik.common.network.internal.createRestClient
 import ru.kabanchik.common.network.internal.ws.DefaultMessagesStompSource
 import ru.kabanchik.pro.data.auth.logic.api.sources.ProAuthApi
 import ru.kabanchik.pro.data.chat.logic.api.ProMessagesStompSource
-import ru.kabanchik.pro.data.chat.logic.api.ProShiftRestSource
+import ru.kabanchik.pro.data.shift.logic.api.ProShiftRestSource
 
 object CommonNetworkModule {
     val module = module {

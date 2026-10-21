@@ -10,5 +10,15 @@ interface ProChatsListInteractor {
     suspend fun listenReconnections(): Flow<Unit>
     suspend fun getChats(): List<CommonChatSummary>
     suspend fun listenMessages(): Flow<CommonMessage>
+
+    /**
+     * Ждет заявку и принимает ее. Заявки, которые успел принять другой оператор, пропускает.
+     * Бросает [ExecutorOffShiftException], если оператор вне смены.
+     */
     suspend fun requestChat(): CommonSessionMessage
+
+    /**
+     * `sessionId` чатов, которые поставили на паузу и сняли с оператора.
+     */
+    suspend fun listenPausedChats(): Flow<String>
 }

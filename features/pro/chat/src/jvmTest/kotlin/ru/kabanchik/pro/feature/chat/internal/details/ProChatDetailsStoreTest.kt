@@ -3,6 +3,8 @@ package ru.kabanchik.pro.feature.chat.internal.details
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
@@ -18,9 +20,11 @@ import ru.kabanchik.common.chat.model.CommonMessageType
 import ru.kabanchik.common.features.chat.logic.details.findFile
 import ru.kabanchik.common.files.api.SelectedFile
 import ru.kabanchik.pro.feature.chat.api.details.ProChatDetailsContract.Event
+import ru.kabanchik.pro.feature.chat.api.details.ProChatDetailsContract.SideEffect
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -107,6 +111,34 @@ class ProChatDetailsStoreTest {
             advanceUntilIdle()
             assertFalse(store.currentState.isSending)
             assertTrue(store.currentState.selectedFiles.isEmpty())
+            store.onDestroy()
+        } finally {
+            Dispatchers.resetMain()
+        }
+    }
+
+    @Test
+    fun closesChatWhenItIsPaused() = runTest {
+        Dispatchers.setMain(StandardTestDispatcher(testScheduler))
+        try {
+            val paused = MutableSharedFlow<Unit>()
+            val store = ProChatDetailsStore(
+                chatDetailsInteractor = FakeProChatDetailsInteractor(
+                    upload = { attachment() },
+                    paused = paused,
+                ),
+                userInteractor = ProFakeUserInteractor,
+                errorHandler = ProFakeErrorHandler,
+                fileOpener = ProFakeFileOpener(),
+                sessionId = "session-id",
+                shouldReconnect = false,
+            )
+            runCurrent()
+
+            paused.emit(Unit)
+            runCurrent()
+
+            assertIs<SideEffect.ChatPaused>(store.sideEffect.first())
             store.onDestroy()
         } finally {
             Dispatchers.resetMain()

@@ -7,7 +7,9 @@ import ru.kabanchik.pro.feature.profile.internal.DefaultProProfileComponent
 
 interface ProProfileComponent {
     val state: StateFlow<ProProfileContract.State>
-    fun onStartShiftClicked()
+    fun onEndShiftClicked()
+    fun onEndShiftConfirmed()
+    fun onEndShiftDismissed()
     fun onLogoutClicked()
     fun onLogoutConfirmed()
     fun onLogoutDismissed()

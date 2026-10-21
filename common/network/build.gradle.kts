@@ -43,6 +43,7 @@ kotlin {
             implementation(projects.data.common.chat.logic)
             implementation(projects.data.client.chat.logic)
             implementation(projects.data.pro.chat.logic)
+            implementation(projects.data.pro.shift.logic)
         }
         jvmMain.dependencies {
             implementation(libs.logback)

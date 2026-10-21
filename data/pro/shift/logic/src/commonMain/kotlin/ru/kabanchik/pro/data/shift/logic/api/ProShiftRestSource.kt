@@ -1,6 +1,6 @@
-package ru.kabanchik.pro.data.chat.logic.api
+package ru.kabanchik.pro.data.shift.logic.api
 
-import ru.kabanchik.pro.data.chatDetails.model.ProApiShift
+import ru.kabanchik.pro.data.shift.model.ProApiShift
 
 interface ProShiftRestSource {
     suspend fun getShift(): ProApiShift

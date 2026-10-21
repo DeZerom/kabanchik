@@ -20,21 +20,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kabanchik.features.common.profile.generated.resources.Res
 import kabanchik.features.common.profile.generated.resources.profile_logout
-import kabanchik.features.common.profile.generated.resources.profile_logout_dialog_confirm
-import kabanchik.features.common.profile.generated.resources.profile_logout_dialog_dismiss
 import kabanchik.features.common.profile.generated.resources.profile_logout_dialog_text
-import kabanchik.features.common.profile.generated.resources.profile_logout_dialog_title
 import org.jetbrains.compose.resources.stringResource
 import ru.kabanchik.common.uiKit.VSpacer
 import ru.kabanchik.common.uiKit.icons.KabanchikIcons
 import ru.kabanchik.common.uiKit.theme.KabanchikTheme
 import ru.kabanchik.common.uiKit.theme.headlineSmall
 import ru.kabanchik.common.uiKit.widgets.CommonButton
-import ru.kabanchik.common.uiKit.widgets.CommonConfirmDialog
 
 /**
  * Общий экран профиля: аватар, логин, кнопка выхода и диалог подтверждения выхода.
  * Кнопки, специфичные для приложения, передаются через [additionalActions] и рисуются над кнопкой выхода.
+ * [logoutDialogText] заменяет стандартный текст диалога выхода.
  */
 @Composable
 fun CommonProfileContent(
@@ -45,6 +42,7 @@ fun CommonProfileContent(
     onLogoutConfirm: () -> Unit,
     onLogoutDismiss: () -> Unit,
     modifier: Modifier = Modifier,
+    logoutDialogText: String? = null,
     additionalActions: @Composable ColumnScope.() -> Unit = {},
 ) {
     Column(
@@ -78,14 +76,11 @@ fun CommonProfileContent(
     }
 
     if (isLogoutDialogVisible) {
-        CommonConfirmDialog(
-            title = stringResource(Res.string.profile_logout_dialog_title),
-            text = stringResource(Res.string.profile_logout_dialog_text),
-            confirmText = stringResource(Res.string.profile_logout_dialog_confirm),
-            dismissText = stringResource(Res.string.profile_logout_dialog_dismiss),
+        CommonLogoutDialog(
+            isLogoutInProgress = isLogoutInProgress,
             onConfirm = onLogoutConfirm,
             onDismiss = onLogoutDismiss,
-            isConfirmLoading = isLogoutInProgress
+            text = logoutDialogText ?: stringResource(Res.string.profile_logout_dialog_text)
         )
     }
 }

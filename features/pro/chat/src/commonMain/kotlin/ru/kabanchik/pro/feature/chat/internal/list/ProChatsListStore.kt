@@ -9,6 +9,7 @@ import ru.kabanchik.common.errorHandler.logic.api.ErrorHandler
 import ru.kabanchik.common.features.chat.logic.list.toUiChatItem
 import ru.kabanchik.common.features.chat.logic.list.updateWithMessage
 import ru.kabanchik.common.store.BaseCoroutineStore
+import ru.kabanchik.pro.domain.chat.logic.api.ExecutorOffShiftException
 import ru.kabanchik.pro.domain.chat.logic.api.ProChatsListInteractor
 import ru.kabanchik.pro.feature.chat.api.list.ProChatsListContract.Event
 import ru.kabanchik.pro.feature.chat.api.list.ProChatsListContract.SideEffect
@@ -40,6 +41,7 @@ class ProChatsListStore(
 
     private fun initChats() {
         listenReconnections()
+        listenPausedChats()
         coroutineScope.launch(coroutineExceptionHandler) {
             reduceState { copy(isLoading = true) }
 
@@ -87,15 +89,32 @@ class ProChatsListStore(
         }
     }
 
+    // Чат снят с оператора при завершении смены
+    private fun listenPausedChats() {
+        coroutineScope.launch(coroutineExceptionHandler) {
+            proChatsListInteractor.listenPausedChats().collect { sessionId ->
+                reduceState { copy(chats = chats.filterNot { it.id == sessionId }) }
+            }
+        }
+    }
+
     private fun requestChat() {
+        if (currentState.isWaitingForClient) return
+
         coroutineScope.launch {
-            runCatching {
+            try {
                 reduceState { copy(isWaitingForClient = true) }
                 val session = proChatsListInteractor.requestChat()
-                pushSideEffect(SideEffect.NavigateDetails(session.sessionId))
-            }.onFailure {
                 reduceState { copy(isWaitingForClient = false) }
-                pushSideEffect(SideEffect.ShowError(errorHandler.handleError(it).defaultMessage))
+                pushSideEffect(SideEffect.NavigateDetails(session.sessionId))
+            } catch (e: CancellationException) {
+                throw e
+            } catch (_: ExecutorOffShiftException) {
+                // Без ошибки: домашний экран сам переключится на экран выхода на смену
+                reduceState { copy(isWaitingForClient = false) }
+            } catch (e: Throwable) {
+                reduceState { copy(isWaitingForClient = false) }
+                pushSideEffect(SideEffect.ShowError(errorHandler.handleError(e).defaultMessage))
             }
         }
     }

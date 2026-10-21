@@ -3,4 +3,5 @@
     <string name="chat_list_title">Чаты</string>
     <string name="chat_list_request_client_message">Запросите первый чат и начните работу</string>
     <string name="chat_list_request_client">Запросить клиента</string>
+    <string name="chat_details_paused">Смена завершена, чат передан другому оператору</string>
 </resources>

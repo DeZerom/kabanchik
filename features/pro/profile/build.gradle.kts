@@ -22,6 +22,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.domain.common.profile.logic)
+            implementation(projects.domain.pro.shift.logic)
             implementation(projects.features.common.profile)
 
             implementation(projects.common.uiKit)

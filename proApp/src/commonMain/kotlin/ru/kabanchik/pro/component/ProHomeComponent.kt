@@ -33,12 +33,14 @@ interface ProHomeComponent {
         fun create(
             componentContext: ComponentContext,
             showSnackBar: (SnackBarData) -> Unit,
-            navigateAuth: () -> Unit
+            navigateAuth: () -> Unit,
+            navigateShiftGate: () -> Unit
         ): ProHomeComponent {
             return DefaultProHomeComponent(
                 componentContext = componentContext,
                 showSnackBar = showSnackBar,
-                navigateAuth = navigateAuth
+                navigateAuth = navigateAuth,
+                navigateShiftGate = navigateShiftGate
             )
         }
     }

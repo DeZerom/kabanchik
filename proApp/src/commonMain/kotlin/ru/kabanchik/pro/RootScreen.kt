@@ -15,6 +15,7 @@ import ru.kabanchik.common.scaffold.toolbar.CommonToolbar
 import ru.kabanchik.common.snackBar.api.CommonSnackBarHost
 import ru.kabanchik.pro.component.ProRootComponent
 import ru.kabanchik.pro.feature.auth.api.ProAuthScreen
+import ru.kabanchik.pro.feature.shift.api.ProShiftGateScreen
 import ru.kabanchik.pro.feature.splash.api.ProSplashScreen
 
 @Composable
@@ -37,6 +38,7 @@ fun RootScreen(component: ProRootComponent) {
             when (val child = it.instance) {
                 is ProRootComponent.Child.Splash -> ProSplashScreen(component = child.component)
                 is ProRootComponent.Child.Auth -> ProAuthScreen(component = child.component)
+                is ProRootComponent.Child.ShiftGate -> ProShiftGateScreen(component = child.component)
                 is ProRootComponent.Child.Home -> HomeScreen(component = child.component)
             }
         }

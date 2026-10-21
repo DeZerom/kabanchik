@@ -15,8 +15,10 @@ import ru.kabanchik.common.files.api.di.CommonFilesModule
 import ru.kabanchik.common.network.api.di.CommonNetworkModule
 import ru.kabanchik.pro.data.auth.logic.api.di.DataProAuthModule
 import ru.kabanchik.pro.data.chat.logic.api.di.DataProChatDetailsModule
+import ru.kabanchik.pro.data.shift.logic.api.di.DataProShiftModule
 import ru.kabanchik.pro.domain.auth.logic.api.di.DomainProAuthDiModule
 import ru.kabanchik.pro.domain.chat.logic.api.di.DomainProChatDetailsModule
+import ru.kabanchik.pro.domain.shift.logic.api.di.DomainProShiftModule
 import ru.kabanchik.pro.domain.splash.logic.api.di.DomainProSplashModule
 
 expect val platformModules: List<Module>
@@ -36,7 +38,8 @@ private val domainModules = listOf(
     DomainCommonUserModule.module,
     DomainProChatDetailsModule.module,
     DomainCommonChatModule.module,
-    DomainCommonProfileModule.module
+    DomainCommonProfileModule.module,
+    DomainProShiftModule.module
 )
 
 private val dataModules = listOf(
@@ -44,7 +47,8 @@ private val dataModules = listOf(
     DataCommonTokenModule.module,
     DataCommonUserModule.module,
     DataProChatDetailsModule.module,
-    DataCommonChatModule.module
+    DataCommonChatModule.module,
+    DataProShiftModule.module
 )
 
 fun proAppModules(): List<Module> {

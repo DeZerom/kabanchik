@@ -22,8 +22,11 @@ import ru.kabanchik.common.network.api.SessionExpirationNotifier
 import ru.kabanchik.common.network.api.StompConnectionController
 import ru.kabanchik.common.snackBar.api.SnackBarComponent
 import ru.kabanchik.common.snackBar.api.SnackBarData.Error
+import ru.kabanchik.pro.domain.shift.logic.api.ProShiftInteractor
 import ru.kabanchik.pro.feature.auth.api.ProAuthComponent
 import ru.kabanchik.pro.feature.auth.api.ProAuthDependencies.Factory
+import ru.kabanchik.pro.feature.shift.api.ProShiftGateComponent
+import ru.kabanchik.pro.feature.shift.api.ProShiftGateDependencies
 import ru.kabanchik.pro.feature.splash.api.ProSplashComponent
 import ru.kabanchik.pro.feature.splash.api.ProSplashDependencies
 
@@ -53,6 +56,7 @@ class DefaultProRootComponent(
     // Сервер отклонил токен: чистим данные пользователя и отправляем на авторизацию
     private fun observeSessionExpiration() {
         val profileInteractor = get<CommonProfileInteractor>()
+        val shiftInteractor = get<ProShiftInteractor>()
         get<SessionExpirationNotifier>().sessionExpired.onEach {
             when (stack.value.active.configuration) {
                 Config.Splash, Config.Auth -> return@onEach
@@ -66,6 +70,7 @@ class DefaultProRootComponent(
             } catch (e: Throwable) {
                 loggerE("Logout after session expiration failed", e)
             }
+            shiftInteractor.clear()
             stackNavigation.replaceAll(Config.Auth)
             snackBarComponent.setData(Error(ErrorType.SessionExpired.defaultMessage))
         }.launchIn(coroutineScope)
@@ -81,7 +86,7 @@ class DefaultProRootComponent(
                             splashInteractor = get()
                         ),
                         navigateAuth = { stackNavigation.replaceAll(Config.Auth) },
-                        navigateChatsList = { stackNavigation.replaceAll(Config.Home) }
+                        navigateChatsList = { stackNavigation.replaceAll(Config.ShiftGate) }
                     )
                 )
             }
@@ -93,8 +98,22 @@ class DefaultProRootComponent(
                             authInteractor = get(),
                             errorHandler = get()
                         ),
-                        onAuthorize = { stackNavigation.replaceAll(Config.Home) },
+                        onAuthorize = { stackNavigation.replaceAll(Config.ShiftGate) },
                         onError = { snackBarComponent.setData(Error(it)) },
+                    )
+                )
+            }
+            Config.ShiftGate -> {
+                ProRootComponent.Child.ShiftGate(
+                    component = ProShiftGateComponent.create(
+                        componentContext = componentContext,
+                        dependencies = ProShiftGateDependencies.Factory(
+                            shiftInteractor = get(),
+                            errorHandler = get()
+                        ),
+                        showSnackBar = { snackBarComponent.setData(it) },
+                        navigateHome = { stackNavigation.replaceAll(Config.Home) },
+                        navigateAuth = { stackNavigation.replaceAll(Config.Auth) }
                     )
                 )
             }
@@ -103,7 +122,8 @@ class DefaultProRootComponent(
                     component = ProHomeComponent.create(
                         componentContext = componentContext,
                         showSnackBar = { snackBarComponent.setData(it) },
-                        navigateAuth = { stackNavigation.replaceAll(Config.Auth) }
+                        navigateAuth = { stackNavigation.replaceAll(Config.Auth) },
+                        navigateShiftGate = { stackNavigation.replaceAll(Config.ShiftGate) }
                     )
                 )
             }
@@ -117,6 +137,9 @@ class DefaultProRootComponent(
 
         @Serializable
         data object Auth : Config()
+
+        @Serializable
+        data object ShiftGate : Config()
 
         @Serializable
         data object Home : Config()

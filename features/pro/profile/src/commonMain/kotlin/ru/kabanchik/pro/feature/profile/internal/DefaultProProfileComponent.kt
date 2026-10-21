@@ -22,6 +22,7 @@ internal class DefaultProProfileComponent(
     private val store = retainedInstance {
         ProProfileStore(
             profileInteractor = dependencies.profileInteractor,
+            shiftInteractor = dependencies.shiftInteractor,
             errorHandler = dependencies.errorHandler
         )
     }
@@ -31,8 +32,16 @@ internal class DefaultProProfileComponent(
         observeSideEffects()
     }
 
-    override fun onStartShiftClicked() {
-        // TODO: подключить старт смены, когда появится логика смен
+    override fun onEndShiftClicked() {
+        store.handleEvent(ProProfileContract.Event.EndShiftClicked)
+    }
+
+    override fun onEndShiftConfirmed() {
+        store.handleEvent(ProProfileContract.Event.EndShiftConfirmed)
+    }
+
+    override fun onEndShiftDismissed() {
+        store.handleEvent(ProProfileContract.Event.EndShiftDismissed)
     }
 
     override fun onLogoutClicked() {

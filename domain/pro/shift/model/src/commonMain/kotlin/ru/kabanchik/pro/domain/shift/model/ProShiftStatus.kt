@@ -1,4 +1,4 @@
-package ru.kabanchik.pro.domain.chatDetails.model
+package ru.kabanchik.pro.domain.shift.model
 
 enum class ProShiftStatus {
     OffShift,

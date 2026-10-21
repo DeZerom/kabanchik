@@ -23,4 +23,9 @@ interface ProChatDetailsInteractor {
     )
     suspend fun listenMessages(sessionId: String): Flow<CommonChatMessage>
     suspend fun endChat(sessionId: String)
+
+    /**
+     * Эмитит, когда чат поставили на паузу и сняли с оператора.
+     */
+    suspend fun listenPaused(sessionId: String): Flow<Unit>
 }

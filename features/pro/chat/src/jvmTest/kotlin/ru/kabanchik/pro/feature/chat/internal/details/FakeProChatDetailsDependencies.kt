@@ -15,6 +15,7 @@ internal class FakeProChatDetailsInteractor(
     private val upload: suspend (fileName: String) -> CommonAttachment,
     private val messages: List<CommonChatMessage> = emptyList(),
     private val send: suspend (SentMessage) -> Unit = {},
+    private val paused: Flow<Unit> = emptyFlow(),
 ) : ProChatDetailsInteractor {
     val uploadedFileNames = mutableListOf<String>()
     val sentMessages = mutableListOf<SentMessage>()
@@ -56,6 +57,8 @@ internal class FakeProChatDetailsInteractor(
     }
 
     override suspend fun endChat(sessionId: String): Unit = Unit
+
+    override suspend fun listenPaused(sessionId: String): Flow<Unit> = paused
 
     data class SentMessage(
         val content: String?,

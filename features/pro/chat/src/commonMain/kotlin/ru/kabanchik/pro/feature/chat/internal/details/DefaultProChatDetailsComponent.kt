@@ -3,6 +3,8 @@ package ru.kabanchik.pro.feature.chat.internal.details
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.essenty.instancekeeper.retainedInstance
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
+import kabanchik.features.pro.chat.generated.resources.Res
+import kabanchik.features.pro.chat.generated.resources.chat_details_paused
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
@@ -10,6 +12,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import ru.kabanchik.common.features.chat.logic.details.imageUrls
 import ru.kabanchik.common.snackBar.api.SnackBarData
+import ru.kabanchik.common.tools.extensions.asTextResource
 import ru.kabanchik.pro.feature.chat.api.details.ProChatDetailsComponent
 import ru.kabanchik.pro.feature.chat.api.details.ProChatDetailsContract.Event
 import ru.kabanchik.pro.feature.chat.api.details.ProChatDetailsContract.SideEffect
@@ -94,6 +97,10 @@ class DefaultProChatDetailsComponent(
             when (effect) {
                 is SideEffect.Error -> {
                     showSnackBar(SnackBarData.Error(effect.text))
+                }
+                SideEffect.ChatPaused -> {
+                    showSnackBar(SnackBarData.Error(Res.string.chat_details_paused.asTextResource()))
+                    navigateBack()
                 }
             }
         }.launchIn(coroutineScope)

@@ -37,5 +37,6 @@ class ProChatDetailsContract {
 
     sealed interface SideEffect {
         class Error(val text: TextResource) : SideEffect
+        object ChatPaused : SideEffect
     }
 }

@@ -1,4 +1,4 @@
-package ru.kabanchik.pro.data.chatDetails.model
+package ru.kabanchik.pro.data.shift.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

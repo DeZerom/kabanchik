@@ -115,7 +115,7 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "ru.kabanchik.pro"
-            packageVersion = "1.0.7"
+            packageVersion = "1.0.12"
             modules("jdk.unsupported", "jdk.security.auth")
 
             macOS {

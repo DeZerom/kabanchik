@@ -24,7 +24,11 @@ internal fun ProChatDetailsScreen(component: ru.kabanchik.pro.feature.chat.api.d
         ProChatDetailsContent(
             state = state,
             onMessageTextChanged = component::onMessageChanged,
-            onMessageSent = component::onSendClicked
+            onMessageSent = component::onSendClicked,
+            onFileSelectionRequested = component::onFileSelectionRequested,
+            onFileRemoved = component::onFileRemoved,
+            onImageClicked = component::onImageOpenRequested,
+            onFileClicked = component::onFileOpenRequested,
         )
     }
 }

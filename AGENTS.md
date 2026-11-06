@@ -57,6 +57,13 @@
 - Общие UI widgets, theme, icons, scaffold, snack bar и screen-size utilities должны находиться в `common/ui-kit`.
 - String resources для Compose-модулей лежат в `src/commonMain/composeResources`.
 
+## Бэкенд И API-Контракты
+
+- Репозиторий бэкенда: https://github.com/yjailbir/assistant-backend
+- Актуальная документация по API-контрактам: [`backend-contracts.md`](https://github.com/yjailbir/assistant-backend/blob/master/backend-contracts.md) (raw: https://raw.githubusercontent.com/yjailbir/assistant-backend/master/backend-contracts.md).
+- При добавлении или изменении сетевых запросов, API-моделей и мапперов сверяйтесь с `backend-contracts.md`.
+- Если документации недостаточно или она расходится с поведением, сверяйтесь с кодом бэкенда в этом репозитории.
+
 ## Dependency Injection
 
 - DI построен на Koin.

@@ -8,9 +8,18 @@ data class CommonMessage(
     val authorLogin: String,
     val text: String,
     val type: CommonMessageType,
+    val attachments: List<CommonAttachment> = emptyList(),
     val time: LocalDateTime
 ) {
     fun isUserAuthor(userLogin: String): Boolean {
         return authorLogin == userLogin
     }
 }
+
+data class CommonAttachment(
+    val fileId: String,
+    val originalName: String,
+    val contentType: String,
+    val size: Long,
+    val downloadUrl: String,
+)

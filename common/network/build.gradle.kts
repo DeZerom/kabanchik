@@ -27,12 +27,15 @@ kotlin {
             implementation(libs.ktor.serialization.json)
             implementation(libs.ktor.websocket)
             implementation(libs.ktor.auth)
+            implementation(libs.ktor.logging)
             implementation(libs.kotlinx.serializationJson)
             implementation(libs.krossbow.core)
             implementation(libs.krossbow.ktor)
             implementation(libs.krossbow.serialization.json)
 
             implementation(projects.domain.common.auth.logic)
+            implementation(projects.common.tools)
+            implementation(projects.common.files)
 
             implementation(projects.data.client.auth.logic)
             implementation(projects.data.pro.auth.logic)
@@ -40,9 +43,13 @@ kotlin {
             implementation(projects.data.common.chat.logic)
             implementation(projects.data.client.chat.logic)
             implementation(projects.data.pro.chat.logic)
+            implementation(projects.data.pro.shift.logic)
         }
         jvmMain.dependencies {
             implementation(libs.logback)
+        }
+        jvmTest.dependencies {
+            implementation(libs.kotlin.test)
         }
     }
 }

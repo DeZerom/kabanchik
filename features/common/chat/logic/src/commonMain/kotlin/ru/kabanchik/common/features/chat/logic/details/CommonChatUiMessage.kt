@@ -11,6 +11,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kabanchik.features.common.chat.logic.generated.resources.Res
 import kabanchik.features.common.chat.logic.generated.resources.chat_details_operator_found
+import ru.kabanchik.common.feature.chat.model.CommonUiAttachment
 import ru.kabanchik.common.feature.chat.model.CommonUiMessage
 import ru.kabanchik.common.tools.extensions.getValue
 import ru.kabanchik.common.tools.textResource.TextResource
@@ -21,6 +22,8 @@ import ru.kabanchik.common.uiKit.widgets.CommonMessageCard
 @Composable
 fun CommonChatUiMessage(
     message: CommonUiMessage,
+    onImageClicked: (String) -> Unit = {},
+    onFileClicked: (String) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     when (message) {
@@ -38,7 +41,18 @@ fun CommonChatUiMessage(
                 messageTime = message.time,
                 messageText = message.text,
                 authorLogin = message.authorLogin,
-                modifier = modifier
+                modifier = modifier,
+                attachmentsContent = message.attachments
+                    .takeIf { it.isNotEmpty() }
+                    ?.let { attachments ->
+                        {
+                            CommonChatAttachments(
+                                attachments = attachments,
+                                onImageClicked = onImageClicked,
+                                onFileClicked = onFileClicked,
+                            )
+                        }
+                    }
             )
         }
         is CommonUiMessage.SystemMessage -> {
@@ -94,6 +108,28 @@ private fun CommonChatUiUserMessagePreview() {
     }
 }
 
+@Preview
+@Composable
+private fun CommonChatUiFileMessagePreview() {
+    CommonChatUiMessagePreviewContainer {
+        CommonChatUiMessage(
+            message = CommonChatUiMessageMock.fileMessage,
+            modifier = Modifier.fillMaxWidth(),
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun CommonChatUiMixedAttachmentsMessagePreview() {
+    CommonChatUiMessagePreviewContainer {
+        CommonChatUiMessage(
+            message = CommonChatUiMessageMock.mixedAttachmentsMessage,
+            modifier = Modifier.fillMaxWidth(),
+        )
+    }
+}
+
 @Composable
 private fun CommonChatUiMessagePreviewContainer(
     content: @Composable () -> Unit
@@ -139,4 +175,62 @@ private object CommonChatUiMessageMock {
         time = "14:10",
         text = "Добрый день. Нужно уточнить детали по бронированию ресторана."
     )
+
+    val fileMessage = CommonUiMessage.Message(
+        id = "file-message",
+        authorLogin = "client",
+        isUserAuthor = true,
+        time = "14:11",
+        text = "Прикладываю документы",
+        attachments = listOf(
+            fileAttachment(
+                id = "contract",
+                name = "Договор на оказание услуг.pdf",
+                size = 3_270_246,
+            ),
+            fileAttachment(
+                id = "conditions",
+                name = "Условия.docx",
+                size = 92_160,
+            ),
+        ),
+    )
+
+    val mixedAttachmentsMessage = CommonUiMessage.Message(
+        id = "mixed-attachments-message",
+        authorLogin = "operator",
+        isUserAuthor = false,
+        time = "14:12",
+        text = "Фото и документы по заказу",
+        attachments = listOf(
+            CommonUiAttachment.File(
+                fileId = "estimate",
+                originalName = "Смета.xlsx",
+                contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                size = 184_320,
+                downloadUrl = "https://example.com/estimate.xlsx",
+            ),
+            CommonUiAttachment.Image(
+                fileId = "photo",
+                originalName = "Фото.jpg",
+                contentType = "image/jpeg",
+                size = 512_000,
+                downloadUrl = "https://example.com/photo.jpg",
+            ),
+        ),
+    )
+
+    private fun fileAttachment(
+        id: String,
+        name: String,
+        size: Long,
+    ): CommonUiAttachment.File {
+        return CommonUiAttachment.File(
+            fileId = id,
+            originalName = name,
+            contentType = "application/octet-stream",
+            size = size,
+            downloadUrl = "https://example.com/$id",
+        )
+    }
 }

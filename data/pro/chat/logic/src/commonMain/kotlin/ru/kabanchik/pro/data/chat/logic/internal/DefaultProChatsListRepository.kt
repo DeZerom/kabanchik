@@ -2,6 +2,7 @@ package ru.kabanchik.pro.data.chat.logic.internal
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import ru.kabanchik.common.chat.model.CommonChatError
 import ru.kabanchik.common.chat.model.CommonSessionMessage
 import ru.kabanchik.common.data.chat.logic.api.toDomain
 import ru.kabanchik.common.domain.chat.logic.api.repository.CommonChatsListRepository
@@ -31,5 +32,9 @@ internal class DefaultProChatsListRepository(
 
     override suspend fun listenSession(): Flow<CommonSessionMessage> {
         return stompSource.listenSession().map { it.toDomain() }
+    }
+
+    override suspend fun listenErrors(): Flow<CommonChatError> {
+        return stompSource.listenErrors().map { it.toDomain() }
     }
 }

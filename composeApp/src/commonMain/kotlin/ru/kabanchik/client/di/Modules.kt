@@ -12,9 +12,11 @@ import ru.kabanchik.common.data.user.logic.api.di.DataCommonUserModule
 import ru.kabanchik.common.datastore.api.di.CommonDataStoreModule
 import ru.kabanchik.common.domain.auth.logic.api.di.DomainCommonAuthModule
 import ru.kabanchik.common.domain.chat.logic.api.di.DomainCommonChatModule
+import ru.kabanchik.common.domain.profile.logic.api.di.DomainCommonProfileModule
 import ru.kabanchik.common.domain.splash.logic.api.di.DomainCommonSplashModule
 import ru.kabanchik.common.domain.user.logic.api.di.DomainCommonUserModule
 import ru.kabanchik.common.errorHandler.logic.api.di.CommonErrorHandlerModule
+import ru.kabanchik.common.files.api.di.CommonFilesModule
 import ru.kabanchik.common.network.api.di.CommonNetworkModule
 
 expect val platformModules: List<Module>
@@ -22,7 +24,8 @@ expect val platformModules: List<Module>
 val commonModules = listOf(
     CommonNetworkModule.module,
     CommonDataStoreModule.module,
-    CommonErrorHandlerModule.module
+    CommonErrorHandlerModule.module,
+    CommonFilesModule.module
 )
 
 val dataModules = listOf(
@@ -40,7 +43,8 @@ val domainModules = listOf(
     DomainClientAuthModule.module,
     DomainCommonUserModule.module,
     DomainCommonChatModule.module,
-    DomainClientChatDetailsModule.module
+    DomainClientChatDetailsModule.module,
+    DomainCommonProfileModule.module
 )
 
 fun clientAppModules(): List<Module> = platformModules + commonModules + domainModules + dataModules

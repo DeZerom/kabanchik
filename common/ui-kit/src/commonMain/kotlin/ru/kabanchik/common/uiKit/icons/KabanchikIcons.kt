@@ -2,9 +2,12 @@ package ru.kabanchik.common.uiKit.icons
 
 import androidx.compose.runtime.Composable
 import kabanchik.common.ui_kit.generated.resources.Res
+import kabanchik.common.ui_kit.generated.resources.chat_20px
 import kabanchik.common.ui_kit.generated.resources.check_24px
 import kabanchik.common.ui_kit.generated.resources.close_24px
+import kabanchik.common.ui_kit.generated.resources.file_16px
 import kabanchik.common.ui_kit.generated.resources.plus_24px
+import kabanchik.common.ui_kit.generated.resources.profile_80px
 import org.jetbrains.compose.resources.painterResource
 
 object KabanchikIcons {
@@ -16,4 +19,13 @@ object KabanchikIcons {
 
     val Plus24
         @Composable get() = painterResource(Res.drawable.plus_24px)
+
+    val File16
+        @Composable get() = painterResource(Res.drawable.file_16px)
+
+    val Chat20
+        @Composable get() = painterResource(Res.drawable.chat_20px)
+
+    val Profile80
+        @Composable get() = painterResource(Res.drawable.profile_80px)
 }

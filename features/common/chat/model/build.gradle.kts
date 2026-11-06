@@ -19,6 +19,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            api(projects.common.files)
             implementation(projects.common.tools)
         }
     }

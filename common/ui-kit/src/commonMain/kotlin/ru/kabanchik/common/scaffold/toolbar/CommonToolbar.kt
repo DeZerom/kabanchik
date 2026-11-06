@@ -11,6 +11,7 @@ import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import ru.kabanchik.common.tools.extensions.getValue
 import ru.kabanchik.common.tools.textResource.TextResource
@@ -47,8 +48,8 @@ private fun TitleToolbar(
     modifier: Modifier
 ) {
     TopAppBar(
-        title = { ToolbarTitle(model.title) },
-        colors = toolbarColors(),
+        title = { ToolbarTitle(model.title, model.style) },
+        colors = toolbarColors(model.style),
         modifier = modifier
     )
 }
@@ -60,7 +61,7 @@ private fun BackButtonTitleToolbar(
     modifier: Modifier
 ) {
     TopAppBar(
-        title = { ToolbarTitle(model.title) },
+        title = { ToolbarTitle(model.title, model.style) },
         navigationIcon = {
             IconButton(
                 onClick = model.onBackClicked
@@ -68,11 +69,11 @@ private fun BackButtonTitleToolbar(
                 Icon(
                     imageVector = KabanchikIcons.ArrowBack24,
                     contentDescription = null,
-                    tint = KabanchikTheme.colors.interactive
+                    tint = model.style.navigationIconColor()
                 )
             }
         },
-        colors = toolbarColors(),
+        colors = toolbarColors(model.style),
         modifier = modifier
     )
 }
@@ -84,7 +85,7 @@ private fun BackButtonTitleSubtitleToolbar(
     modifier: Modifier
 ) {
     TopAppBar(
-        title = { ToolbarTitleSubtitle(model.title, model.subtitle) },
+        title = { ToolbarTitleSubtitle(model.title, model.subtitle, model.style) },
         navigationIcon = {
             IconButton(
                 onClick = model.onBackClicked
@@ -92,21 +93,24 @@ private fun BackButtonTitleSubtitleToolbar(
                 Icon(
                     imageVector = KabanchikIcons.ArrowBack24,
                     contentDescription = null,
-                    tint = KabanchikTheme.colors.interactive
+                    tint = model.style.navigationIconColor()
                 )
             }
         },
-        colors = toolbarColors(),
+        colors = toolbarColors(model.style),
         modifier = modifier
     )
 }
 
 @Composable
-private fun ToolbarTitle(text: TextResource) {
+private fun ToolbarTitle(
+    text: TextResource,
+    style: CommonToolbarStyle,
+) {
     Text(
         text = text.getValue(),
         style = KabanchikTheme.typography.headlineLarge,
-        color = KabanchikTheme.colors.mainText,
+        color = style.titleColor(),
         maxLines = 1,
         overflow = TextOverflow.Ellipsis
     )
@@ -115,7 +119,8 @@ private fun ToolbarTitle(text: TextResource) {
 @Composable
 private fun ToolbarTitleSubtitle(
     title: TextResource,
-    subtitle: TextResource
+    subtitle: TextResource,
+    style: CommonToolbarStyle,
 ) {
     Column(
         modifier = Modifier.fillMaxWidth()
@@ -123,7 +128,7 @@ private fun ToolbarTitleSubtitle(
         Text(
             text = title.getValue(),
             style = KabanchikTheme.typography.smallTitle,
-            color = KabanchikTheme.colors.mainText,
+            color = style.titleColor(),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.fillMaxWidth()
@@ -131,7 +136,7 @@ private fun ToolbarTitleSubtitle(
         Text(
             text = subtitle.getValue(),
             style = KabanchikTheme.typography.bodyMedium,
-            color = KabanchikTheme.colors.secondaryText,
+            color = style.subtitleColor(),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.fillMaxWidth()
@@ -140,8 +145,43 @@ private fun ToolbarTitleSubtitle(
 }
 
 @Composable
-private fun toolbarColors(): TopAppBarColors {
+private fun toolbarColors(style: CommonToolbarStyle): TopAppBarColors {
     return TopAppBarDefaults.topAppBarColors(
-        containerColor = KabanchikTheme.colors.background
+        containerColor = style.containerColor(),
+        scrolledContainerColor = style.containerColor(),
     )
 }
+
+@Composable
+private fun CommonToolbarStyle.containerColor(): Color {
+    return when (this) {
+        CommonToolbarStyle.Default -> KabanchikTheme.colors.background
+        CommonToolbarStyle.Black -> Color.Black
+    }
+}
+
+@Composable
+private fun CommonToolbarStyle.navigationIconColor(): Color {
+    return when (this) {
+        CommonToolbarStyle.Default -> KabanchikTheme.colors.interactive
+        CommonToolbarStyle.Black -> Color.White
+    }
+}
+
+@Composable
+private fun CommonToolbarStyle.titleColor(): Color {
+    return when (this) {
+        CommonToolbarStyle.Default -> KabanchikTheme.colors.mainText
+        CommonToolbarStyle.Black -> Color.White
+    }
+}
+
+@Composable
+private fun CommonToolbarStyle.subtitleColor(): Color {
+    return when (this) {
+        CommonToolbarStyle.Default -> KabanchikTheme.colors.secondaryText
+        CommonToolbarStyle.Black -> Color.White.copy(alpha = BlackSubtitleAlpha)
+    }
+}
+
+private const val BlackSubtitleAlpha = 0.7f

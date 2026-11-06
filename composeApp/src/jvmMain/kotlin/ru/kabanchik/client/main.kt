@@ -7,6 +7,7 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
+import io.github.vinceglb.filekit.FileKit
 import org.koin.core.context.startKoin
 import ru.kabanchik.client.component.RootComponent
 import ru.kabanchik.client.di.clientAppModules
@@ -15,6 +16,8 @@ import javax.swing.SwingUtilities
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 fun main() {
+    FileKit.init(appId = "Kabanchik")
+
     startKoin {
         modules(clientAppModules())
     }

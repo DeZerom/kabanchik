@@ -22,8 +22,10 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.domain.common.user.logic)
             implementation(projects.domain.common.auth.logic)
+            implementation(projects.domain.common.profile.logic)
 
             implementation(projects.common.dataStore)
+            implementation(projects.data.common.chat.logic)
 
             implementation(libs.kotlinx.serializationJson)
         }

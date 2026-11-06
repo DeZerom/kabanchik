@@ -22,6 +22,7 @@ kotlin {
         commonMain.dependencies {
             api(projects.domain.pro.chat.model)
             implementation(projects.domain.common.chat.logic)
+            implementation(projects.domain.pro.shift.logic)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

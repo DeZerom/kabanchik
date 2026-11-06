@@ -1,10 +1,12 @@
 package ru.kabanchik.pro.feature.chat.api.list
 
 import ru.kabanchik.common.errorHandler.logic.api.ErrorHandler
+import ru.kabanchik.common.domain.user.logic.api.UserInteractor
 import ru.kabanchik.pro.domain.chat.logic.api.ProChatsListInteractor
 
 interface ProChatsListDependencies {
     val chatsListInteractor: ProChatsListInteractor
+    val userInteractor: UserInteractor
     val errorHandler: ErrorHandler
 
     class Factory(

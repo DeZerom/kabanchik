@@ -2,6 +2,7 @@ package ru.kabanchik.feature.client.chatDetails.api.flow
 
 import androidx.compose.runtime.Composable
 import com.arkivanov.decompose.extensions.compose.stack.Children
+import ru.kabanchik.common.feature.imageViewer.api.ImageViewerScreen
 import ru.kabanchik.feature.client.chatDetails.internal.details.ClientChatDetailsScreen
 import ru.kabanchik.feature.client.chatDetails.internal.list.ClientChatsListScreen
 
@@ -18,6 +19,9 @@ fun ClientChatFlowScreen(
             }
             is ClientChatFlowComponent.Child.List -> {
                 ClientChatsListScreen(instance.component)
+            }
+            is ClientChatFlowComponent.Child.ImageViewer -> {
+                ImageViewerScreen(instance.component)
             }
         }
     }

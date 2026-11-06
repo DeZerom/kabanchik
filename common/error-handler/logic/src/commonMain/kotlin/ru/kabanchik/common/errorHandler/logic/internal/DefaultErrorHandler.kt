@@ -11,6 +11,8 @@ internal class DefaultErrorHandler : ErrorHandler {
             when (error.response.status.value) {
                 400 -> ErrorType.BadRequest
                 401 -> ErrorType.Unauthorized
+                // chat-service отвечает 403 на истекший или невалидный токен
+                403 -> ErrorType.SessionExpired
                 else -> ErrorType.Unknown
             }
         } else {

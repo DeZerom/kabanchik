@@ -7,12 +7,17 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.datetime.LocalDate
+import ru.kabanchik.common.chat.model.CommonAttachment
 import ru.kabanchik.common.chat.model.CommonChatMessage
 import ru.kabanchik.common.chat.model.CommonMessage
 import ru.kabanchik.common.chat.model.CommonSessionStatus
 import ru.kabanchik.common.domain.chat.logic.api.CommonChatDetailsInteractor
+import ru.kabanchik.common.domain.chat.logic.api.MaxAttachmentsPerMessage
 import ru.kabanchik.common.domain.chat.logic.api.repository.CommonChatDetailsRepository
 import ru.kabanchik.common.domain.chat.logic.api.splitAndTrimMessage
+import ru.kabanchik.common.files.api.ReadableFile
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 class DefaultCommonChatDetailsInteractor(
     private val detailsRepository: CommonChatDetailsRepository
@@ -21,16 +26,52 @@ class DefaultCommonChatDetailsInteractor(
         detailsRepository.reconnect(sessionId)
     }
 
+    override suspend fun listenReconnections(): Flow<Unit> {
+        return detailsRepository.listenReconnections()
+    }
+
     override suspend fun getMessages(sessionId: String): List<CommonChatMessage> {
         return detailsRepository.getMessages(sessionId)
             .toChatMessages()
     }
 
-    override suspend fun sendMessage(sessionId: String, message: String) {
-        val messages = splitAndTrimMessage(message)
+    override suspend fun uploadFile(
+        sessionId: String,
+        fileName: String,
+        contentType: String,
+        file: ReadableFile,
+    ): CommonAttachment {
+        return detailsRepository.uploadFile(
+            sessionId = sessionId,
+            fileName = fileName,
+            contentType = contentType,
+            file = file,
+        )
+    }
 
-        messages.forEach {
-            detailsRepository.sendMessage(sessionId, it)
+    override suspend fun downloadFile(sessionId: String, fileId: String): ByteArray {
+        return detailsRepository.downloadFile(sessionId = sessionId, fileId = fileId)
+    }
+
+    @OptIn(ExperimentalUuidApi::class)
+    override suspend fun sendMessage(
+        sessionId: String,
+        content: String?,
+        attachmentIds: List<String>,
+    ) {
+        require(attachmentIds.size <= MaxAttachmentsPerMessage) {
+            "Message can contain at most $MaxAttachmentsPerMessage attachments"
+        }
+
+        val messageParts = content?.let(::splitAndTrimMessage) ?: listOf(null)
+
+        messageParts.forEachIndexed { index, part ->
+            detailsRepository.sendMessage(
+                sessionId = sessionId,
+                clientMessageId = Uuid.random().toString(),
+                content = part,
+                attachmentIds = if (index == messageParts.lastIndex) attachmentIds else emptyList(),
+            )
         }
     }
 

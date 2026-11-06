@@ -12,5 +12,6 @@ data class CommonSessionMessage(
 enum class CommonSessionStatus {
     Waiting,
     Open,
+    Paused,
     Closed,
 }

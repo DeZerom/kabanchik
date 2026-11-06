@@ -2,5 +2,6 @@
 <resources>
     <string name="error_handler_bad_request">Неверно переданы данные</string>
     <string name="error_handler_unauthorized">Не удалось авторизоваться</string>
+    <string name="error_handler_session_expired">Сессия истекла, войдите снова</string>
     <string name="error_handler_unknown">Что-то пошло не так</string>
 </resources>

@@ -21,6 +21,10 @@ internal class DefaultCommonChatsListRepository(
         stompSource.connect()
     }
 
+    override suspend fun listenReconnections(): Flow<Unit> {
+        return stompSource.listenReconnections()
+    }
+
     override suspend fun getChats(): List<CommonChatSummary> {
         return coroutineScope {
             restSource.getChats()

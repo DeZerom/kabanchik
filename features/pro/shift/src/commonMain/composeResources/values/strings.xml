@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shift_gate_toolbar_title">Смена</string>
+    <string name="shift_gate_title">Вы не на смене</string>
+    <string name="shift_gate_description">Чтобы получать заявки клиентов и работать с чатами, выйдите на смену</string>
+    <string name="shift_gate_error_title">Не удалось проверить смену</string>
+    <string name="shift_gate_error_description">Проверьте подключение к интернету и попробуйте снова</string>
+    <string name="shift_gate_start">Выйти на смену</string>
+    <string name="shift_gate_retry">Повторить</string>
+    <string name="shift_gate_logout">Выйти из аккаунта</string>
+</resources>

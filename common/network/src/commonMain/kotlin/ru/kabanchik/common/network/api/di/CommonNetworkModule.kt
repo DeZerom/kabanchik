@@ -8,19 +8,27 @@ import ru.kabanchik.client.data.auth.logic.api.sources.ClientAuthApi
 import ru.kabanchik.client.data.chat.logic.api.ClientMessagesStompSource
 import ru.kabanchik.common.data.chat.logic.api.CommonChatRestSource
 import ru.kabanchik.common.data.chat.logic.api.CommonStompSource
+import ru.kabanchik.common.network.api.SessionExpirationNotifier
+import ru.kabanchik.common.network.api.StompConnectionController
+import ru.kabanchik.common.network.internal.DefaultSessionExpirationNotifier
 import ru.kabanchik.common.network.internal.api.auth.DefaultClientAuthApi
 import ru.kabanchik.common.network.internal.api.auth.DefaultProAuthApi
 import ru.kabanchik.common.network.internal.api.chat.DefaultCommonChatRestSource
+import ru.kabanchik.common.network.internal.api.chat.DefaultProShiftRestSource
 import ru.kabanchik.common.network.internal.createRestClient
 import ru.kabanchik.common.network.internal.ws.DefaultMessagesStompSource
 import ru.kabanchik.pro.data.auth.logic.api.sources.ProAuthApi
 import ru.kabanchik.pro.data.chat.logic.api.ProMessagesStompSource
+import ru.kabanchik.pro.data.shift.logic.api.ProShiftRestSource
 
 object CommonNetworkModule {
     val module = module {
+        single { DefaultSessionExpirationNotifier() } bind SessionExpirationNotifier::class
+
         single<HttpClient> {
             createRestClient(
-                tokenRepository = get()
+                tokenRepository = get(),
+                sessionExpirationNotifier = get()
             )
         }
 
@@ -31,7 +39,8 @@ object CommonNetworkModule {
         } binds arrayOf(
             CommonStompSource::class,
             ClientMessagesStompSource::class,
-            ProMessagesStompSource::class
+            ProMessagesStompSource::class,
+            StompConnectionController::class
         )
 
         factory {
@@ -49,5 +58,10 @@ object CommonNetworkModule {
                 httpClient = get()
             )
         } bind CommonChatRestSource::class
+        factory {
+            DefaultProShiftRestSource(
+                httpClient = get()
+            )
+        } bind ProShiftRestSource::class
     }
 }

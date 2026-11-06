@@ -60,11 +60,19 @@ kotlin {
             implementation(projects.domain.pro.chat.logic)
             implementation(projects.features.pro.chat)
 
+            implementation(projects.domain.common.profile.logic)
+            implementation(projects.features.pro.profile)
+
+            implementation(projects.domain.pro.shift.logic)
+            implementation(projects.data.pro.shift.logic)
+            implementation(projects.features.pro.shift)
+
             implementation(projects.common.uiKit)
             implementation(projects.common.network)
             implementation(projects.common.dataStore)
             implementation(projects.common.tools)
             implementation(projects.common.errorHandler.logic)
+            implementation(projects.common.files)
 
             implementation(libs.runtime)
             implementation(libs.foundation)
@@ -77,6 +85,8 @@ kotlin {
             implementation(libs.decompose)
             implementation(libs.decompose.extensionsCompose)
             implementation(libs.essenty)
+            implementation(libs.essenty.coroutines)
+            implementation(libs.shivathapaa.logger)
 
             implementation(libs.androidx.datastore)
             implementation(libs.androidx.datastore.preferences)
@@ -84,6 +94,9 @@ kotlin {
             implementation(libs.kotlinx.serializationJson)
 
             implementation(libs.koin.core)
+            implementation(libs.filekit.dialogs)
+            implementation(libs.coil.compose)
+            implementation(libs.coil.network.ktor3)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -102,8 +115,8 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "ru.kabanchik.pro"
-            packageVersion = "1.0.5"
-            modules("jdk.unsupported")
+            packageVersion = "1.0.7"
+            modules("jdk.unsupported", "jdk.security.auth")
 
             macOS {
                 iconFile.set(project.file("src/jvmMain/resources/app-icon.icns"))

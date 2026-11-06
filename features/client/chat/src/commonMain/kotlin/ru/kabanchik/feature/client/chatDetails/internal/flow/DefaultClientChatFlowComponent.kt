@@ -7,7 +7,11 @@ import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.value.Value
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.serialization.Serializable
+import ru.kabanchik.common.feature.imageViewer.api.ImageViewerComponent
 import ru.kabanchik.common.snackBar.api.SnackBarData
 import ru.kabanchik.feature.client.chatDetails.api.details.ClientChatDetailsDependencies
 import ru.kabanchik.feature.client.chatDetails.api.flow.ClientChatFlowComponent
@@ -25,11 +29,20 @@ internal class DefaultClientChatFlowComponent(
     override val stackNavigation: Value<ChildStack<*, ClientChatFlowComponent.Child>> = childStack(
         source = stack,
         serializer = Config.serializer(),
-        initialStack = { listOf(Config.List) },
+        initialStack = { listOf(Config.ChatsList) },
         childFactory = ::createChild,
         handleBackButton = true
-    ) 
-    
+    )
+
+    private val _showBottomNavigation = MutableStateFlow(true)
+    override val showBottomNavigation: StateFlow<Boolean> = _showBottomNavigation.asStateFlow()
+
+    init {
+        stackNavigation.subscribe { currentStack ->
+            _showBottomNavigation.value = currentStack.active.instance is ClientChatFlowComponent.Child.List
+        }
+    }
+
     private fun createChild(config: Config, componentContext: ComponentContext): ClientChatFlowComponent.Child {
         return when (config) {
             is Config.Details -> {
@@ -39,12 +52,20 @@ internal class DefaultClientChatFlowComponent(
                         dependencies = ClientChatDetailsDependencies.Factory(dependencies),
                         showSnackBar = showSnackBar,
                         navigateBack = { stack.pop() },
+                        navigateImageViewer = { imageUrls, selectedImageUrl ->
+                            stack.pushNew(
+                                Config.ImageViewer(
+                                    imageUrls = imageUrls,
+                                    selectedImageUrl = selectedImageUrl,
+                                )
+                            )
+                        },
                         sessionId = config.sessionId,
                         shouldReconnect = config.shouldReconnect
                     )
                 )
             }
-            Config.List -> {
+            Config.ChatsList -> {
                 ClientChatFlowComponent.Child.List(
                     component = DefaultClientChatsListComponent(
                         componentContext = componentContext,
@@ -56,18 +77,34 @@ internal class DefaultClientChatFlowComponent(
                     )
                 )
             }
+            is Config.ImageViewer -> {
+                ClientChatFlowComponent.Child.ImageViewer(
+                    component = ImageViewerComponent.create(
+                        componentContext = componentContext,
+                        imageUrls = config.imageUrls,
+                        selectedImageUrl = config.selectedImageUrl,
+                        navigateBack = { stack.pop() },
+                    )
+                )
+            }
         }
     }
     
     @Serializable
     private sealed class Config {
         @Serializable
-        object List : Config()
+        object ChatsList : Config()
         
         @Serializable
         data class Details(
             val sessionId: String,
             val shouldReconnect: Boolean
+        ) : Config()
+
+        @Serializable
+        data class ImageViewer(
+            val imageUrls: List<String>,
+            val selectedImageUrl: String,
         ) : Config()
     }
 }

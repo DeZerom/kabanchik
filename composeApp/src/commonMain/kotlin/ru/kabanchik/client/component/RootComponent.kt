@@ -6,7 +6,6 @@ import com.arkivanov.decompose.value.Value
 import ru.kabanchik.client.feature.auth.api.flow.AuthFlowComponent
 import ru.kabanchik.client.feature.splash.api.ClientSplashComponent
 import ru.kabanchik.common.snackBar.api.SnackBarComponent
-import ru.kabanchik.feature.client.chatDetails.api.flow.ClientChatFlowComponent
 
 interface RootComponent {
     val stack: Value<ChildStack<*, Child>>
@@ -15,7 +14,7 @@ interface RootComponent {
     sealed interface Child {
         class Splash(val component: ClientSplashComponent) : Child
         class Auth(val component: AuthFlowComponent) : Child
-        class Chat(val component: ClientChatFlowComponent) : Child
+        class Home(val component: HomeComponent) : Child
     }
 
     companion object {

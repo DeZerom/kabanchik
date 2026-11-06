@@ -21,6 +21,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(projects.domain.common.chat.model)
+            api(projects.common.files)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

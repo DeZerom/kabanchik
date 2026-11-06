@@ -1,19 +1,26 @@
 package ru.kabanchik.common.features.chat.logic.list
 
+import ru.kabanchik.common.chat.model.CommonChatResolution
 import ru.kabanchik.common.chat.model.CommonChatSummary
 import ru.kabanchik.common.chat.model.CommonMessage
 import ru.kabanchik.common.chat.model.CommonMessageType
+import ru.kabanchik.common.chat.model.CommonSessionStatus
 import ru.kabanchik.common.feature.chat.model.CommonUiChatItem
+import ru.kabanchik.common.features.chat.logic.details.toTextResource
 import ru.kabanchik.common.tools.textResource.TextResource
 
 fun CommonChatSummary.toUiChatItem(): CommonUiChatItem {
+    val isClosed = status == CommonSessionStatus.Closed
+    val lastUpdateTime = if (isClosed) closedAt ?: lastMessageTimestamp else lastMessageTimestamp
+
     return CommonUiChatItem(
         id = sessionId,
         title = firstMessageContent.orEmpty(),
-        lastUpdate = lastMessageTimestamp?.toChatListLastUpdateText() ?: TextResource.Raw(""),
+        lastUpdate = lastUpdateTime?.toChatListLastUpdateText() ?: TextResource.Raw(""),
         lastMessage = lastMessageContent.orEmpty(),
         hasUnread = false,
-        otherPersonName = participantName
+        otherPersonName = participantName,
+        resolution = CommonChatResolution.Closed.toTextResource().takeIf { isClosed },
     )
 }
 

@@ -10,4 +10,6 @@ data class CommonChatSummary(
     val lastMessageContent: String?,
     val lastMessageTimestamp: LocalDateTime?,
     val lastMessageSender: String?,
+    val closedAt: LocalDateTime? = null,
+    val closedBy: String? = null,
 )

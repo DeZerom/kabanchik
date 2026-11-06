@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.emptyFlow
 import ru.kabanchik.client.domain.logic.chat.api.ClientChatDetailsInteractor
 import ru.kabanchik.common.chat.model.CommonAttachment
 import ru.kabanchik.common.chat.model.CommonChatMessage
+import ru.kabanchik.common.chat.model.CommonSessionStatus
 import ru.kabanchik.common.domain.user.logic.api.UserInteractor
 import ru.kabanchik.common.errorHandler.logic.api.ErrorHandler
 import ru.kabanchik.common.errorHandler.logic.api.ErrorType
@@ -15,11 +16,18 @@ internal class FakeClientChatDetailsInteractor(
     private val upload: suspend (fileName: String) -> CommonAttachment,
     private val messages: List<CommonChatMessage> = emptyList(),
     private val send: suspend (SentMessage) -> Unit = {},
+    private val status: CommonSessionStatus = CommonSessionStatus.Open,
+    private val closed: Flow<Unit> = emptyFlow(),
+    private val statusError: Throwable? = null,
 ) : ClientChatDetailsInteractor {
+    var reconnectedSessionId: String? = null
+
     val uploadedFileNames = mutableListOf<String>()
     val sentMessages = mutableListOf<SentMessage>()
 
-    override suspend fun reconnect(sessionId: String): Unit = Unit
+    override suspend fun reconnect(sessionId: String) {
+        reconnectedSessionId = sessionId
+    }
 
     override suspend fun listenReconnections(): Flow<Unit> = emptyFlow()
 
@@ -55,7 +63,12 @@ internal class FakeClientChatDetailsInteractor(
         return emptyFlow()
     }
 
-    override suspend fun endChat(sessionId: String): Unit = Unit
+    override suspend fun getStatus(sessionId: String): CommonSessionStatus {
+        statusError?.let { throw it }
+        return status
+    }
+
+    override suspend fun listenClosed(sessionId: String): Flow<Unit> = closed
 
     data class SentMessage(
         val content: String?,

@@ -4,4 +4,11 @@
     <string name="chat_list_request_client_message">Запросите первый чат и начните работу</string>
     <string name="chat_list_request_client">Запросить клиента</string>
     <string name="chat_details_paused">Смена завершена, чат передан другому оператору</string>
+    <string name="chat_details_end">Завершить</string>
+
+    <string name="chat_end_title">Завершить чат</string>
+    <string name="chat_end_status">Статус</string>
+    <string name="chat_end_confirm">Завершить</string>
+    <string name="chat_end_error">Не удалось завершить заявку. Попробуйте еще раз</string>
+    <string name="chat_end_off_shift_error">Начните смену, чтобы завершить заявку</string>
 </resources>

@@ -5,11 +5,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
 import kotlinx.datetime.LocalDate
 import ru.kabanchik.common.chat.model.CommonAttachment
 import ru.kabanchik.common.chat.model.CommonChatMessage
 import ru.kabanchik.common.chat.model.CommonMessage
+import ru.kabanchik.common.chat.model.CommonMessageType
 import ru.kabanchik.common.chat.model.CommonSessionStatus
 import ru.kabanchik.common.domain.chat.logic.api.CommonChatDetailsInteractor
 import ru.kabanchik.common.domain.chat.logic.api.MaxAttachmentsPerMessage
@@ -83,30 +86,42 @@ class DefaultCommonChatDetailsInteractor(
         var prevDate: LocalDate? = null
 
         return channelFlow {
+            suspend fun sendWithDate(message: CommonMessage) {
+                if (prevDate != message.time.date) {
+                    send(CommonChatMessage.Date(date = message.time.date))
+                    prevDate = message.time.date
+                }
+                send(message.toChatMessage())
+            }
+
             coroutineScope {
                 sessionMessageFlow
                     .filter { it.sessionId == sessionId && it.status == CommonSessionStatus.Open }
                     .onEach {
                         send(CommonChatMessage.OperatorFound)
                     }.launchIn(this)
-                sessionEndFlow.onEach {
-                    send(CommonChatMessage.SessionEnd)
+                sessionEndFlow.onEach { message ->
+                    sendWithDate(message)
                 }.launchIn(this)
                 messagesFlow.onEach { message ->
-
-                    if (prevDate != message.time.date) {
-                        send(CommonChatMessage.Date(date = message.time.date))
-                        prevDate = message.time.date
-                    }
-
-                    send(CommonChatMessage.Message(message = message))
+                    sendWithDate(message)
                 }.launchIn(this)
             }
         }
     }
 
-    override suspend fun endChat(sessionId: String) {
-        detailsRepository.endChat(sessionId)
+    override suspend fun getStatus(sessionId: String): CommonSessionStatus {
+        return detailsRepository.getChatStatus(sessionId)
+    }
+
+    override suspend fun listenClosed(sessionId: String): Flow<Unit> {
+        val closedSessions = detailsRepository.listenSession()
+            .filter { it.sessionId == sessionId && it.status == CommonSessionStatus.Closed }
+            .map { }
+        val sessionEnds = detailsRepository.listenSessionEnd()
+            .filterBySessionId(sessionId)
+            .map { }
+        return merge(closedSessions, sessionEnds)
     }
 
     private fun Flow<CommonMessage>.filterBySessionId(
@@ -123,11 +138,20 @@ class DefaultCommonChatDetailsInteractor(
                 prevDate = message.time.date
                 listOf(
                     CommonChatMessage.Date(date = message.time.date),
-                    CommonChatMessage.Message(message = message)
+                    message.toChatMessage()
                 )
             } else {
-                listOf(CommonChatMessage.Message(message = message))
+                listOf(message.toChatMessage())
             }
+        }
+    }
+
+    // Системные сообщения в истории создаются только при завершении заявки
+    private fun CommonMessage.toChatMessage(): CommonChatMessage {
+        return if (type == CommonMessageType.System) {
+            CommonChatMessage.SessionEnd(message = this)
+        } else {
+            CommonChatMessage.Message(message = this)
         }
     }
 }

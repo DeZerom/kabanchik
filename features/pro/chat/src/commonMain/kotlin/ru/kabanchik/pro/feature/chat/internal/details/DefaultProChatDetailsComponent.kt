@@ -1,6 +1,12 @@
 package ru.kabanchik.pro.feature.chat.internal.details
 
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.router.slot.ChildSlot
+import com.arkivanov.decompose.router.slot.SlotNavigation
+import com.arkivanov.decompose.router.slot.activate
+import com.arkivanov.decompose.router.slot.childSlot
+import com.arkivanov.decompose.router.slot.dismiss
+import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.instancekeeper.retainedInstance
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import kabanchik.features.pro.chat.generated.resources.Res
@@ -10,6 +16,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.serialization.Serializable
 import ru.kabanchik.common.features.chat.logic.details.imageUrls
 import ru.kabanchik.common.snackBar.api.SnackBarData
 import ru.kabanchik.common.tools.extensions.asTextResource
@@ -18,6 +25,8 @@ import ru.kabanchik.pro.feature.chat.api.details.ProChatDetailsContract.Event
 import ru.kabanchik.pro.feature.chat.api.details.ProChatDetailsContract.SideEffect
 import ru.kabanchik.pro.feature.chat.api.details.ProChatDetailsContract.State
 import ru.kabanchik.pro.feature.chat.api.details.ProChatDetailsDependencies
+import ru.kabanchik.pro.feature.chat.api.end.ProEndChatComponent
+import ru.kabanchik.pro.feature.chat.internal.end.DefaultProEndChatComponent
 
 class DefaultProChatDetailsComponent(
     componentContext: ComponentContext,
@@ -42,6 +51,29 @@ class DefaultProChatDetailsComponent(
 
     private val coroutineScope = coroutineScope()
     private var isFilePickerOpen = false
+
+    private val endChatNavigation = SlotNavigation<EndChatConfig>()
+    override val endChatSlot: Value<ChildSlot<*, ProEndChatComponent>> = childSlot(
+        source = endChatNavigation,
+        serializer = EndChatConfig.serializer(),
+        key = "EndChatSlot",
+        // Назад обрабатывает сам bottom sheet: во время завершения его закрывать нельзя
+        handleBackButton = false,
+        childFactory = { _, childContext ->
+            DefaultProEndChatComponent(
+                componentContext = childContext,
+                dependencies = dependencies,
+                sessionId = sessionId,
+                onFinished = { endChatNavigation.dismiss() },
+                onError = { text ->
+                    // Снекбар под открытым шитом не виден
+                    endChatNavigation.dismiss()
+                    showSnackBar(SnackBarData.Error(text))
+                },
+                onDismissed = { endChatNavigation.dismiss() },
+            )
+        }
+    )
 
     init {
         observeSideEffects()
@@ -88,6 +120,12 @@ class DefaultProChatDetailsComponent(
         store.handleEvent(Event.MessageSent)
     }
 
+    override fun onEndClicked() {
+        if (state.value.canEnd) {
+            endChatNavigation.activate(EndChatConfig)
+        }
+    }
+
     override fun onBackClicked() {
         navigateBack()
     }
@@ -105,4 +143,7 @@ class DefaultProChatDetailsComponent(
             }
         }.launchIn(coroutineScope)
     }
+
+    @Serializable
+    private object EndChatConfig
 }

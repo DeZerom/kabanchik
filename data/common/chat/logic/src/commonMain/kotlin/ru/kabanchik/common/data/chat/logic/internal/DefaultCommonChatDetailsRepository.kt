@@ -3,8 +3,10 @@ package ru.kabanchik.common.data.chat.logic.internal
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import ru.kabanchik.common.chat.model.CommonAttachment
+import ru.kabanchik.common.chat.model.CommonChatError
 import ru.kabanchik.common.chat.model.CommonMessage
 import ru.kabanchik.common.chat.model.CommonSessionMessage
+import ru.kabanchik.common.chat.model.CommonSessionStatus
 import ru.kabanchik.common.data.chat.logic.api.CommonChatRestSource
 import ru.kabanchik.common.data.chat.logic.api.CommonStompSource
 import ru.kabanchik.common.data.chat.logic.api.CommonUploadFile
@@ -76,11 +78,15 @@ internal class DefaultCommonChatDetailsRepository(
         return commonStompSource.listenMessages().map { it.toDomain() }
     }
 
-    override suspend fun endChat(sessionId: String) {
-        commonStompSource.endChat(sessionId)
-    }
-
     override suspend fun listenSessionEnd(): Flow<CommonMessage> {
         return commonStompSource.listenSessionEnd().map { it.toDomain() }
+    }
+
+    override suspend fun listenErrors(): Flow<CommonChatError> {
+        return commonStompSource.listenErrors().map { it.toDomain() }
+    }
+
+    override suspend fun getChatStatus(sessionId: String): CommonSessionStatus {
+        return commonRestSource.getChatDetails(sessionId).status.toDomain()
     }
 }

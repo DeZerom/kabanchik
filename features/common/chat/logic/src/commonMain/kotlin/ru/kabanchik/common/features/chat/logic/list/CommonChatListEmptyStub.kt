@@ -14,9 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import kabanchik.features.common.chat.logic.generated.resources.Res
-import kabanchik.features.common.chat.logic.generated.resources.chat_list_no_chats
-import org.jetbrains.compose.resources.stringResource
 import ru.kabanchik.common.uiKit.VSpacer
 import ru.kabanchik.common.uiKit.icons.KabanchikIcons
 import ru.kabanchik.common.uiKit.icons.extensions.Forum96
@@ -27,8 +24,9 @@ import ru.kabanchik.common.uiKit.widgets.CommonButton
 
 @Composable
 internal fun CommonChatListEmptyStub(
-    message: String,
-    buttonText: String,
+    title: String,
+    message: String?,
+    buttonText: String?,
     isLoading: Boolean,
     onButtonClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -47,25 +45,30 @@ internal fun CommonChatListEmptyStub(
         )
         VSpacer(24.dp)
         Text(
-            text = stringResource(Res.string.chat_list_no_chats),
+            text = title,
             style = KabanchikTheme.typography.headlineSmall,
-            color = KabanchikTheme.colors.mainText
+            color = KabanchikTheme.colors.mainText,
+            textAlign = TextAlign.Center
         )
-        VSpacer(16.dp)
-        Text(
-            text = message,
-            style = KabanchikTheme.typography.bodyMedium,
-            color = KabanchikTheme.colors.secondaryText,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
-        )
-        VSpacer(36.dp)
-        CommonButton(
-            text = buttonText,
-            isLoading = isLoading,
-            onClick = onButtonClick,
-            modifier = Modifier
-        )
+        if (message != null) {
+            VSpacer(16.dp)
+            Text(
+                text = message,
+                style = KabanchikTheme.typography.bodyMedium,
+                color = KabanchikTheme.colors.secondaryText,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+        if (buttonText != null) {
+            VSpacer(36.dp)
+            CommonButton(
+                text = buttonText,
+                isLoading = isLoading,
+                onClick = onButtonClick,
+                modifier = Modifier
+            )
+        }
     }
 }
 
@@ -75,8 +78,25 @@ private fun CommonChatListEmptyStubPreview() {
     KabanchikTheme {
         Scaffold {
             CommonChatListEmptyStub(
+                title = "Пока нет чатов",
                 message = "Создайте первый чат и начните общение с оператором",
                 buttonText = "Создать новый чат",
+                isLoading = false,
+                onButtonClick = {}
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun CommonChatListEmptyStubNoButtonPreview() {
+    KabanchikTheme {
+        Scaffold {
+            CommonChatListEmptyStub(
+                title = "Пока нет завершенных задач",
+                message = null,
+                buttonText = null,
                 isLoading = false,
                 onButtonClick = {}
             )
@@ -90,6 +110,7 @@ private fun CommonChatListEmptyStubLoadingPreview() {
     KabanchikTheme {
         Scaffold {
             CommonChatListEmptyStub(
+                title = "Пока нет чатов",
                 message = "Создайте первый чат и начните общение с оператором",
                 buttonText = "Создать новый чат",
                 isLoading = true,

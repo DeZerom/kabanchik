@@ -16,6 +16,5 @@ interface CommonStompSource {
     suspend fun listenErrors(): Flow<CommonApiErrorMessage>
     suspend fun listenSession(): Flow<CommonApiSessionMessage>
     suspend fun listenMessages(): Flow<CommonApiMessage>
-    suspend fun endChat(sessionId: String)
     suspend fun listenSessionEnd(): Flow<CommonApiMessage>
 }

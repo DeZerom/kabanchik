@@ -2,9 +2,9 @@ package ru.kabanchik.common.features.chat.logic.details
 
 import kabanchik.features.common.chat.logic.generated.resources.Res
 import kabanchik.features.common.chat.logic.generated.resources.chat_details_operator_found
-import kabanchik.features.common.chat.logic.generated.resources.chat_details_session_end
 import ru.kabanchik.common.chat.model.CommonAttachment
 import ru.kabanchik.common.chat.model.CommonChatMessage
+import ru.kabanchik.common.chat.model.CommonChatResolution
 import ru.kabanchik.common.feature.chat.model.CommonUiAttachment
 import ru.kabanchik.common.feature.chat.model.CommonUiMessage
 import ru.kabanchik.common.tools.extensions.toDayFullMonth
@@ -32,9 +32,11 @@ fun CommonChatMessage.toState(userLogin: String): CommonUiMessage {
                 message = TextResource.Id(Res.string.chat_details_operator_found)
             )
         }
-        CommonChatMessage.SessionEnd -> {
-            CommonUiMessage.SystemMessage(
-                message = TextResource.Id(Res.string.chat_details_session_end)
+        is CommonChatMessage.SessionEnd -> {
+            CommonUiMessage.Resolution(
+                id = message.id,
+                status = CommonChatResolution.Closed.toTextResource(),
+                time = message.time.toHoursMinutes(),
             )
         }
     }
@@ -68,7 +70,8 @@ fun List<CommonUiMessage>.upsert(message: CommonUiMessage): List<CommonUiMessage
             this + message
         }
     }
-    if (message !is CommonUiMessage.Message) return this + message
+    // Сообщения и карточку завершения сервер может прислать повторно: заменяем по id
+    if (message !is CommonUiMessage.Message && message !is CommonUiMessage.Resolution) return this + message
 
     val existingIndex = indexOfFirst { it.id == message.id }
     if (existingIndex == -1) return this + message

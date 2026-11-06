@@ -13,7 +13,10 @@ class ProChatDetailsContract {
         val messages: List<CommonUiMessage> = emptyList(),
         val isLoading: Boolean = false,
         val isSending: Boolean = false,
+        val isClosed: Boolean = false,
     ) {
+        val canEnd = !isLoading && !isClosed
+
         val toolbarTitle = messages
             .filterIsInstance<CommonUiMessage.Message>()
             .firstOrNull()

@@ -13,7 +13,6 @@ interface ClientMessagesStompSource {
     suspend fun connect()
     suspend fun startChat(message: ClientApiChatRequest)
     suspend fun reconnect(message: CommonApiReconnectMessage)
-    suspend fun endChat(sessionId: String)
     suspend fun send(message: CommonApiSendMessage)
     suspend fun listenSystem(): Flow<CommonApiSystemMessage>
     suspend fun listenErrors(): Flow<CommonApiErrorMessage>

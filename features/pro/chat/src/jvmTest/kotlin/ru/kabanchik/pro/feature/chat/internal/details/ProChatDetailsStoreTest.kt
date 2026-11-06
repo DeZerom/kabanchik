@@ -17,6 +17,7 @@ import ru.kabanchik.common.chat.model.CommonAttachment
 import ru.kabanchik.common.chat.model.CommonChatMessage
 import ru.kabanchik.common.chat.model.CommonMessage
 import ru.kabanchik.common.chat.model.CommonMessageType
+import ru.kabanchik.common.chat.model.CommonSessionStatus
 import ru.kabanchik.common.features.chat.logic.details.findFile
 import ru.kabanchik.common.files.api.SelectedFile
 import ru.kabanchik.pro.feature.chat.api.details.ProChatDetailsContract.Event
@@ -25,6 +26,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertIs
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -143,6 +145,80 @@ class ProChatDetailsStoreTest {
         } finally {
             Dispatchers.resetMain()
         }
+    }
+
+    @Test
+    fun opensClosedChatReadOnlyWithoutReconnect() = runTest {
+        Dispatchers.setMain(StandardTestDispatcher(testScheduler))
+        try {
+            val interactor = FakeProChatDetailsInteractor(
+                upload = { attachment() },
+                status = CommonSessionStatus.Closed,
+            )
+            val store = createStore(interactor, shouldReconnect = true)
+            advanceUntilIdle()
+
+            assertTrue(store.currentState.isClosed)
+            assertFalse(store.currentState.canEnd)
+            assertNull(interactor.reconnectedSessionId)
+            store.onDestroy()
+        } finally {
+            Dispatchers.resetMain()
+        }
+    }
+
+    @Test
+    fun reconnectsToOpenChat() = runTest {
+        Dispatchers.setMain(StandardTestDispatcher(testScheduler))
+        try {
+            val interactor = FakeProChatDetailsInteractor(upload = { attachment() })
+            val store = createStore(interactor, shouldReconnect = true)
+            advanceUntilIdle()
+
+            assertFalse(store.currentState.isClosed)
+            assertTrue(store.currentState.canEnd)
+            assertEquals("session-id", interactor.reconnectedSessionId)
+            store.onDestroy()
+        } finally {
+            Dispatchers.resetMain()
+        }
+    }
+
+    @Test
+    fun becomesReadOnlyWhenChatIsClosed() = runTest {
+        Dispatchers.setMain(StandardTestDispatcher(testScheduler))
+        try {
+            val closed = MutableSharedFlow<Unit>()
+            val interactor = FakeProChatDetailsInteractor(upload = { attachment() }, closed = closed)
+            val store = createStore(interactor)
+            advanceUntilIdle()
+
+            closed.emit(Unit)
+            runCurrent()
+
+            assertTrue(store.currentState.isClosed)
+            store.handleEvent(Event.MessageTextChanged("Еще вопрос"))
+            store.handleEvent(Event.MessageSent)
+            advanceUntilIdle()
+            assertTrue(interactor.sentMessages.isEmpty())
+            store.onDestroy()
+        } finally {
+            Dispatchers.resetMain()
+        }
+    }
+
+    private fun createStore(
+        interactor: FakeProChatDetailsInteractor,
+        shouldReconnect: Boolean = false,
+    ): ProChatDetailsStore {
+        return ProChatDetailsStore(
+            chatDetailsInteractor = interactor,
+            userInteractor = ProFakeUserInteractor,
+            errorHandler = ProFakeErrorHandler,
+            fileOpener = ProFakeFileOpener(),
+            sessionId = "session-id",
+            shouldReconnect = shouldReconnect,
+        )
     }
 
     private fun selectedFile(onRelease: () -> Unit = {}): SelectedFile {

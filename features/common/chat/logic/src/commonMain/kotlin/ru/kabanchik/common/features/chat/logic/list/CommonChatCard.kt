@@ -1,6 +1,7 @@
 package ru.kabanchik.common.features.chat.logic.list
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,6 +19,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kabanchik.features.common.chat.logic.generated.resources.Res
+import kabanchik.features.common.chat.logic.generated.resources.chat_details_resolution_title
 import kabanchik.features.common.chat.logic.generated.resources.chat_list_new_chat
 import org.jetbrains.compose.resources.stringResource
 import ru.kabanchik.common.feature.chat.model.CommonUiChatItem
@@ -76,16 +78,25 @@ internal fun CommonChatCard(
             }
             VSpacer(8.dp)
             Row(
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = item.lastMessage,
+                    text = if (item.resolution != null) {
+                        stringResource(Res.string.chat_details_resolution_title)
+                    } else {
+                        item.lastMessage
+                    },
                     style = KabanchikTheme.typography.bodyMedium,
                     color = KabanchikTheme.colors.secondaryText,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.weight(1f)
                 )
+                item.resolution?.let { resolution ->
+                    HSpacer(4.dp)
+                    ResolutionBadge(text = resolution.getValue())
+                }
                 if (item.hasUnread) {
                     HSpacer(4.dp)
                     Box(
@@ -98,6 +109,18 @@ internal fun CommonChatCard(
             }
         }
     }
+}
+
+@Composable
+private fun ResolutionBadge(text: String) {
+    Text(
+        text = text,
+        style = KabanchikTheme.typography.bodyS,
+        color = KabanchikTheme.colors.accent,
+        modifier = Modifier
+            .border(width = 1.dp, color = KabanchikTheme.colors.accent, shape = CircleShape)
+            .padding(horizontal = 12.dp, vertical = 2.dp)
+    )
 }
 
 @Preview
@@ -128,6 +151,17 @@ private fun CommonChatCardNoNamePreview() {
     KabanchikTheme {
         CommonChatCard(
             item = ChatListMock.chatNoName,
+            onClick = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun CommonChatCardClosedPreview() {
+    KabanchikTheme {
+        CommonChatCard(
+            item = ChatListMock.chatClosed,
             onClick = {}
         )
     }

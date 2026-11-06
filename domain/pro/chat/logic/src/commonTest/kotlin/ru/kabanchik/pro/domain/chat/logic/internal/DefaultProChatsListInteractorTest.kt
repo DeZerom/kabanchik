@@ -212,5 +212,9 @@ private class StubCommonChatsListInteractor : CommonChatsListInteractor {
 
     override suspend fun getChats(): List<CommonChatSummary> = emptyList()
 
+    override suspend fun getClosedChats(): List<CommonChatSummary> = emptyList()
+
     override suspend fun listenMessages(): Flow<CommonMessage> = emptyFlow()
+
+    override suspend fun listenClosedChats(): Flow<String> = emptyFlow()
 }

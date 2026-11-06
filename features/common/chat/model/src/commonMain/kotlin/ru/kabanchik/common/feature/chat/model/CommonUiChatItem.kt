@@ -8,5 +8,9 @@ data class CommonUiChatItem(
     val lastUpdate: TextResource = TextResource.Raw(""),
     val lastMessage: String = "",
     val hasUnread: Boolean = false,
-    val otherPersonName: String? = null
+    val otherPersonName: String? = null,
+    /**
+     * Итог завершенной заявки, `null` - заявка активна.
+     */
+    val resolution: TextResource? = null,
 )

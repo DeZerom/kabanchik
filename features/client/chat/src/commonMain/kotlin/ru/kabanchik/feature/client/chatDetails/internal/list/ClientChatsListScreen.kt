@@ -9,6 +9,7 @@ import kabanchik.features.client.chat.generated.resources.chat_list_create_chat_
 import kabanchik.features.client.chat.generated.resources.chat_list_title
 import org.jetbrains.compose.resources.stringResource
 import ru.kabanchik.common.features.chat.logic.list.CommonChatListContent
+import ru.kabanchik.common.features.chat.logic.list.CommonChatListTabs
 import ru.kabanchik.common.scaffold.toolbar.CommonToolbarModel
 import ru.kabanchik.common.screenSize.PartFillingScreen
 import ru.kabanchik.common.tools.textResource.TextResource
@@ -29,19 +30,27 @@ internal fun ClientChatsListScreen(
     )
 
     PartFillingScreen {
-        if (state.isLoading) {
-            CommonScreenLoader()
-        } else {
-            CommonChatListContent(
-                items = state.chats,
-                emptyListMessage = stringResource(Res.string.chat_list_create_chat_message),
-                emptyListButtonText = stringResource(Res.string.chat_list_create_chat),
-                emptyListButtonLoading = state.isChatCreating,
-                onItemClick = component::onChatClicked,
-                onAddClick = component::onCreateChatClicked,
-                listFabContentDescription = stringResource(Res.string.chat_list_create_chat),
-                listFabLoading = state.isChatCreating
-            )
+        CommonChatListTabs(
+            selectedTab = state.selectedTab,
+            closedChats = state.closedChats,
+            isClosedLoaded = state.isClosedLoaded,
+            onTabSelected = component::onTabSelected,
+            onItemClick = component::onChatClicked,
+        ) {
+            if (state.isLoading) {
+                CommonScreenLoader()
+            } else {
+                CommonChatListContent(
+                    items = state.chats,
+                    emptyListMessage = stringResource(Res.string.chat_list_create_chat_message),
+                    emptyListButtonText = stringResource(Res.string.chat_list_create_chat),
+                    emptyListButtonLoading = state.isChatCreating,
+                    onItemClick = component::onChatClicked,
+                    onAddClick = component::onCreateChatClicked,
+                    listFabContentDescription = stringResource(Res.string.chat_list_create_chat),
+                    listFabLoading = state.isChatCreating
+                )
+            }
         }
     }
 }

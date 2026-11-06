@@ -6,6 +6,7 @@ import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import ru.kabanchik.common.feature.chat.model.CommonChatListTab
 import ru.kabanchik.common.snackBar.api.SnackBarData
 import ru.kabanchik.feature.client.chatDetails.api.list.ClientChatsListComponent
 import ru.kabanchik.feature.client.chatDetails.api.list.ClientChatsListContract
@@ -38,6 +39,10 @@ class DefaultClientChatsListComponent(
 
     override fun onChatClicked(id: String) {
         navigateChatDetails(id, true)
+    }
+
+    override fun onTabSelected(tab: CommonChatListTab) {
+        store.handleEvent(ClientChatsListContract.Event.TabSelected(tab))
     }
 
     private fun observeSideEffects() {

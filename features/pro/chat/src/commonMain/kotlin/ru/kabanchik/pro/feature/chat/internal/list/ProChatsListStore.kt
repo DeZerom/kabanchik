@@ -6,6 +6,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import ru.kabanchik.common.domain.user.logic.api.UserInteractor
 import ru.kabanchik.common.errorHandler.logic.api.ErrorHandler
+import ru.kabanchik.common.feature.chat.model.CommonChatListTab
 import ru.kabanchik.common.features.chat.logic.list.toUiChatItem
 import ru.kabanchik.common.features.chat.logic.list.updateWithMessage
 import ru.kabanchik.common.store.BaseCoroutineStore
@@ -36,12 +37,14 @@ class ProChatsListStore(
     override fun handleEvent(event: Event) {
         when (event) {
             Event.RequestChat -> requestChat()
+            is Event.TabSelected -> selectTab(event.tab)
         }
     }
 
     private fun initChats() {
         listenReconnections()
         listenPausedChats()
+        listenClosedChats()
         coroutineScope.launch(coroutineExceptionHandler) {
             reduceState { copy(isLoading = true) }
 
@@ -84,6 +87,9 @@ class ProChatsListStore(
     private suspend fun reloadChats() {
         try {
             loadChats()
+            if (currentState.isClosedLoaded) {
+                reloadClosedChats()
+            }
         } catch (e: CancellationException) {
             throw e
         } catch (e: Throwable) {
@@ -96,6 +102,41 @@ class ProChatsListStore(
         coroutineScope.launch(coroutineExceptionHandler) {
             proChatsListInteractor.listenPausedChats().collect { sessionId ->
                 reduceState { copy(chats = chats.filterNot { it.id == sessionId }) }
+            }
+        }
+    }
+
+    private fun selectTab(tab: CommonChatListTab) {
+        reduceState { copy(selectedTab = tab) }
+        if (tab == CommonChatListTab.Closed) {
+            coroutineScope.launch { reloadClosedChats() }
+        }
+    }
+
+    private suspend fun reloadClosedChats() {
+        if (currentState.isClosedLoading) return
+
+        reduceState { copy(isClosedLoading = true) }
+        try {
+            val closedChats = proChatsListInteractor.getClosedChats().map { it.toUiChatItem() }
+            reduceState { copy(closedChats = closedChats, isClosedLoaded = true) }
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Throwable) {
+            pushSideEffect(SideEffect.ShowError(errorHandler.handleError(e).defaultMessage))
+        } finally {
+            reduceState { copy(isClosedLoading = false) }
+        }
+    }
+
+    // Завершенная заявка переезжает из активных в завершенные
+    private fun listenClosedChats() {
+        coroutineScope.launch(coroutineExceptionHandler) {
+            proChatsListInteractor.listenClosedChats().collect { sessionId ->
+                reduceState { copy(chats = chats.filterNot { it.id == sessionId }) }
+                if (currentState.isClosedLoaded) {
+                    reloadClosedChats()
+                }
             }
         }
     }

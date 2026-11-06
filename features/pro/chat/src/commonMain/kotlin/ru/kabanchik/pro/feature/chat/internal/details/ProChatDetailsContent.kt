@@ -45,6 +45,7 @@ private fun Chat(
         currentMessageText = state.currentMessage,
         selectedFiles = state.selectedFiles,
         isSending = state.isSending,
+        isClosed = state.isClosed,
         onMessageTextChanged = onMessageTextChanged,
         onMessageSent = onMessageSent,
         onFileSelectionRequested = onFileSelectionRequested,

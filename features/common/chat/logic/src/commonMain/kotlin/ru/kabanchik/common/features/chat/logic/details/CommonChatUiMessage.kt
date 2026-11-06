@@ -63,6 +63,12 @@ fun CommonChatUiMessage(
                 modifier = modifier
             )
         }
+        is CommonUiMessage.Resolution -> {
+            CommonChatResolutionCard(
+                resolution = message,
+                modifier = modifier
+            )
+        }
     }
 }
 

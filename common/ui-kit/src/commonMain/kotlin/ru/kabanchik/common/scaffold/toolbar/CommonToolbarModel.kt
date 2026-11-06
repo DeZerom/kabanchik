@@ -21,8 +21,18 @@ sealed interface CommonToolbarModel {
         val subtitle: TextResource,
         val onBackClicked: () -> Unit,
         override val style: CommonToolbarStyle = CommonToolbarStyle.Default,
+        val action: CommonToolbarAction? = null,
     ) : CommonToolbarModel
 }
+
+/**
+ * Текстовая кнопка в правой части тулбара.
+ */
+data class CommonToolbarAction(
+    val text: TextResource,
+    val onClick: () -> Unit,
+    val isEnabled: Boolean = true,
+)
 
 enum class CommonToolbarStyle {
     Default,

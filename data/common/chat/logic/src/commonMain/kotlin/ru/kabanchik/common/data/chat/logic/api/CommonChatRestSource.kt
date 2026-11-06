@@ -1,6 +1,7 @@
 package ru.kabanchik.common.data.chat.logic.api
 
 import ru.kabanchik.common.data.chat.logic.api.CommonChatRestSource.Companion.MaxFilesPerUpload
+import ru.kabanchik.common.data.chatDetails.model.CommonApiChatDetails
 import ru.kabanchik.common.data.chatDetails.model.CommonApiChatFile
 import ru.kabanchik.common.data.chatDetails.model.CommonApiChatSummary
 import ru.kabanchik.common.data.chatDetails.model.CommonApiMessage
@@ -8,6 +9,8 @@ import ru.kabanchik.common.files.api.ReadableFile
 
 interface CommonChatRestSource {
     suspend fun getChats(): List<CommonApiChatSummary>
+    suspend fun getClosedChats(): List<CommonApiChatSummary>
+    suspend fun getChatDetails(sessionId: String): CommonApiChatDetails
     suspend fun getMessages(sessionId: String): List<CommonApiMessage>
 
     /**

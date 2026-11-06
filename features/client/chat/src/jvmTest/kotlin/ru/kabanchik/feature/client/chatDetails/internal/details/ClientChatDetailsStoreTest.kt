@@ -3,6 +3,7 @@ package ru.kabanchik.feature.client.chatDetails.internal.details
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
@@ -15,12 +16,14 @@ import ru.kabanchik.common.chat.model.CommonAttachment
 import ru.kabanchik.common.chat.model.CommonChatMessage
 import ru.kabanchik.common.chat.model.CommonMessage
 import ru.kabanchik.common.chat.model.CommonMessageType
+import ru.kabanchik.common.chat.model.CommonSessionStatus
 import ru.kabanchik.common.features.chat.logic.details.findFile
 import ru.kabanchik.common.files.api.SelectedFile
 import ru.kabanchik.feature.client.chatDetails.api.details.ChatDetailsContract.Event
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -119,6 +122,86 @@ class ClientChatDetailsStoreTest {
         } finally {
             Dispatchers.resetMain()
         }
+    }
+
+    @Test
+    fun opensClosedChatReadOnlyWithoutReconnect() = runTest {
+        Dispatchers.setMain(StandardTestDispatcher(testScheduler))
+        try {
+            val interactor = FakeClientChatDetailsInteractor(
+                upload = { attachment() },
+                status = CommonSessionStatus.Closed,
+            )
+            val store = createStore(interactor, shouldReconnect = true)
+            advanceUntilIdle()
+
+            assertTrue(store.currentState.isClosed)
+            assertNull(interactor.reconnectedSessionId)
+            store.onDestroy()
+        } finally {
+            Dispatchers.resetMain()
+        }
+    }
+
+    @Test
+    fun keepsChatAvailableWhenStatusIsUnknown() = runTest {
+        Dispatchers.setMain(StandardTestDispatcher(testScheduler))
+        try {
+            val interactor = FakeClientChatDetailsInteractor(
+                upload = { attachment() },
+                statusError = IllegalStateException("No network"),
+            )
+            val store = createStore(interactor, shouldReconnect = true)
+            advanceUntilIdle()
+
+            assertFalse(store.currentState.isClosed)
+            assertFalse(store.currentState.isLoading)
+            assertEquals("session-id", interactor.reconnectedSessionId)
+            store.onDestroy()
+        } finally {
+            Dispatchers.resetMain()
+        }
+    }
+
+    @Test
+    fun blocksInputWhenOperatorEndsChat() = runTest {
+        Dispatchers.setMain(StandardTestDispatcher(testScheduler))
+        try {
+            val closed = MutableSharedFlow<Unit>()
+            var releaseCount = 0
+            val interactor = FakeClientChatDetailsInteractor(upload = { attachment() }, closed = closed)
+            val store = createStore(interactor)
+            advanceUntilIdle()
+
+            closed.emit(Unit)
+            runCurrent()
+
+            assertTrue(store.currentState.isClosed)
+            store.handleEvent(Event.FilesSelected(listOf(selectedFile { releaseCount++ })))
+            store.handleEvent(Event.MessageTextChanged("Спасибо"))
+            store.handleEvent(Event.MessageSent)
+            advanceUntilIdle()
+            assertTrue(store.currentState.selectedFiles.isEmpty())
+            assertEquals(1, releaseCount)
+            assertTrue(interactor.sentMessages.isEmpty())
+            store.onDestroy()
+        } finally {
+            Dispatchers.resetMain()
+        }
+    }
+
+    private fun createStore(
+        interactor: FakeClientChatDetailsInteractor,
+        shouldReconnect: Boolean = false,
+    ): ClientChatDetailsStore {
+        return ClientChatDetailsStore(
+            chatDetailsInteractor = interactor,
+            userInteractor = FakeUserInteractor,
+            errorHandler = FakeErrorHandler,
+            fileOpener = FakeFileOpener(),
+            sessionId = "session-id",
+            shouldReconnect = shouldReconnect,
+        )
     }
 
     private fun selectedFile(onRelease: () -> Unit = {}): SelectedFile {

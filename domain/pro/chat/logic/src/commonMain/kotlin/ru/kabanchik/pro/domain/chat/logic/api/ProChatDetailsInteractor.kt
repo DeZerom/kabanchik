@@ -3,6 +3,7 @@ package ru.kabanchik.pro.domain.chat.logic.api
 import kotlinx.coroutines.flow.Flow
 import ru.kabanchik.common.chat.model.CommonAttachment
 import ru.kabanchik.common.chat.model.CommonChatMessage
+import ru.kabanchik.common.chat.model.CommonSessionStatus
 import ru.kabanchik.common.files.api.ReadableFile
 
 interface ProChatDetailsInteractor {
@@ -22,6 +23,18 @@ interface ProChatDetailsInteractor {
         attachmentIds: List<String>,
     )
     suspend fun listenMessages(sessionId: String): Flow<CommonChatMessage>
+    suspend fun getStatus(sessionId: String): CommonSessionStatus
+
+    /**
+     * Эмитит, когда заявку завершили: по событию `CLOSED` или системному сообщению о завершении.
+     */
+    suspend fun listenClosed(sessionId: String): Flow<Unit>
+
+    /**
+     * Завершает заявку и ждет подтверждения от сервера.
+     * Бросает [ExecutorOffShiftException], если оператор вне смены,
+     * и [ProEndChatException], если завершить не удалось.
+     */
     suspend fun endChat(sessionId: String)
 
     /**

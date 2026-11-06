@@ -1,5 +1,6 @@
 package ru.kabanchik.common.data.chat.logic.api
 
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import ru.kabanchik.common.chat.model.CommonChatSummary
@@ -12,8 +13,11 @@ fun CommonApiChatSummary.toDomain(): CommonChatSummary = CommonChatSummary(
     participantName = participantName,
     firstMessageContent = null,
     lastMessageContent = lastMessageContent,
-    lastMessageTimestamp = lastMessageTimestamp
-        ?.let(Instant::parse)
-        ?.toLocalDateTime(TimeZone.currentSystemDefault()),
+    lastMessageTimestamp = lastMessageTimestamp?.toSystemLocalDateTime(),
     lastMessageSender = lastMessageSender,
+    closedAt = closedAt?.toSystemLocalDateTime(),
+    closedBy = closedBy,
 )
+
+private fun String.toSystemLocalDateTime(): LocalDateTime =
+    Instant.parse(this).toLocalDateTime(TimeZone.currentSystemDefault())

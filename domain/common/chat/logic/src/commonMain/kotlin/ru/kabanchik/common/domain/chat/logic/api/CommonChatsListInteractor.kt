@@ -8,5 +8,11 @@ interface CommonChatsListInteractor {
     suspend fun connect()
     suspend fun listenReconnections(): Flow<Unit>
     suspend fun getChats(): List<CommonChatSummary>
+    suspend fun getClosedChats(): List<CommonChatSummary>
     suspend fun listenMessages(): Flow<CommonMessage>
+
+    /**
+     * `sessionId` заявок, которые завершили.
+     */
+    suspend fun listenClosedChats(): Flow<String>
 }

@@ -1,8 +1,11 @@
 package ru.kabanchik.common.domain.chat.logic.internal
 
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
 import ru.kabanchik.common.chat.model.CommonChatSummary
 import ru.kabanchik.common.chat.model.CommonMessage
+import ru.kabanchik.common.chat.model.CommonSessionStatus
 import ru.kabanchik.common.domain.chat.logic.api.CommonChatsListInteractor
 import ru.kabanchik.common.domain.chat.logic.api.repository.CommonChatsListRepository
 
@@ -22,7 +25,18 @@ internal class DefaultCommonChatsListInteractor(
             .sortedByDescending { chat -> chat.lastMessageTimestamp }
     }
 
+    // Сервер уже отсортировал завершенные заявки по времени завершения
+    override suspend fun getClosedChats(): List<CommonChatSummary> {
+        return listRepository.getClosedChats()
+    }
+
     override suspend fun listenMessages(): Flow<CommonMessage> {
         return listRepository.listenMessages()
+    }
+
+    override suspend fun listenClosedChats(): Flow<String> {
+        return listRepository.listenSession()
+            .filter { it.status == CommonSessionStatus.Closed }
+            .map { it.sessionId }
     }
 }

@@ -18,6 +18,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kabanchik.features.common.chat.logic.generated.resources.Res
+import kabanchik.features.common.chat.logic.generated.resources.chat_list_no_chats
+import org.jetbrains.compose.resources.stringResource
 import ru.kabanchik.common.feature.chat.model.CommonUiChatItem
 import ru.kabanchik.common.uiKit.icons.KabanchikIcons
 import ru.kabanchik.common.uiKit.theme.KabanchikTheme
@@ -25,17 +28,19 @@ import ru.kabanchik.common.uiKit.theme.KabanchikTheme
 @Composable
 fun CommonChatListContent(
     items: List<CommonUiChatItem>,
-    emptyListMessage: String,
-    emptyListButtonText: String,
+    emptyListMessage: String?,
+    emptyListButtonText: String?,
     emptyListButtonLoading: Boolean,
     onItemClick: (String) -> Unit,
     onAddClick: () -> Unit,
     modifier: Modifier = Modifier,
+    emptyListTitle: String = stringResource(Res.string.chat_list_no_chats),
     listFabContentDescription: String? = null,
     listFabLoading: Boolean = false
 ) {
     if (items.isEmpty()) {
         CommonChatListEmptyStub(
+            title = emptyListTitle,
             message = emptyListMessage,
             buttonText = emptyListButtonText,
             isLoading = emptyListButtonLoading,

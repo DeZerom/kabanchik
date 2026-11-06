@@ -4,8 +4,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
 import ru.kabanchik.common.chat.model.CommonAttachment
+import ru.kabanchik.common.chat.model.CommonChatError
 import ru.kabanchik.common.chat.model.CommonMessage
 import ru.kabanchik.common.chat.model.CommonSessionMessage
+import ru.kabanchik.common.chat.model.CommonSessionStatus
 import ru.kabanchik.common.domain.chat.logic.api.repository.CommonChatDetailsRepository
 import ru.kabanchik.common.files.api.ReadableFile
 
@@ -19,6 +21,8 @@ class MockCommonChatDetailsRepository(
         downloadUrl = "/files/uploaded-file-id",
     ),
     private val downloadedBytes: ByteArray = byteArrayOf(1, 2, 3),
+    private val sessions: Flow<CommonSessionMessage> = emptyFlow(),
+    private val sessionEnds: Flow<CommonMessage> = emptyFlow(),
 ) : CommonChatDetailsRepository {
     var reconnectedSessionId: String? = null
     var requestedMessagesSessionId: String? = null
@@ -74,7 +78,7 @@ class MockCommonChatDetailsRepository(
     }
 
     override suspend fun listenSession(): Flow<CommonSessionMessage> {
-        return emptyFlow()
+        return sessions
     }
 
     override suspend fun listenMessages(): Flow<CommonMessage> {
@@ -83,12 +87,16 @@ class MockCommonChatDetailsRepository(
         }
     }
 
-    override suspend fun endChat(sessionId: String) {
-        TODO("Not yet implemented")
+    override suspend fun listenSessionEnd(): Flow<CommonMessage> {
+        return sessionEnds
     }
 
-    override suspend fun listenSessionEnd(): Flow<CommonMessage> {
+    override suspend fun listenErrors(): Flow<CommonChatError> {
         return emptyFlow()
+    }
+
+    override suspend fun getChatStatus(sessionId: String): CommonSessionStatus {
+        return CommonSessionStatus.Open
     }
 
     data class SentMessage(

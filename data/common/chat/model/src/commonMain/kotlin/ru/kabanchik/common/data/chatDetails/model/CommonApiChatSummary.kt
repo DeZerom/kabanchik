@@ -22,4 +22,10 @@ data class CommonApiChatSummary(
 
     @SerialName("lastMessageSender")
     val lastMessageSender: String?,
+
+    @SerialName("closedAt")
+    val closedAt: String? = null,
+
+    @SerialName("closedBy")
+    val closedBy: String? = null,
 )

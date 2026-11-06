@@ -4,6 +4,7 @@ import kabanchik.features.common.chat.logic.generated.resources.Res
 import kabanchik.features.common.chat.logic.generated.resources.chat_list_time_date
 import kabanchik.features.common.chat.logic.generated.resources.chat_list_time_today
 import kabanchik.features.common.chat.logic.generated.resources.chat_list_time_yesterday
+import kabanchik.features.common.chat.logic.generated.resources.chat_resolution_closed
 import ru.kabanchik.common.feature.chat.model.CommonUiChatItem
 import ru.kabanchik.common.tools.extensions.asTextResource
 
@@ -33,6 +34,11 @@ object ChatListMock {
     val chatDate = chatNoName.copy(
         id = "4",
         lastUpdate = Res.string.chat_list_time_date.asTextResource("30.05.2026", "14:44")
+    )
+
+    val chatClosed = chatDate.copy(
+        id = "5",
+        resolution = Res.string.chat_resolution_closed.asTextResource()
     )
 
     val chatsList = listOf(chatWithUnread, chatLongFields, chatNoName, chatDate)

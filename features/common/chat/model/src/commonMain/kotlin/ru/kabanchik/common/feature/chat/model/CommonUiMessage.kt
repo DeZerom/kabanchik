@@ -16,6 +16,14 @@ sealed interface CommonUiMessage {
         val message: TextResource,
         override val id: String = Uuid.random().toString()
     ) : CommonUiMessage
+    /**
+     * Карточка завершенной заявки.
+     */
+    data class Resolution(
+        override val id: String,
+        val status: TextResource,
+        val time: String,
+    ) : CommonUiMessage
     data class Message(
         override val id: String = "",
         val authorLogin: String = "",

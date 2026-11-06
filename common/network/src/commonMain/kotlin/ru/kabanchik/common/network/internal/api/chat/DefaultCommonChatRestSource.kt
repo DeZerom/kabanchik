@@ -14,6 +14,7 @@ import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import ru.kabanchik.common.data.chat.logic.api.CommonChatRestSource
 import ru.kabanchik.common.data.chat.logic.api.CommonUploadFile
+import ru.kabanchik.common.data.chatDetails.model.CommonApiChatDetails
 import ru.kabanchik.common.data.chatDetails.model.CommonApiChatFile
 import ru.kabanchik.common.data.chatDetails.model.CommonApiChatSummary
 import ru.kabanchik.common.data.chatDetails.model.CommonApiMessage
@@ -23,6 +24,14 @@ internal class DefaultCommonChatRestSource(
 ) : CommonChatRestSource {
     override suspend fun getChats(): List<CommonApiChatSummary> {
         return httpClient.get(urlString = "/chat/api/chats").body()
+    }
+
+    override suspend fun getClosedChats(): List<CommonApiChatSummary> {
+        return httpClient.get(urlString = "/chat/api/chats/closed").body()
+    }
+
+    override suspend fun getChatDetails(sessionId: String): CommonApiChatDetails {
+        return httpClient.get(urlString = "/chat/api/chats/$sessionId").body()
     }
 
     override suspend fun getMessages(sessionId: String): List<CommonApiMessage> {

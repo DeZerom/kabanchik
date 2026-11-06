@@ -13,6 +13,7 @@ class ChatDetailsContract {
         val messages: List<CommonUiMessage> = emptyList(),
         val isLoading: Boolean = false,
         val isSending: Boolean = false,
+        val isClosed: Boolean = false,
     ) {
         val toolbarTitle = messages
             .filterIsInstance<CommonUiMessage.Message>()

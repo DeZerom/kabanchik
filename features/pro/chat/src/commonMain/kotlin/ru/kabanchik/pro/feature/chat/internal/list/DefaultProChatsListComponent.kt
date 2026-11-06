@@ -6,6 +6,7 @@ import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import ru.kabanchik.common.feature.chat.model.CommonChatListTab
 import ru.kabanchik.common.snackBar.api.SnackBarData
 import ru.kabanchik.common.snackBar.api.SnackBarData.Error
 import ru.kabanchik.pro.feature.chat.api.list.ProChatsListComponent
@@ -39,6 +40,10 @@ internal class DefaultProChatsListComponent(
 
     override fun onChatClicked(id: String) {
         navigateDetails(id, true)
+    }
+
+    override fun onTabSelected(tab: CommonChatListTab) {
+        store.handleEvent(ProChatsListContract.Event.TabSelected(tab))
     }
 
     private fun observeSideEffects() {

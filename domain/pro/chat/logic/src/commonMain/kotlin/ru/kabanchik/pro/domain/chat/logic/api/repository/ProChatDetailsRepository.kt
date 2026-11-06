@@ -1,9 +1,11 @@
 package ru.kabanchik.pro.domain.chat.logic.api.repository
 
 import kotlinx.coroutines.flow.Flow
-import ru.kabanchik.common.chat.model.CommonMessage
 import ru.kabanchik.common.chat.model.CommonAttachment
+import ru.kabanchik.common.chat.model.CommonChatError
+import ru.kabanchik.common.chat.model.CommonMessage
 import ru.kabanchik.common.chat.model.CommonSessionMessage
+import ru.kabanchik.common.chat.model.CommonSessionStatus
 import ru.kabanchik.common.files.api.ReadableFile
 
 interface ProChatDetailsRepository {
@@ -26,4 +28,6 @@ interface ProChatDetailsRepository {
     suspend fun listenMessages(): Flow<CommonMessage>
     suspend fun endChat(sessionId: String)
     suspend fun listenSessionEnd(): Flow<CommonMessage>
+    suspend fun listenErrors(): Flow<CommonChatError>
+    suspend fun getChatStatus(sessionId: String): CommonSessionStatus
 }

@@ -5,8 +5,10 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import ru.kabanchik.common.chat.model.CommonChatMessage
+import ru.kabanchik.common.chat.model.CommonSessionStatus
 import ru.kabanchik.common.domain.chat.logic.api.MaxAttachmentsPerMessage
 import ru.kabanchik.common.domain.user.logic.api.UserInteractor
 import ru.kabanchik.common.errorHandler.logic.api.ErrorHandler
@@ -61,13 +63,19 @@ internal class ProChatDetailsStore(
     private fun initChat() {
         listenReconnections()
         listenPaused()
+        listenClosed()
         coroutineScope.launch(coroutineExceptionHandler) {
             reduceState { State(isLoading = true) }
             val login = userInteractor.getUserLogin()
             reduceState { copy(login = login.orEmpty()) }
             loadMessages()
             listenMessages()
-            reconnectIfNeeded()
+            val isClosedOnServer = loadIsClosed()
+            reduceState { copy(isClosed = isClosed || isClosedOnServer) }
+            // Завершенный чат открыт только на чтение, восстанавливать в нем нечего
+            if (!currentState.isClosed) {
+                reconnectIfNeeded()
+            }
             reduceState { copy(isLoading = false) }
         }
     }
@@ -96,6 +104,26 @@ internal class ProChatDetailsStore(
         }
     }
 
+    private suspend fun loadIsClosed(): Boolean {
+        if (sessionId.isBlank()) return false
+
+        return try {
+            chatDetailsInteractor.getStatus(sessionId = sessionId) == CommonSessionStatus.Closed
+        } catch (e: CancellationException) {
+            throw e
+        } catch (_: Throwable) {
+            // Без статуса чат остается доступным: о завершении сообщит событие сервера
+            false
+        }
+    }
+
+    private fun listenClosed() {
+        coroutineScope.launch(coroutineExceptionHandler) {
+            chatDetailsInteractor.listenClosed(sessionId = sessionId).firstOrNull() ?: return@launch
+            reduceState { copy(isClosed = true) }
+        }
+    }
+
     private suspend fun reconnectIfNeeded() {
         if (shouldReconnect) {
             chatDetailsInteractor.reconnect(sessionId = sessionId)
@@ -103,7 +131,8 @@ internal class ProChatDetailsStore(
     }
 
     private fun sendMessage() {
-        if (currentState.isSending || currentState.currentMessage.isBlank() && currentState.selectedFiles.isEmpty()) return
+        if (currentState.isClosed || currentState.isSending) return
+        if (currentState.currentMessage.isBlank() && currentState.selectedFiles.isEmpty()) return
 
         reduceState { copy(isSending = true) }
         coroutineScope.launch(coroutineExceptionHandler) {
@@ -187,7 +216,7 @@ internal class ProChatDetailsStore(
     }
 
     private fun selectFiles(files: List<SelectedFile>) {
-        if (currentState.isSending) {
+        if (currentState.isSending || currentState.isClosed) {
             files.forEach { it.release() }
             return
         }

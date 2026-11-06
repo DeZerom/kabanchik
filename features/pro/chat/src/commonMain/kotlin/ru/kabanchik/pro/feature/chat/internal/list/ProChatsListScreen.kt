@@ -9,6 +9,7 @@ import kabanchik.features.pro.chat.generated.resources.chat_list_request_client_
 import kabanchik.features.pro.chat.generated.resources.chat_list_title
 import org.jetbrains.compose.resources.stringResource
 import ru.kabanchik.common.features.chat.logic.list.CommonChatListContent
+import ru.kabanchik.common.features.chat.logic.list.CommonChatListTabs
 import ru.kabanchik.common.scaffold.toolbar.CommonToolbarModel
 import ru.kabanchik.common.screenSize.PartFillingScreen
 import ru.kabanchik.common.tools.extensions.asTextResource
@@ -27,19 +28,27 @@ internal fun ProChatsListScreen(
     )
 
     PartFillingScreen {
-        if (state.isLoading) {
-            CommonScreenLoader()
-        } else {
-            CommonChatListContent(
-                items = state.chats,
-                emptyListMessage = stringResource(Res.string.chat_list_request_client_message),
-                emptyListButtonText = stringResource(Res.string.chat_list_request_client),
-                emptyListButtonLoading = state.isWaitingForClient,
-                onItemClick = component::onChatClicked,
-                onAddClick = component::onRequestClientClicked,
-                listFabContentDescription = stringResource(Res.string.chat_list_request_client),
-                listFabLoading = state.isWaitingForClient
-            )
+        CommonChatListTabs(
+            selectedTab = state.selectedTab,
+            closedChats = state.closedChats,
+            isClosedLoaded = state.isClosedLoaded,
+            onTabSelected = component::onTabSelected,
+            onItemClick = component::onChatClicked,
+        ) {
+            if (state.isLoading) {
+                CommonScreenLoader()
+            } else {
+                CommonChatListContent(
+                    items = state.chats,
+                    emptyListMessage = stringResource(Res.string.chat_list_request_client_message),
+                    emptyListButtonText = stringResource(Res.string.chat_list_request_client),
+                    emptyListButtonLoading = state.isWaitingForClient,
+                    onItemClick = component::onChatClicked,
+                    onAddClick = component::onRequestClientClicked,
+                    listFabContentDescription = stringResource(Res.string.chat_list_request_client),
+                    listFabLoading = state.isWaitingForClient
+                )
+            }
         }
     }
 }
